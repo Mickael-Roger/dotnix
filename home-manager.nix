@@ -14,6 +14,18 @@ in
     home.username = "mickael";
     home.homeDirectory = "/home/mickael"; 
 
+    home.file."background" = {
+      source = ./wallpapers/anonymous.jpg;
+    };
+ 
+    dconf.settings = {
+      "org/gnome/desktop/background" = {
+        color-shading-type = "solid";
+        picture-options = "zoom";
+        picture-uri = "file:///home/mickael/background";
+      }; 
+    };
+
     # Let Home Manager install and manage itself.
     programs.home-manager.enable = true;
 
@@ -71,12 +83,23 @@ in
                 privacy-badger
                 clearurls
                 floccus
+                startpage-private-search 
                 privacy-redirect
             ];
         };       
       };     
 
     };
+
+    programs.chromium = {
+      enable = true;
+      package = pkgs.google-chrome;
+      extensions = [
+           { id = "cjpalhdlnbpafiamejdnhcphjbkeiagm"; } # ublock origin
+           { id = "baahncfnjojaofhdmdfkpeadigoemkif"; } # Voicewave chatgpt
+           { id = "ameajnciachbdcneinbgnehihjolepkd"; } # Voicewave bard
+        ];
+    };       
 
   };
 }

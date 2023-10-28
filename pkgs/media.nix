@@ -6,5 +6,6 @@
     drawio
     libreoffice
     okular
+    weechat
   ];
 }

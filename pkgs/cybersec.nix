@@ -17,5 +17,6 @@
     hashcat
     postman
     bloomrpc
+    davtest
   ];
 }

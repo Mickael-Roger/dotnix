@@ -6,5 +6,7 @@
     jq
     file
     keepass
+    tldr
+    encfs
   ];
 }

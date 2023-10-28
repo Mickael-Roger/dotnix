@@ -3,6 +3,7 @@
 {
   environment.systemPackages = with pkgs; [
     firefox-wayland
+    google-chrome
   ];
   
   environment.sessionVariables = {
