@@ -43,6 +43,9 @@ in
         http = {
           postBuffer = "52428800";
         };
+        "credential \"https://github.com\"" = {
+          username = "Mickael-Roger";
+        };
       };
     };
 
