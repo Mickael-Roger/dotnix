@@ -29,7 +29,6 @@ in
     # Let Home Manager install and manage itself.
     programs.home-manager.enable = true;
 
-    programs.ssh.askPassword = "";
 
     programs.git = {
       enable = true;
@@ -39,6 +38,10 @@ in
       extraConfig = {
         core = {
           editor = "vim";
+          askPass = "";
+        };
+        http = {
+          postBuffer = "52428800";
         };
       };
     };
