@@ -2,12 +2,9 @@
 
 {
   environment.systemPackages = with pkgs; [
-    git
-    jq
-    file
-    keepass
-    tldr
-    encfs
-    bcc
+    virt-manager
+    libvirt
+    qemu_full
+    qemu-utils
   ];
 }

@@ -12,6 +12,7 @@
       ./pkgs/kube.nix
       ./pkgs/web.nix
       ./pkgs/tools.nix
+      ./pkgs/virtu.nix
       ./pkgs/media.nix
       ./pkgs/cloud.nix
       ./pkgs/dev.nix
@@ -26,6 +27,9 @@
     };
   };
 
+  # Virt Manager
+  virtualisation.libvirtd.enable = true;
+  programs.dconf.enable = true; 
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
@@ -68,6 +72,8 @@
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
+
+  services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
  
   services.gnome.games.enable = false;
   services.gnome.core-developer-tools.enable = false;
@@ -100,6 +106,9 @@
   # Enable CUPS to print documents.
   services.printing.enable = true;
 
+  # Bluetooth enable
+  hardware.bluetooth.enable = true; 
+
   # Enable sound with pipewire.
   sound.enable = true;
   hardware.pulseaudio.enable = false;
@@ -124,7 +133,7 @@
   users.users.mickael = {
     isNormalUser = true;
     description = "mickael";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [ "networkmanager" "wheel" "libvirtd" ];
     packages = with pkgs; [
       #firefox-wayland
     ];
@@ -143,6 +152,8 @@
   environment.systemPackages = with pkgs; [
     vim
     tailscale
+    gnome.adwaita-icon-theme
+    gnomeExtensions.appindicator
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

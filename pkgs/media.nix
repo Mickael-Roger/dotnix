@@ -7,5 +7,7 @@
     libreoffice
     okular
     weechat
+    discord
+    tuba
   ];
 }
