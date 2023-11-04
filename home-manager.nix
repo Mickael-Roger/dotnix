@@ -105,7 +105,7 @@ in
      parse_git_branch() {
        git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
      }
-     export PS1="[\[$(tput setaf 39)\]\u\[$(tput setaf 81)\] \[$(tput setaf 77)\]\w\[$(tput sgr0)\]\[\033[32m\]\[\033[33m\]\$(parse_git_branch)\[\033[00m\]]$ "
+     export PS1="\[$(tput setaf 77)\][\u \[$(tput setaf 39)\]\w\[$(tput sgr0)\]\[\033[32m\]\[\033[33m\]\$(parse_git_branch)\[\033[00m\]\[$(tput setaf 77)\]]\[$(tput sgr0)\]$ "
    ''; 
 
     programs.chromium = {
