@@ -472,8 +472,9 @@ require('mason-lspconfig').setup()
 --  If you want to override the default filetypes that your language server will attach to you can
 --  define the property 'filetypes' to the map in question.
 local servers = {
-  clangd = { filetypes = { 'c', 'h', 'cpp' } },
-  gopls = { filetypes = { 'go' } },
+  --clangd = { filetypes = { 'c', 'h', 'cpp' } },
+  --gopls = { filetypes = { 'go' } },
+  --ansiblels = {};
   -- rnix = { filetypes = { 'nix' } };
   -- pyright = {},
   -- rust_analyzer = {},
@@ -489,6 +490,9 @@ local servers = {
 }
 
 require('lspconfig').nixd.setup{}
+require('lspconfig').gopls.setup{}
+require('lspconfig').clangd.setup{}
+require('lspconfig').ansiblels.setup{}
 
 -- Setup neovim lua configuration
 require('neodev').setup()

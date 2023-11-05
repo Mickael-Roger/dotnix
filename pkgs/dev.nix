@@ -5,6 +5,7 @@
     go
     gopls
     rnix-lsp
+    ansible-language-server
     gdb
     gef
     gcc
