@@ -10,6 +10,8 @@
     encfs
     bcc
     copyq
+    ripgrep
+    unzip
   ];
 
 }

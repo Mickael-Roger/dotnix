@@ -135,6 +135,7 @@ in
       plugins = with pkgs.vimPlugins; [
         lazy-nvim 
         clangd_extensions-nvim
+        nvim-lspconfig 
       ];
 
       extraLuaConfig = builtins.readFile ./config-files/neovim/init.lua;

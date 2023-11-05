@@ -17,6 +17,7 @@
       ./pkgs/cloud.nix
       ./pkgs/dev.nix
       ./pkgs/maker.nix
+      ./pkgs/unstable.nix
       ./home-manager.nix
     ];
 

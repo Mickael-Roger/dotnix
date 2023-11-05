@@ -333,7 +333,7 @@ vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = 
 vim.defer_fn(function()
   require('nvim-treesitter.configs').setup {
     -- Add languages to be installed here that you want installed for treesitter
-    ensure_installed = { 'c', 'cpp', 'go', 'docker', 'lua', 'python', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash', 'json', 'nix', 'yaml', 'xml', 'toml', 'strace', 'sql', 'regex','promql' },
+    ensure_installed = { 'c', 'cpp', 'go', 'lua', 'python', 'tsx', 'javascript', 'typescript', 'vimdoc', 'vim', 'bash', 'json', 'nix', 'yaml', 'xml', 'toml', 'strace', 'sql', 'regex','promql' },
 
     -- Autoinstall languages that are not installed. Defaults to false (but you can change for yourself!)
     auto_install = true,
@@ -474,6 +474,7 @@ require('mason-lspconfig').setup()
 local servers = {
   clangd = { filetypes = { 'c', 'h', 'cpp' } },
   gopls = { filetypes = { 'go' } },
+  -- rnix = { filetypes = { 'nix' } };
   -- pyright = {},
   -- rust_analyzer = {},
   -- tsserver = {},
@@ -486,6 +487,8 @@ local servers = {
     },
   },
 }
+
+require('lspconfig').nixd.setup{}
 
 -- Setup neovim lua configuration
 require('neodev').setup()

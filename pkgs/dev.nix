@@ -4,6 +4,7 @@
   environment.systemPackages = with pkgs; [
     go
     gopls
+    rnix-lsp
     gdb
     gef
     gcc
