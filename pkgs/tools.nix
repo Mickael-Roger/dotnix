@@ -9,5 +9,7 @@
     tldr
     encfs
     bcc
+    copyq
   ];
+
 }

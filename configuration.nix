@@ -151,6 +151,7 @@
   # $ nix search wget
   environment.systemPackages = with pkgs; [
     vim
+    neovim
     tailscale
     gnome.adwaita-icon-theme
     gnomeExtensions.appindicator
@@ -169,6 +170,7 @@
 
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
+
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];

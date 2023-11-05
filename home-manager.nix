@@ -126,5 +126,22 @@ in
         ];
     };       
 
+    programs.neovim = {
+  
+      enable = true;
+ 
+#      coc.enable = true;
+
+      plugins = with pkgs.vimPlugins; [
+        lazy-nvim 
+        clangd_extensions-nvim
+      ];
+
+      extraLuaConfig = builtins.readFile ./config-files/neovim/init.lua;
+  
+    };
+
+    services.copyq.enable = true;
+
   };
 }
