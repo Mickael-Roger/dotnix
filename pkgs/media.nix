@@ -9,5 +9,6 @@
     weechat
     discord
     tuba
+    slack
   ];
 }

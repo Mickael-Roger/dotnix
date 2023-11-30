@@ -9,6 +9,7 @@
     tldr
     encfs
     bcc
+    bpftrace
     copyq
     ripgrep
     unzip
