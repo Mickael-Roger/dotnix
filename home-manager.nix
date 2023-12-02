@@ -1,11 +1,12 @@
-{ config, pkgs, ... }:
-let
-  home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/release-23.05.tar.gz";
-#  nur = builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz";
-in
+{ config, pkgs, home-manager, ... }:
+#let
+#  home-manager = builtins.fetchTarball "https://github.com/nix-community/home-manager/archive/release-23.11.tar.gz";
+##  nur = builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz";
+#in
 {
   imports = [
-    (import "${home-manager}/nixos")
+ #   (import "${home-manager}/nixos")
+    <home-manager/nixos>
   ];
 
   home-manager.users.mickael = {

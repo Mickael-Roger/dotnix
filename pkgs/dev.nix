@@ -13,6 +13,8 @@
     gnumake
     protobuf
     tinygo
+    wazero
+    nixd
     wasmer
     wabt
   ];

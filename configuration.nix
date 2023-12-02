@@ -17,7 +17,7 @@
       ./pkgs/cloud.nix
       ./pkgs/dev.nix
       ./pkgs/maker.nix
-      ./pkgs/unstable.nix
+#      ./pkgs/unstable.nix
       ./home-manager.nix
     ];
 
@@ -156,6 +156,7 @@
     tailscale
     gnome.adwaita-icon-theme
     gnomeExtensions.appindicator
+
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -172,6 +173,16 @@
   # Enable the OpenSSH daemon.
   # services.openssh.enable = true;
 
+#  system.extraDependencies = with pkgs; [
+#    python3Minimal
+#    # make-options-doc/default.nix
+#    (let
+#        self = (pkgs.python3Minimal.override {
+#          inherit self;
+#          includeSiteCustomize = true;
+#        });
+#      in self.withPackages (p: [ p.mistune ]))
+#  ];
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];

@@ -2,6 +2,7 @@
 
 {
   environment.systemPackages = with pkgs; [
+    dig
     git
     jq
     file
