@@ -12,5 +12,8 @@
     cmake
     gnumake
     protobuf
+    tinygo
+    wasmer
+    wabt
   ];
 }

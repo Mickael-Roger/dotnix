@@ -6,5 +6,6 @@ let
 in {
   environment.systemPackages = with pkgs; [
     unstable.nixd
+    unstable.wazero
   ];
 }
