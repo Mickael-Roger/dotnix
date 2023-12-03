@@ -15,7 +15,7 @@
     sqlmap
     mitmproxy
     hashcat
-    postman
+#    postman
     bloomrpc
     davtest
   ];

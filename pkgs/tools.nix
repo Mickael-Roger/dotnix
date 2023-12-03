@@ -14,6 +14,7 @@
     copyq
     ripgrep
     unzip
+    usbutils
   ];
 
 }
