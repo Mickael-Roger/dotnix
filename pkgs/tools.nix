@@ -15,6 +15,8 @@
     ripgrep
     unzip
     usbutils
+    socat
+    lsof
   ];
 
 }

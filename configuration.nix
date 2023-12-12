@@ -105,7 +105,7 @@
   console.keyMap = "fr";
 
   # Enable CUPS to print documents.
-  services.printing.enable = true;
+  services.printing = { enable = true; drivers = [ pkgs.epson-escpr ]; };
 
   # Bluetooth enable
   hardware.bluetooth.enable = true; 
@@ -156,7 +156,8 @@
     tailscale
     gnome.adwaita-icon-theme
     gnomeExtensions.appindicator
-
+    gnomeExtensions.printers
+    gnome.gnome-settings-daemon43
   ];
 
   # Some programs need SUID wrappers, can be configured further or are

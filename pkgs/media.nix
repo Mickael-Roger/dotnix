@@ -10,5 +10,6 @@
     discord
     tuba
     slack
+    imagemagick
   ];
 }
