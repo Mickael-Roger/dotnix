@@ -17,6 +17,7 @@
     usbutils
     socat
     lsof
+    nerdfonts
   ];
 
 }

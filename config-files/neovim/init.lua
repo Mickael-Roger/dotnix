@@ -74,6 +74,30 @@ require('lazy').setup({
   -- Detect tabstop and shiftwidth automatically
   'tpope/vim-sleuth',
 
+  -- Debugger
+  'mfussenegger/nvim-dap',
+
+
+  -- Go tooling
+  {
+    "olexsmir/gopher.nvim",
+    ft = "go",
+    config = function(_, opts)
+      require("gopher").setup(opts)
+    end,
+    build = function()
+      vim.cmd[[silent! GoInstallDeps]]
+    end,
+  },
+  {
+    'leoluz/nvim-dap-go',
+    ft = "go",
+    dependencies = 'mfussenegger/nvim-dap',
+    config = function(_, opts)
+      require("dap-go").setup(opts)
+    end
+  },
+
   -- NOTE: This is where your plugins related to LSP can be installed.
   --  The configuration is done below. Search for lspconfig to find it below.
   {
@@ -93,6 +117,18 @@ require('lazy').setup({
     },
   },
 
+  -- Nvim Tree
+  {
+    "nvim-tree/nvim-tree.lua",
+    version = "*",
+    lazy = false,
+    dependencies = {
+      "nvim-tree/nvim-web-devicons",
+    },
+    config = function()
+      require("nvim-tree").setup {}
+    end,
+  },
   {
     -- Autocompletion
     'hrsh7th/nvim-cmp',
@@ -506,7 +542,22 @@ local servers = {
 }
 
 require('lspconfig').nixd.setup{}
-require('lspconfig').gopls.setup{}
+
+local util = require "lspconfig/util"
+require('lspconfig').gopls.setup{
+  on_attach = on_attach,
+  capabilities = capabilites,
+  root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+  settings = {
+    gopls = {
+      completeUnimported = true,
+      usePlaceholders = true,
+      analyses = {
+	unusedparams = true,
+      },
+    },
+  },
+}
 require('lspconfig').clangd.setup{}
 require('lspconfig').ansiblels.setup{}
 

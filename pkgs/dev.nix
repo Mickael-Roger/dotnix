@@ -4,6 +4,12 @@
   environment.systemPackages = with pkgs; [
     go
     gopls
+    delve
+    gomodifytags
+    impl
+    gotests
+    iferr
+    borg-sans-mono
     rnix-lsp
     ansible-language-server
     gdb

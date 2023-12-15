@@ -137,6 +137,7 @@
         lazy-nvim 
         clangd_extensions-nvim
         nvim-lspconfig 
+	nvchad
       ];
 
       extraLuaConfig = builtins.readFile ./config-files/neovim/init.lua;
