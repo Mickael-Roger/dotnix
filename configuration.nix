@@ -32,6 +32,9 @@
   virtualisation.libvirtd.enable = true;
   programs.dconf.enable = true; 
 
+  # Docker
+  virtualisation.docker.enable = true;
+
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
@@ -134,7 +137,7 @@
   users.users.mickael = {
     isNormalUser = true;
     description = "mickael";
-    extraGroups = [ "networkmanager" "wheel" "libvirtd" ];
+    extraGroups = [ "networkmanager" "wheel" "libvirtd" "docker" ];
     packages = with pkgs; [
       #firefox-wayland
     ];
