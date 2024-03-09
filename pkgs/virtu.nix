@@ -6,5 +6,6 @@
     libvirt
     qemu_full
     qemu-utils
+    firecracker
   ];
 }

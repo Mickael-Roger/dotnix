@@ -18,6 +18,8 @@
     socat
     lsof
     nerdfonts
+    gedit
+    anki
   ];
 
 }

@@ -2,6 +2,7 @@
 
 {
   environment.systemPackages = with pkgs; [
+    nmap
     zap
     metasploit
     jwt-cli
@@ -18,5 +19,9 @@
 #    postman
     bloomrpc
     davtest
+    tcpdump
+    netcat-openbsd
+    graphqlmap
+    wireshark
   ];
 }
