@@ -117,6 +117,10 @@
   
     }; 
 
+    programs.tmux = {
+      extraConfig = "set -g default-terminal \"tmux-256color\"";
+    };
+
     programs.chromium = {
       enable = true;
       package = pkgs.google-chrome;

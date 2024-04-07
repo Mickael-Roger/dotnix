@@ -19,6 +19,7 @@
     lsof
     nerdfonts
     gedit
+    tmux
     anki
   ];
 
