@@ -122,6 +122,8 @@
 	set -g default-terminal "tmux-256color"
 	set -g mouse on
 	set -g @plugin 'tmux-plugins/tmux-yank'
+	set -g @yank_with_mouse on
+	set -g @yank_selection 'primary'
       '';
     };
 
