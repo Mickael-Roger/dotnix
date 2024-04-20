@@ -11,7 +11,6 @@
     gotests
     iferr
     borg-sans-mono
-    rnix-lsp
     ansible-language-server
     gdb
     gef
