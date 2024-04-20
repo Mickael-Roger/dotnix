@@ -19,11 +19,27 @@
         color-shading-type = "solid";
         picture-options = "zoom";
         picture-uri = "file:///home/mickael/background";
+        show-desktop-icons = true;
       }; 
+      "org/gnome/desktop/interface" = {
+        clock-show-seconds = true;
+        clock-show-weekday = true;
+      };
     };
 
     # Let Home Manager install and manage itself.
     programs.home-manager.enable = true;
+
+    xdg.desktopEntries = {
+      mykeepass = {
+        name = "Keepass";
+        genericName = "Keepass mickael";
+        exec = "keepass /home/mickael/Documents/password_database.kdbx";
+        icon = "${pkgs.keepass}/share/icons/hicolor/64x64/apps/keepass.png";
+        terminal = false;
+        categories = [ "Application" ];
+      };
+    };
 
 
     programs.git = {

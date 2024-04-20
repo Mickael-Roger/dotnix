@@ -219,7 +219,7 @@ vim.opt.cursorline = true
 vim.o.hlsearch = true
 
 -- Make line numbers default
--- vim.wo.number = true
+vim.wo.number = true
 vim.wo.relativenumber = true
 
 -- Enable mouse mode
