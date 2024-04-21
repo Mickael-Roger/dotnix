@@ -162,7 +162,14 @@
     gnomeExtensions.printers
     gnome.gnome-settings-daemon43
     gnomeExtensions.dashbar
+    gnome.mutter
+    gnomeExtensions.dash-to-panel
+    gnome.dconf-editor
+    gnomeExtensions.printers
+    gnomeExtensions.user-themes
   ];
+
+  services.gnome.gnome-settings-daemon.enable = true;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.

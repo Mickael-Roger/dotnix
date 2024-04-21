@@ -25,6 +25,32 @@
         clock-show-seconds = true;
         clock-show-weekday = true;
       };
+      "org/gnome/shell" = {
+        disable-user-extensions = false;
+	enabled-extensions = [
+          "apps-menu@gnome-shell-extensions.gcampax.github.com"
+          "printers@linux-man.org"
+          "drive-menu@gnome-shell-extensions.gcampax.github.com"
+          "gnomeExtensions.sound-output-device-chooser"
+          "workspace-indicator@gnome-shell-extensions.gcampax.github.com"
+          "user-theme@gnome-shell-extensions.gcampax.github.com"
+      	];
+        favorite-apps = [
+          "firefox.desktop"
+          "anki.desktop"
+          "mykeepass.desktop"
+          "discord.desktop"
+          "org.gnome.Console.desktop"
+          "virt-manager.desktop"
+          "org.gnome.Nautilus.desktop"
+        ];
+      };
+      "org/gnome/shell/extensions/printers" = {
+        connect-to = "Gnome Control Center";
+        show-icon = "Always";
+        show-error = true;
+        show-jobs = true;
+      };
     };
 
     # Let Home Manager install and manage itself.
@@ -124,7 +150,7 @@
     
       shellAliases = {
         k = "${pkgs.kubectl}/bin/kubectl";
-        vi = "${pkgs.neovim}/bin/nvim";
+        vi = "nvim";
       };
   
     }; 
