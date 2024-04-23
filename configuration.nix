@@ -110,6 +110,11 @@
   # Enable CUPS to print documents.
   services.printing = { enable = true; drivers = [ pkgs.epson-escpr ]; };
 
+  services.avahi = {
+    enable = true;
+    openFirewall = true;
+  };
+
   # Bluetooth enable
   hardware.bluetooth.enable = true; 
 
@@ -167,6 +172,7 @@
     gnome.dconf-editor
     gnomeExtensions.printers
     gnomeExtensions.user-themes
+    avahi
   ];
 
   services.gnome.gnome-settings-daemon.enable = true;

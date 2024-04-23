@@ -11,5 +11,6 @@
     tuba
     slack
     imagemagick
+    evince
   ];
 }

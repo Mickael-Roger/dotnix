@@ -27,6 +27,7 @@
       };
       "org/gnome/shell" = {
         disable-user-extensions = false;
+	disabled-extensions = [ ];
 	enabled-extensions = [
           "apps-menu@gnome-shell-extensions.gcampax.github.com"
           "printers@linux-man.org"
@@ -43,6 +44,7 @@
           "org.gnome.Console.desktop"
           "virt-manager.desktop"
           "org.gnome.Nautilus.desktop"
+          "weechat.desktop"
         ];
       };
       "org/gnome/shell/extensions/printers" = {
@@ -66,6 +68,13 @@
         categories = [ "Application" ];
       };
     };
+
+    xdg = {
+      enable = true;
+      configFile."weechat/irc.conf"= {
+        source = ./config-files/weechat/irc.conf;
+      };
+    }; 
 
 
     programs.git = {
@@ -122,10 +131,17 @@
 
     programs.firefox = {
       enable = true;
+      policies = {
+        DisableTelemetry = true;
+        DisableFirefoxStudies = true;
+      };
+
       profiles = {
         mickael = {
+          isDefault = true;
+         
           extensions = with pkgs.nur.repos.rycee.firefox-addons; [
-                ublock-origin
+                adblocker-ultimate
                 privacy-badger
                 clearurls
                 floccus
