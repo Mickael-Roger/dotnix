@@ -21,6 +21,8 @@
     gedit
     tmux
     anki
+    iotas
+    thunderbird
   ];
 
 }

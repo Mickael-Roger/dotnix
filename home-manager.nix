@@ -25,6 +25,12 @@
         clock-show-seconds = true;
         clock-show-weekday = true;
       };
+      "org/gnome/gitlab/cheywood/Iotas" = {
+        nextcloud-endpoint = "https://nextcloud.taila2494.ts.net";
+        nextcloud-username = "mickael";
+        backup-note-extension = "md";
+        index-category-style = "blue";
+      };
       "org/gnome/shell" = {
         disable-user-extensions = false;
 	disabled-extensions = [ ];
@@ -46,6 +52,8 @@
           "virt-manager.desktop"
           "weechat.desktop"
           "gedit.desktop"
+          "org.gnome.gitlab.cheywood.Iotas.desktop"
+          "thunderbird.desktop"
           "org.gnome.Nautilus.desktop"
         ];
       };
