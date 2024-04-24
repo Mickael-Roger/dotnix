@@ -172,6 +172,7 @@
     gnome.dconf-editor
     gnomeExtensions.printers
     gnomeExtensions.user-themes
+    gnomeExtensions.dash-to-dock
     avahi
   ];
 

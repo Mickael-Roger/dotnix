@@ -32,7 +32,8 @@
           "apps-menu@gnome-shell-extensions.gcampax.github.com"
           "printers@linux-man.org"
           "drive-menu@gnome-shell-extensions.gcampax.github.com"
-          "gnomeExtensions.sound-output-device-chooser"
+          "screenshot-window-sizer@gnome-shell-extensions.gcampax.github.com"
+          "dash-to-dock@micxgx.gmail.com"
           "workspace-indicator@gnome-shell-extensions.gcampax.github.com"
           "user-theme@gnome-shell-extensions.gcampax.github.com"
       	];
@@ -43,8 +44,9 @@
           "discord.desktop"
           "org.gnome.Console.desktop"
           "virt-manager.desktop"
-          "org.gnome.Nautilus.desktop"
           "weechat.desktop"
+          "gedit.desktop"
+          "org.gnome.Nautilus.desktop"
         ];
       };
       "org/gnome/shell/extensions/printers" = {
@@ -53,7 +55,10 @@
         show-error = true;
         show-jobs = true;
       };
-    };
+      "org/gnome/shell/extensions/dash-to-dock" = {
+        dock-position = "LEFT";
+      };
+     };
 
     # Let Home Manager install and manage itself.
     programs.home-manager.enable = true;
@@ -134,6 +139,17 @@
       policies = {
         DisableTelemetry = true;
         DisableFirefoxStudies = true;
+
+       ExtensionSettings = {
+          "dotgit@davtur19" = {
+            install_url = "https://addons.mozilla.org/firefox/downloads/latest/dotgit/latest.xpi";
+            installation_mode = "force_installed";
+          };
+          "abp" = {
+            install_url = "https://addons.mozilla.org/firefox/downloads/latest/adblock_plus/latest.xpi";
+            installation_mode = "force_installed";
+          };
+        };
       };
 
       profiles = {
