@@ -31,8 +31,12 @@
         backup-note-extension = "md";
         index-category-style = "blue";
       };
+      "org/gnome/desktop/wm/preferences" = {
+        button-layout = "menu:minimize,maximize,spacer,close";
+      };
       "org/gnome/shell" = {
         disable-user-extensions = false;
+        window-switcher = "both";
 	disabled-extensions = [ ];
 	enabled-extensions = [
           "apps-menu@gnome-shell-extensions.gcampax.github.com"
@@ -54,6 +58,7 @@
           "gedit.desktop"
           "org.gnome.gitlab.cheywood.Iotas.desktop"
           "thunderbird.desktop"
+          "dev.geopjr.Tuba.desktop"
           "org.gnome.Nautilus.desktop"
         ];
       };
@@ -65,6 +70,9 @@
       };
       "org/gnome/shell/extensions/dash-to-dock" = {
         dock-position = "LEFT";
+        activate-single-window = true;
+        show-windows-preview = true;
+        dock-fixed = true;
       };
      };
 
