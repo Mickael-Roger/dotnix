@@ -23,6 +23,7 @@
     anki
     iotas
     thunderbird
+    unrar
   ];
 
 }

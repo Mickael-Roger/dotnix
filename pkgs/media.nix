@@ -12,5 +12,6 @@
     slack
     imagemagick
     evince
+    exiftool
   ];
 }

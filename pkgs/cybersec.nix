@@ -23,5 +23,11 @@
     netcat-openbsd
     graphqlmap
     wireshark
+    volatility3
+    stegsolve
+    dirbuster
+    seclists
+    dirb
+    cewl
   ];
 }
