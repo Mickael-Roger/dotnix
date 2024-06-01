@@ -15,6 +15,9 @@
     gdb
     gef
     gcc
+    python3
+    python311Packages.pip
+    python310Packages.pip
     cmake
     gnumake
     protobuf

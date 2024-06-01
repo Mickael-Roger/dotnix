@@ -1,6 +1,10 @@
 { config, pkgs, ... }:
 
 {
+  # For obsidian
+  nixpkgs.config.permittedInsecurePackages = [
+    "electron-25.9.0"
+  ];
   environment.systemPackages = with pkgs; [
     dig
     git
@@ -20,10 +24,16 @@
     nerdfonts
     gedit
     tmux
-    anki
     iotas
     thunderbird
     unrar
+    zip
+    jdk21
+
+    # Productivity
+    anki
+    obsidian
+    syncthing
   ];
 
 }

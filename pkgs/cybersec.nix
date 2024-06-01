@@ -2,32 +2,61 @@
 
 {
   environment.systemPackages = with pkgs; [
+
+    # Network
     nmap
+    netsniff-ng
+    mitmproxy
+    tcpdump
+    netcat-openbsd
+    wireshark
+    aircrack-ng
+    bully
+
+    # Web
     zap
-    metasploit
     jwt-cli
+    sqlmap
+    graphqlmap
+    dirbuster
+    dirb
+    cewl
+    wfuzz
+    bloomrpc
+    davtest
+
+    # General
+    metasploit
+    exploitdb
+    burpsuite
+
+    # Password cracking
     jwt-hack
     john
+    hashcat
+
+    # Reverse & pwn
     thc-hydra
     hydra-cli
     ghidra
-    exploitdb
-    burpsuite
-    sqlmap
-    mitmproxy
-    hashcat
-#    postman
-    bloomrpc
-    davtest
-    tcpdump
-    netcat-openbsd
-    graphqlmap
-    wireshark
+    binwalk
+    python311Packages.pwntools
+    pwntools
+
+    # Forensic
     volatility3
+    sleuthkit
+
+    # Stegano
     stegsolve
-    dirbuster
+
+    # List
     seclists
-    dirb
-    cewl
+    wordlists
+
+    # OSINT
+    holehe
+
+#    postman
   ];
 }
