@@ -50,6 +50,7 @@
         favorite-apps = [
           "firefox.desktop"
           "anki.desktop"
+          "obsidian.desktop"
           "mykeepass.desktop"
           "discord.desktop"
           "org.gnome.Console.desktop"
@@ -88,6 +89,11 @@
         terminal = false;
         categories = [ "Application" ];
       };
+    };
+
+    services.nextcloud-client = { 
+      enable = true;
+      startInBackground = true;
     };
 
     xdg = {

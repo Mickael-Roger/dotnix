@@ -30,10 +30,14 @@
     zip
     jdk21
 
+    yubikey-manager
+    yubikey-manager-qt
+
     # Productivity
-    anki
+    anki-bin
     obsidian
-    syncthing
+    synology-drive-client
+    #nextcloud-client
   ];
 
 }

@@ -8,6 +8,7 @@
   imports =
     [ # Include the results of the hardware scan.
       ./hardware-configuration.nix
+      ./services.nix
       ./pkgs/cybersec.nix
       ./pkgs/kube.nix
       ./pkgs/web.nix
@@ -73,6 +74,9 @@
   programs.sway.enable = true;
   xdg.portal.wlr.enable = true;
 
+  # PCSCd for Yubikey PIV
+  services.pcscd.enable = true;
+
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
@@ -87,7 +91,7 @@
     gnome.gnome-music
     gnome.gnome-calendar
     gnome.gnome-maps
-    gnome.gedit
+#    gnome.gedit
     gnome.epiphany
     gnome.geary
     gnome.evince
