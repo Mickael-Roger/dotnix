@@ -43,6 +43,28 @@ in
       };
     };
 
+  systemd.timers."update-news" = {
+    wantedBy = [ "timers.target" ];
+      timerConfig = {
+        OnBootSec = "15m";
+        OnUnitActiveSec = "15m";
+        Unit = "update-news.service";
+      };
+  };
+  
+  systemd.services."update-news" = {
+    script = ''
+      ${pkgs.docker}/bin/docker exec -u 33 -i nextcloud /var/www/html/occ news:updater:before-update
+      ${pkgs.docker}/bin/docker exec -u 33 -i nextcloud /var/www/html/occ news:updater:update-user mickael
+      ${pkgs.docker}/bin/docker exec -u 33 -i nextcloud /var/www/html/occ news:updater:after-update
+    '';
+    serviceConfig = {
+      Type = "oneshot";
+      User = "mickael";
+    };
+  };
+
+
   systemd.services.nextcloud = {
     description = "Nextcloud";
     wantedBy = [ "multi-user.target" ];
