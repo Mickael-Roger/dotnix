@@ -13,5 +13,6 @@
     imagemagick
     evince
     exiftool
+    newsflash
   ];
 }
