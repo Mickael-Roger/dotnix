@@ -244,7 +244,7 @@ vim.wo.number = true
 vim.wo.relativenumber = true
 
 -- Enable mouse mode
-vim.o.mouse = 'n'
+vim.o.mouse = 'a'
 
 -- Sync clipboard between OS and Neovim.
 vim.o.clipboard = 'unnamedplus'

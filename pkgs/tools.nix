@@ -24,6 +24,7 @@
     nerdfonts
     gedit
     tmux
+    tig
     iotas
     thunderbird
     unrar
