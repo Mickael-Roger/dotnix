@@ -1,7 +1,13 @@
 { config, pkgs, ... }:
+let
 
-{
+    ctfmgntSrc = pkgs.fetchFromGitHub { owner = "Mickael-Roger"; repo = "ctf-mgnt"; rev = "main"; sha256 = "sha256-ozBFVVDt7gwbxM2RDEGTeb3igAcyjOjYPEf7wcbIvhI="; };
+    ctfmgnt =  pkgs.callPackage (ctfmgntSrc + "/derivation.nix") {};
+
+in {
   environment.systemPackages = with pkgs; [
+
+    ctfmgnt
 
     # Network
     nmap

@@ -29,6 +29,7 @@
     thunderbird
     unrar
     zip
+    p7zip
     jdk21
 
     yubikey-manager
