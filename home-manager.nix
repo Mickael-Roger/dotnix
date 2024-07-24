@@ -62,6 +62,7 @@
           "dev.geopjr.Tuba.desktop"
           "org.gnome.Nautilus.desktop"
           "io.gitlab.news_flash.NewsFlash.desktop"
+	  "org.freecadweb.FreeCAD.desktop"
         ];
       };
       "org/gnome/shell/extensions/printers" = {

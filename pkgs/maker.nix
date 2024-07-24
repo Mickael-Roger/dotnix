@@ -9,5 +9,8 @@
     sweethome3d.textures-editor
     sweethome3d.furniture-editor 
     esptool
+    kicad
+
+    stm32cubemx
   ];
 }

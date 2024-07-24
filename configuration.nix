@@ -155,6 +155,12 @@
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
+  # Use non NixOS binaries
+  programs.nix-ld.enable = true;
+
+  # Add here all librairies needed by your binaries to run with nix ld
+  programs.nix-ld.libraries = with pkgs; [];
+
 
   nix.extraOptions = ''
     experimental-features = nix-command flakes

@@ -1,7 +1,7 @@
 { config, pkgs, ... }:
 let
 
-    ctfmgntSrc = pkgs.fetchFromGitHub { owner = "Mickael-Roger"; repo = "ctf-mgnt"; rev = "main"; sha256 = "sha256-ozBFVVDt7gwbxM2RDEGTeb3igAcyjOjYPEf7wcbIvhI="; };
+    ctfmgntSrc = pkgs.fetchFromGitHub { owner = "Mickael-Roger"; repo = "ctf-mgnt"; rev = "0.3"; sha256 = "sha256-0apmN1Gt2EnsBotbBlPsP2wQxqK0p5Y5VD5waRxYaq8="; };
     ctfmgnt =  pkgs.callPackage (ctfmgntSrc + "/derivation.nix") {};
 
 in {
@@ -48,6 +48,10 @@ in {
     binwalk
     python311Packages.pwntools
     pwntools
+    gef
+
+    # Divers
+    gnuradio
 
     # Forensic
     volatility3

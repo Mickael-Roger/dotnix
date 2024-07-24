@@ -31,6 +31,7 @@
     zip
     p7zip
     jdk21
+    ffmpeg
 
     yubikey-manager
     yubikey-manager-qt
