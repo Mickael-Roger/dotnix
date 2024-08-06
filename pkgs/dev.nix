@@ -15,7 +15,9 @@
     gdb
     gef
     gcc
+    llvm
     ccls
+    bear
     python3
     python311Packages.pip
     python310Packages.pip

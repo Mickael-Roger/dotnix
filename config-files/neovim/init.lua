@@ -29,27 +29,6 @@ require('lazy').setup({
   -- Debugger
   'mfussenegger/nvim-dap',
 
-  -- Org Mode
-  {
-    'nvim-orgmode/orgmode',
-    event = 'VeryLazy',
-    ft = { 'org' },
-    config = function()
-      -- Setup orgmode
-      require('orgmode').setup({
-        org_agenda_files = '~/orgfiles/**/*',
-        org_default_notes_file = '~/orgfiles/refile.org',
-      })
-  
-      -- NOTE: If you are using nvim-treesitter with `ensure_installed = "all"` option
-      -- add `org` to ignore_install
-      -- require('nvim-treesitter.configs').setup({
-      --   ensure_installed = 'all',
-      --   ignore_install = { 'org' },
-      -- })
-    end,
-  },
-
   -- Go tooling
   {
     "olexsmir/gopher.nvim",
@@ -77,8 +56,8 @@ require('lazy').setup({
     'neovim/nvim-lspconfig',
     dependencies = {
       -- Automatically install LSPs to stdpath for neovim
-      'williamboman/mason.nvim',
-      'williamboman/mason-lspconfig.nvim',
+      --'williamboman/mason.nvim',
+      --'williamboman/mason-lspconfig.nvim',
 
       -- Useful status updates for LSP
       -- NOTE: `opts = {}` is the same as calling `require('fidget').setup({})`
@@ -478,27 +457,33 @@ require('which-key').register {
   ['<leader>w'] = { name = '[W]orkspace', _ = 'which_key_ignore' },
 }
 
-require('mason').setup()
-require('mason-lspconfig').setup()
+--require('mason').setup()
+--require('mason-lspconfig').setup()
+--
+---- Language servers
+--local servers = {
+--  lua_ls = {
+--    Lua = {
+--      workspace = { checkThirdParty = false },
+--      telemetry = { enable = false },
+--    },
+--  },
+--}
 
--- Language servers
-local servers = {
-  lua_ls = {
-    Lua = {
-      workspace = { checkThirdParty = false },
-      telemetry = { enable = false },
-    },
-  },
-}
-
+vim.lsp.set_log_level("debug")
 require('lspconfig').nixd.setup{}
+require('lspconfig').ccls.setup{
+  cmd = {'ccls', '-v=2', '--log-file=/tmp/ccls'},
+}
+require('lspconfig').pyright.setup{}
+require('lspconfig').ansiblels.setup{}
 
 local util = require "lspconfig/util"
 require('lspconfig').gopls.setup{
   on_attach = on_attach,
   capabilities = capabilites,
   filetypes = {"go", "gomod", "gowork", "gotmpl"},
-  root_dir = util.root_pattern("go.work", "go.mod", ".git"),
+  root_dir = util.root_pattern("go.work", "go.mod"),
   settings = {
     gopls = {
       completeUnimported = true,
@@ -509,9 +494,9 @@ require('lspconfig').gopls.setup{
     },
   },
 }
-require('lspconfig').ccls.setup{}
-require('lspconfig').pyright.setup{}
-require('lspconfig').ansiblels.setup{}
+-- require('lspconfig').ccls.setup{
+--   cmd = {'/run/current-system/sw/bin/ccls', '-v=2', '--log-file=/tmp/ccls'};
+-- }
 
 -- Setup neovim lua configuration
 require('neodev').setup()
@@ -521,22 +506,22 @@ local capabilities = vim.lsp.protocol.make_client_capabilities()
 capabilities = require('cmp_nvim_lsp').default_capabilities(capabilities)
 
 -- Ensure the servers above are installed
-local mason_lspconfig = require 'mason-lspconfig'
-
-mason_lspconfig.setup {
-  ensure_installed = vim.tbl_keys(servers),
-}
-
-mason_lspconfig.setup_handlers {
-  function(server_name)
-    require('lspconfig')[server_name].setup {
-      capabilities = capabilities,
-      on_attach = on_attach,
-      settings = servers[server_name],
-      filetypes = (servers[server_name] or {}).filetypes,
-    }
-  end,
-}
+-- local mason_lspconfig = require 'mason-lspconfig'
+-- 
+-- mason_lspconfig.setup {
+--   ensure_installed = vim.tbl_keys(servers),
+-- }
+-- 
+-- mason_lspconfig.setup_handlers {
+--   function(server_name)
+--     require('lspconfig')[server_name].setup {
+--       capabilities = capabilities,
+--       on_attach = on_attach,
+--       settings = servers[server_name],
+--       filetypes = (servers[server_name] or {}).filetypes,
+--     }
+--   end,
+-- }
 
 -- Configure nvim-cmp 
 -- `:help cmp`
