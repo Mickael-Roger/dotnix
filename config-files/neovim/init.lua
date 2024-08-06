@@ -470,13 +470,19 @@ require('which-key').register {
 --  },
 --}
 
-vim.lsp.set_log_level("debug")
-require('lspconfig').nixd.setup{}
-require('lspconfig').ccls.setup{
-  cmd = {'ccls', '-v=2', '--log-file=/tmp/ccls'},
+--vim.lsp.set_log_level("debug")
+require('lspconfig').nixd.setup{
+  on_attach = on_attach,
 }
-require('lspconfig').pyright.setup{}
-require('lspconfig').ansiblels.setup{}
+require('lspconfig').ccls.setup{
+  on_attach = on_attach,
+}
+require('lspconfig').pyright.setup{
+  on_attach = on_attach,
+}
+require('lspconfig').ansiblels.setup{
+  on_attach = on_attach,
+}
 
 local util = require "lspconfig/util"
 require('lspconfig').gopls.setup{
