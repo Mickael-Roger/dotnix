@@ -13,7 +13,7 @@
     home.file."background" = {
       source = ./wallpapers/anonymous.jpg;
     };
- 
+
     dconf.settings = {
       "org/gnome/desktop/background" = {
         color-shading-type = "solid";
@@ -63,6 +63,7 @@
           "org.gnome.Nautilus.desktop"
           "io.gitlab.news_flash.NewsFlash.desktop"
 	  "org.freecadweb.FreeCAD.desktop"
+          "freetube.desktop"
         ];
       };
       "org/gnome/shell/extensions/printers" = {

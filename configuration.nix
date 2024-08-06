@@ -146,7 +146,7 @@
   users.users.mickael = {
     isNormalUser = true;
     description = "mickael";
-    extraGroups = [ "networkmanager" "wheel" "libvirtd" "docker" ];
+    extraGroups = [ "networkmanager" "wheel" "libvirtd" "docker" "dialout" ];
     packages = with pkgs; [
       #firefox-wayland
     ];

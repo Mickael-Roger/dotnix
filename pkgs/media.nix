@@ -14,5 +14,6 @@
     evince
     exiftool
     newsflash
+    freetube
   ];
 }

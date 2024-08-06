@@ -15,9 +15,11 @@
     gdb
     gef
     gcc
+    ccls
     python3
     python311Packages.pip
     python310Packages.pip
+    pyright
     cmake
     gnumake
     protobuf

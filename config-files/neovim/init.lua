@@ -509,7 +509,8 @@ require('lspconfig').gopls.setup{
     },
   },
 }
-require('lspconfig').clangd.setup{}
+require('lspconfig').ccls.setup{}
+require('lspconfig').pyright.setup{}
 require('lspconfig').ansiblels.setup{}
 
 -- Setup neovim lua configuration
