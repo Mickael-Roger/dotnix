@@ -80,8 +80,8 @@
 
   # Configure keymap in X11
   services.xserver = {
-    layout = "fr";
-    xkbVariant = "oss_latin9";
+    xkb.layout = "fr";
+    xkb.variant = "oss_latin9";
   };
 
   # Configure console keymap
@@ -177,7 +177,7 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
-  services.openssh.forwardX11 = true;
+  services.openssh.settings.X11Forwarding = true;
 
 #  system.extraDependencies = with pkgs; [
 #    python3Minimal
