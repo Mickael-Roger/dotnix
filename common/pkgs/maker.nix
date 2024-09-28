@@ -1,8 +1,5 @@
-{ config, pkgs, ... }:
+{ config, pkgs, esp32-idf-src, ... }:
 let
-  esp32-idf-src = builtins.fetchGit {
-    url = "https://github.com/mirrexagon/nixpkgs-esp-dev.git";
-  };
 
   esp32-idf-full = pkgs.writeShellScriptBin "esp32-idf-full"
   ''

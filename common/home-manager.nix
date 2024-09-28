@@ -1,11 +1,7 @@
-{ config, pkgs, home-manager, ... }:
+{ config, pkgs, home-manager, nur, ... }:
 {
-  imports = [
-    <home-manager/nixos>
-  ];
-
   home-manager.users.mickael = {
-    home.stateVersion = "23.05";
+    home.stateVersion = "24.05";
 
     home.username = "mickael";
     home.homeDirectory = "/home/mickael"; 
@@ -186,7 +182,7 @@
         mickael = {
           isDefault = true;
          
-          extensions = with pkgs.nur.repos.rycee.firefox-addons; [
+          extensions = with nur.repos.rycee.firefox-addons; [
                 adblocker-ultimate
                 privacy-badger
                 clearurls

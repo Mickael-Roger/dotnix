@@ -1,6 +1,6 @@
-{ config, pkgs, ... }:
+{ config, pkgs, secretSrc, ... }:
 let
-   secrets = import ./secrets.nix;
+  secrets = import "${secretSrc}/secrets.nix";
 in
 {
 

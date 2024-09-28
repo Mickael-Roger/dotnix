@@ -5,29 +5,6 @@
 { config, pkgs, ... }:
 
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-      ./services.nix
-      ./pkgs/cybersec.nix
-      ./pkgs/kube.nix
-      ./pkgs/web.nix
-      ./pkgs/tools.nix
-      ./pkgs/virtu.nix
-      ./pkgs/media.nix
-      ./pkgs/cloud.nix
-      ./pkgs/dev.nix
-      ./pkgs/maker.nix
-#      ./pkgs/unstable.nix
-      ./home-manager.nix
-    ];
-
-  # Add NUR
-  nixpkgs.config.packageOverrides = pkgs: {
-    nur = import (builtins.fetchTarball "https://github.com/nix-community/NUR/archive/master.tar.gz") {
-      inherit pkgs;
-    };
-  };
 
   # Virt Manager
   virtualisation.libvirtd.enable = true;
@@ -40,7 +17,6 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-  networking.hostName = "nixos"; # Define your hostname.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary

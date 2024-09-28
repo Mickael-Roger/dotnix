@@ -1,8 +1,7 @@
-{ config, pkgs, ... }:
+{ config, pkgs, ctfmgntSrc, ... }:
 let
 
-    ctfmgntSrc = pkgs.fetchFromGitHub { owner = "Mickael-Roger"; repo = "ctf-mgnt"; rev = "0.3"; sha256 = "sha256-0apmN1Gt2EnsBotbBlPsP2wQxqK0p5Y5VD5waRxYaq8="; };
-    ctfmgnt =  pkgs.callPackage (ctfmgntSrc + "/derivation.nix") {};
+    ctfmgnt =  pkgs.callPackage "${ctfmgntSrc}/derivation.nix" {};
 
 in {
   environment.systemPackages = with pkgs; [
