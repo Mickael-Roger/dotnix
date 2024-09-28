@@ -174,6 +174,11 @@
             install_url = "https://addons.mozilla.org/firefox/downloads/latest/adblock_plus/latest.xpi";
             installation_mode = "force_installed";
           };
+          # Obsidian Web clipper
+          "reload-motive-haunt-turf5-excu" = {
+            install_url = "https://addons.mozilla.org/firefox/downloads/file/4097921/reload_motive_haunt_turf5_excu-1.2.0.xpi";
+            installation_mode = "force_installed";
+	  };
         };
       };
 

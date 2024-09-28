@@ -201,6 +201,7 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+  services.openssh.forwardX11 = true;
 
 #  system.extraDependencies = with pkgs; [
 #    python3Minimal

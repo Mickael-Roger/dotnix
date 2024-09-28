@@ -15,8 +15,23 @@ in
     serviceConfig = {
        ExecStart = "${pkgs.anki-bin}/bin/anki --syncserver";
        User = "mickael";
-     };
+    };
+    wantedBy = ["multi-user.target"];
+    after = [ "network.target" ];
   };
+
+
+##  services.anki-sync-server = {
+##    enable = true;
+##    port = 8082;
+##    users = [
+##      {
+##       username = "mickael"; 
+##       password = "${secrets.anki.mickael.password}";
+##      }
+##    ];
+##    openFirewall = true;
+##  };
 
   users.groups.nextcloud = {
     gid = 33;
@@ -90,4 +105,24 @@ in
     };
   };
 
+  services.home-assistant = {
+    enable = true;
+    extraComponents = [
+      "esphome"
+    ];
+
+    extraPackages = python3Packages: with python3Packages; [
+      androidtvremote2
+      pychromecast
+      freebox-api
+    ];
+
+    config = {
+      default_config = {};
+    };
+  };
+  #networking.firewall.allowedTCPPorts = [ 8123 ];
+
+  services.esphome.enable = true;
+  
 }

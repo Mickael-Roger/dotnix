@@ -36,6 +36,8 @@
     yubikey-manager
     yubikey-manager-qt
 
+    sqlite
+
     # Productivity
     anki-bin
     obsidian
