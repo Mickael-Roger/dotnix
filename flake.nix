@@ -3,6 +3,8 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
+
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";  # Ensure Home Manager uses the same nixpkgs
@@ -28,12 +30,13 @@
 
   };
 
-  outputs = { self, nixpkgs, home-manager, nur, ctfmgntSrc, esp32-idf-src, secretSrc, ... }: 
+  outputs = { self, nixpkgs, home-manager, nur, ctfmgntSrc, esp32-idf-src, secretSrc, nixpkgs-unstable, ... }: 
   let
 
-  secrets = if builtins.pathExists ./secrets.nix
-              then import ./secrets.nix
-              else {};  
+    secrets = if builtins.pathExists ./secrets.nix
+                then import ./secrets.nix
+                else {};   
+    unstable = import nixpkgs-unstable { system = "x86_64-linux"; config.allowUnfree = true; };
 
   in {
 
@@ -48,7 +51,7 @@
           home-manager.nixosModules.home-manager
         ];
 
-        specialArgs = { inherit ctfmgntSrc esp32-idf-src secretSrc; };
+        specialArgs = { inherit ctfmgntSrc esp32-idf-src secretSrc unstable; };
 
       };
 
@@ -61,7 +64,7 @@
           home-manager.nixosModules.home-manager
         ];
 
-        specialArgs = { inherit ctfmgntSrc esp32-idf-src secretSrc; };
+        specialArgs = { inherit ctfmgntSrc esp32-idf-src secretSrc unstable; };
 
       };
 

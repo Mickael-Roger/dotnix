@@ -1,4 +1,4 @@
-{ config, pkgs, esp32-idf-src, ... }:
+{ config, pkgs, esp32-idf-src, unstable, ... }:
 let
 
   esp32-idf-full = pkgs.writeShellScriptBin "esp32-idf-full"
@@ -50,13 +50,15 @@ let
 in {
   environment.systemPackages = [
     pkgs.cura
-    pkgs.freecad
+    unstable.freecad
     pkgs.arduino
     pkgs.sweethome3d.application
     pkgs.sweethome3d.textures-editor
     pkgs.sweethome3d.furniture-editor 
     pkgs.esptool
     pkgs.kicad
+
+    pkgs.thonny
 
     pkgs.stm32cubemx
     pkgs.openocd

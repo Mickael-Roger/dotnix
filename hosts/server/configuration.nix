@@ -10,6 +10,7 @@
       ../../common/base.nix
       ../../common/services.nix
       ../../common/pkgs/cybersec.nix
+      ../../common/pkgs/nix.nix
       ../../common/pkgs/kube.nix
       ../../common/pkgs/web.nix
       ../../common/pkgs/tools.nix

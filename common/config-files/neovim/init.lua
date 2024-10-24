@@ -310,6 +310,11 @@ vim.keymap.set('n', '<leader>sg', require('telescope.builtin').live_grep, { desc
 vim.keymap.set('n', '<leader>sd', require('telescope.builtin').diagnostics, { desc = '[S]earch [D]iagnostics' })
 vim.keymap.set('n', '<leader>sr', require('telescope.builtin').resume, { desc = '[S]earch [R]esume' })
 
+-- Nvim Tree
+api = require "nvim-tree.api"
+vim.keymap.set('n', '<leader>ot', api.tree.open, { desc = '[O]open Nvim [T]ree' })
+vim.keymap.set('n', '<leader>ct', api.tree.close, { desc = '[C]ose Nvim [T]ree' })
+
 
 -- Go debug DAP Key bindings
 vim.keymap.set('n', '<F5>', function() require('dap').continue() end)

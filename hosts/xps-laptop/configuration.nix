@@ -8,6 +8,7 @@
   imports =
     [ 
       ../../common/base.nix
+      ../../common/pkgs/nix.nix
       ../../common/pkgs/cybersec.nix
       ../../common/pkgs/kube.nix
       ../../common/pkgs/web.nix
