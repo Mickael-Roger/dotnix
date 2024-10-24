@@ -1,6 +1,6 @@
-{ config, pkgs, home-manager, nur, ... }:
+{ pkgs, nur, ... }:
 {
-  home-manager.users.mickael = {
+  mickael = {
     home.stateVersion = "24.05";
 
     home.username = "mickael";

@@ -9,8 +9,8 @@
     home-manager.url = "github:nix-community/home-manager";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";  # Ensure Home Manager uses the same nixpkgs
 
-    nur.url = "github:nix-community/NUR";
-    nur.inputs.nixpkgs.follows = "nixpkgs";  # Ensure NUR uses the same nixpkgs
+    nur-repo.url = "github:nix-community/NUR";
+    #nur.inputs.nixpkgs.follows = "nixpkgs";  # Ensure NUR uses the same nixpkgs
 
     ctfmgntSrc = { 
       url = "github:Mickael-Roger/ctf-mgnt/0.3";
@@ -30,13 +30,22 @@
 
   };
 
-  outputs = { self, nixpkgs, home-manager, nur, ctfmgntSrc, esp32-idf-src, secretSrc, nixpkgs-unstable, ... }: 
+  outputs = { self, nixpkgs, home-manager, nur-repo, ctfmgntSrc, esp32-idf-src, secretSrc, nixpkgs-unstable, ... }: 
   let
 
     secrets = if builtins.pathExists ./secrets.nix
                 then import ./secrets.nix
                 else {};   
+
     unstable = import nixpkgs-unstable { system = "x86_64-linux"; config.allowUnfree = true; };
+
+    nur = import nur-repo { inherit pkgs; }; 
+
+    pkgs = import nixpkgs {
+      system = "x86_64-linux";
+      config.allowUnfree = true;
+    };
+
 
   in {
 
@@ -48,10 +57,17 @@
         modules = [
           ./hosts/server/configuration.nix
           ./hosts/server/hardware-configuration.nix
-          home-manager.nixosModules.home-manager
+          home-manager.nixosModules.home-manager {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+
+            home-manager.users = import ./common/home-manager.nix { inherit pkgs nur;};
+
+            home-manager.extraSpecialArgs = { inherit nur pkgs; };  # Pass NUR to the Home Manager configuration
+          } 
         ];
 
-        specialArgs = { inherit ctfmgntSrc esp32-idf-src secretSrc unstable; };
+        specialArgs = { inherit ctfmgntSrc esp32-idf-src secretSrc unstable nixpkgs; };
 
       };
 
@@ -61,24 +77,20 @@
         modules = [
           ./hosts/xps-laptop/configuration.nix
           ./hosts/xps-laptop/hardware-configuration.nix
-          home-manager.nixosModules.home-manager
+          home-manager.nixosModules.home-manager {
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+
+            home-manager.users = import ./common/home-manager.nix { inherit pkgs nur;};
+
+            home-manager.extraSpecialArgs = { inherit nur pkgs; };  # Pass NUR to the Home Manager configuration
+          } 
         ];
 
         specialArgs = { inherit ctfmgntSrc esp32-idf-src secretSrc unstable; };
 
       };
 
-    };
-
-    homeConfigurations = {
-      # Example user on the server system
-      mickael = home-manager.lib.homeManagerConfiguration {
-        pkgs = nixpkgs.legacyPackages.x86_64-linux;
-        modules = [
-          ./common/home-manager.nix
-        ];
-        specialArgs = { inherit nur; };  # Pass NUR to the Home Manager configuration
-      };
     };
 
   };
