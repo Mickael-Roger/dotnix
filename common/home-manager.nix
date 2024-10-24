@@ -246,7 +246,7 @@
 	nvchad
       ];
 
-      extraLuaConfig = builtins.readFile ./config-files/neovim/init.lua;
+      extraLuaConfig = builtins.readFile  ./config-files/nvim/init.lua;
   
     };
 
