@@ -26,6 +26,7 @@
     cmake
     gnumake
     protobuf
+    protobufc
     tinygo
     wazero
     nixd
