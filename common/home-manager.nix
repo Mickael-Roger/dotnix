@@ -17,6 +17,9 @@
         picture-uri = "file:///home/mickael/background";
         show-desktop-icons = true;
       }; 
+      "org/gnome/mutter" = {
+        check-alive-timeout = 60000;
+      };
       "org/gnome/desktop/interface" = {
         clock-show-seconds = true;
         clock-show-weekday = true;
@@ -189,6 +192,7 @@
                 floccus
                 startpage-private-search 
                 privacy-redirect
+                passbolt
             ];
         };       
       };     

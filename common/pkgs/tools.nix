@@ -38,6 +38,8 @@
 
     sqlite
 
+    wl-clipboard
+
     # Productivity
     anki-bin
     obsidian

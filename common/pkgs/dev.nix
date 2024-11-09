@@ -15,6 +15,7 @@
     gdb
     gef
     gcc
+    lazygit
     llvm
     ccls
     bear
