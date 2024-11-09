@@ -20,6 +20,10 @@ vim.g.maplocalleader = ' '
 
 require('lazy').setup({
 
+  -- Codestral in nvim
+  {'tzachar/cmp-ai', dependencies = 'nvim-lua/plenary.nvim'},
+  {'hrsh7th/nvim-cmp', dependencies = {'tzachar/cmp-ai'}},
+
   -- Lazy Git plugins
   {
     "kdheepak/lazygit.nvim",
@@ -186,6 +190,34 @@ require('lazy').setup({
 
   -- { import = 'custom.plugins' },
 }, {})
+
+-- Codestral
+require'cmp'.setup {
+    sources = {
+        { name = 'cmp_ai' },
+    },
+}
+
+local cmp_ai = require('cmp_ai.config')
+
+cmp_ai:setup({
+  max_lines = 1000,
+  provider = 'Codestral',
+  provider_options = {
+    model = 'codestral-latest',
+    prompt = function(lines_before, lines_after)
+      return lines_before
+    end,
+    suffix = function(lines_after)
+      return lines_after
+    end
+  },
+  notify = true,
+  notify_callback = function(msg)
+    vim.notify(msg)
+  end,
+  run_on_every_keystroke = true,
+})
 
 -- Configuration
 

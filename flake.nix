@@ -61,9 +61,9 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
 
-            home-manager.users = import ./common/home-manager.nix { inherit pkgs nur;};
+            home-manager.users = import ./common/home-manager.nix { inherit pkgs nur secretSrc;};
 
-            home-manager.extraSpecialArgs = { inherit nur pkgs; };  # Pass NUR to the Home Manager configuration
+            home-manager.extraSpecialArgs = { inherit nur pkgs secretSrc; };  # Pass NUR to the Home Manager configuration
           } 
         ];
 
@@ -81,9 +81,9 @@
             home-manager.useGlobalPkgs = true;
             home-manager.useUserPackages = true;
 
-            home-manager.users = import ./common/home-manager.nix { inherit pkgs nur;};
+            home-manager.users = import ./common/home-manager.nix { inherit pkgs nur secretSrc;};
 
-            home-manager.extraSpecialArgs = { inherit nur pkgs; };  # Pass NUR to the Home Manager configuration
+            home-manager.extraSpecialArgs = { inherit nur pkgs secretSrc; };  # Pass NUR to the Home Manager configuration
           } 
         ];
 

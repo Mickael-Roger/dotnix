@@ -1,4 +1,7 @@
-{ pkgs, nur, ... }:
+{ pkgs, nur, secretSrc, ... }:
+let
+  secrets = import "${secretSrc}/secrets.nix";
+in
 {
   mickael = {
     home.stateVersion = "24.05";
@@ -237,6 +240,11 @@
         ];
     };       
 
+
+    home.sessionVariables = {
+      CODESTRAL_API_KEY = "${secrets.codestral_api}";
+      NIXPKGS_ALLOW_UNFREE = 1;
+    };
     programs.neovim = {
   
       enable = true;
