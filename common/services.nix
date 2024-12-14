@@ -112,6 +112,17 @@ in
           ssl = true;
         }];
       };
+      "tom" = {
+        locations."/".proxyPass = "http://127.0.0.1:8082/";
+        sslCertificate = "/etc/certs/server.taila2494.ts.net.crt";
+        sslCertificateKey = "/etc/certs/server.taila2494.ts.net.key";
+        onlySSL = true;
+        listen = [{
+          addr = "0.0.0.0";
+          port = 8444;
+          ssl = true;
+        }];
+      };
    };
 
 #  services.nextcloud = {
