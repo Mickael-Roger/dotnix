@@ -32,7 +32,6 @@
     p7zip
     jdk21
     ffmpeg
-    piper-tts
 
     yubikey-manager
     yubikey-manager-qt

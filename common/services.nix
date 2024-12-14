@@ -193,6 +193,34 @@ in
     };
   };
 
+  systemd.services.tom = {
+    description = "Tom";
+    wantedBy = [ "multi-user.target" ];
+    after = [ "docker.service" "docker.socket" ];
+    requires = [ "docker.service" "docker.socket" ];
+    script = ''
+      exec ${pkgs.docker}/bin/docker run \
+          --name=tom \
+          --network=host \
+          -v /data/tom/data/:/app/data/ \
+          -v /data/tom/config.yml:/app/config.yml:ro \
+          tom:current
+    '';
+    preStop = "${pkgs.docker}/bin/docker stop tom";
+    reload = "${pkgs.docker}/bin/docker restart tom";
+    serviceConfig = {
+      ExecStartPre = [
+        "-${pkgs.docker}/bin/docker rm -f tom"
+        "-${pkgs.docker}/bin/docker image prune -f"
+      ];
+      ExecStopPost = "-${pkgs.docker}/bin/docker rm -f tom";
+      TimeoutStartSec = 0;
+      TimeoutStopSec = 120;
+      Restart = "always";
+    };
+  };
+
+
 
   systemd.services.nextcloud = {
     description = "Nextcloud";
