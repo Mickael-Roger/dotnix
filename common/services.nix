@@ -55,6 +55,7 @@ in
       SYNC_USER1 = "mickael:${secrets.anki.mickael.password}";
       SYNC_USER2 = "ambre:${secrets.anki.ambre.password}";
       SYNC_USER3 = "charlotte:${secrets.anki.charlotte.password}";
+      SYNC_USER4 = "test:${secrets.anki.test.password}";
       SYNC_BASE = "/home/mickael/SynologyDrive/Anki";
     };
     serviceConfig = {
@@ -200,9 +201,12 @@ in
     requires = [ "docker.service" "docker.socket" ];
     script = ''
       exec ${pkgs.docker}/bin/docker run \
+          -e "TZ=Europe/Paris" \
           --name=tom \
           --network=host \
+          -v /etc/localtime:/etc/localtime:ro \
           -v /data/tom/data/:/app/data/ \
+          -v /data/tom/sessions/:/sessions/ \
           -v /data/tom/config.yml:/app/config.yml:ro \
           tom:current
     '';
