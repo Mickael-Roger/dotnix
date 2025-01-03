@@ -56,7 +56,7 @@ in
       SYNC_USER2 = "ambre:${secrets.anki.ambre.password}";
       SYNC_USER3 = "charlotte:${secrets.anki.charlotte.password}";
       SYNC_USER4 = "test:${secrets.anki.test.password}";
-      SYNC_BASE = "/home/mickael/SynologyDrive/Anki";
+      SYNC_BASE = "/data/Anki";
     };
     serviceConfig = {
        ExecStart = "${pkgs.anki-bin}/bin/anki --syncserver";
@@ -173,26 +173,26 @@ in
   };
 
 
-  systemd.timers."update-news" = {
-    wantedBy = [ "timers.target" ];
-      timerConfig = {
-        OnBootSec = "15m";
-        OnUnitActiveSec = "15m";
-        Unit = "update-news.service";
-      };
-  };
-  
-  systemd.services."update-news" = {
-    script = ''
-      ${pkgs.docker}/bin/docker exec -u 33 -i nextcloud /var/www/html/occ news:updater:before-update
-      ${pkgs.docker}/bin/docker exec -u 33 -i nextcloud /var/www/html/occ news:updater:update-user mickael
-      ${pkgs.docker}/bin/docker exec -u 33 -i nextcloud /var/www/html/occ news:updater:after-update
-    '';
-    serviceConfig = {
-      Type = "oneshot";
-      User = "mickael";
-    };
-  };
+  #systemd.timers."update-news" = {
+  #  wantedBy = [ "timers.target" ];
+  #    timerConfig = {
+  #      OnBootSec = "15m";
+  #      OnUnitActiveSec = "15m";
+  #      Unit = "update-news.service";
+  #    };
+  #};
+  #
+  #systemd.services."update-news" = {
+  #  script = ''
+  #    ${pkgs.docker}/bin/docker exec -u 33 -i nextcloud /var/www/html/occ news:updater:before-update
+  #    ${pkgs.docker}/bin/docker exec -u 33 -i nextcloud /var/www/html/occ news:updater:update-user mickael
+  #    ${pkgs.docker}/bin/docker exec -u 33 -i nextcloud /var/www/html/occ news:updater:after-update
+  #  '';
+  #  serviceConfig = {
+  #    Type = "oneshot";
+  #    User = "mickael";
+  #  };
+  #};
 
   systemd.services.tom = {
     description = "Tom";
@@ -225,6 +225,46 @@ in
   };
 
 
+  systemd.services.syno-backup = {
+    description = "Backup /data to synology";
+    path = [ pkgs.openssh ];
+    serviceConfig = {
+      Type = "oneshot";
+      ExecStart = "${pkgs.sshpass}/bin/sshpass -p '${secrets.rsync}' ${pkgs.rsync}/bin/rsync -a /data/ backup@192.168.1.199:";
+    };
+    wantedBy = [ "timers.target" ];
+  };
+
+  systemd.timers.syno-backup = {
+    description = "Backup /data to Synology every 1h";
+    timerConfig = {
+      OnCalendar = "hourly";
+      Persistent = true;
+    };
+    wantedBy = [ "timers.target" ];
+  };
+
+  systemd.services.nextcloud-update = {
+    description = "Run cron nextcloud update";
+    serviceConfig = {
+      Type = "oneshot";
+      ExecCondition = "${pkgs.docker}/bin/docker exec -t -u www-data nextcloud php -f /var/www/html/occ status -e";
+      ExecStart = "${pkgs.docker}/bin/docker exec -t -u www-data nextcloud php -f /var/www/html/cron.php";
+    };
+    wantedBy = [ "timers.target" ];
+  };
+
+  systemd.timers.nextcloud-update = {
+    description = "Run nextcloud cron update every 10 minutes";
+    timerConfig = {
+      OnCalendar = "*:0/10";
+      Persistent = true;
+    };
+    wantedBy = [ "timers.target" ];
+    requires = [ "nextcloud.service" ];
+    after = [ "nextcloud.service" ];
+  };
+
 
   systemd.services.nextcloud = {
     description = "Nextcloud";
@@ -235,9 +275,9 @@ in
       exec ${pkgs.docker}/bin/docker run \
           --name=nextcloud \
           --network=host \
-          -v /home/mickael/SynologyDrive/Nextcloud/:/var/www/ \
-          -v /home/mickael/SynologyDrive/Nextcloud/data/:/var/www/data/ \
-          -v /home/mickael/SynologyDrive/Nextcloud/html/:/var/www/html/ \
+          -v /data/Nextcloud/:/var/www/ \
+          -v /data/Nextcloud/data/:/var/www/data/ \
+          -v /data/Nextcloud/html/:/var/www/html/ \
           nextcloud:stable-apache
     '';
     preStop = "${pkgs.docker}/bin/docker stop nextcloud";

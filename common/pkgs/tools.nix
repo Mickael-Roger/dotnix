@@ -43,7 +43,7 @@
     # Productivity
     anki-bin
     obsidian
-    synology-drive-client
+    #synology-drive-client
     #nextcloud-client
   ];
 
