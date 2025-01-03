@@ -7,37 +7,39 @@ let
     text = ''
       version: "3.9"
       services:
-        db:
-          image: mariadb:10.11
-          restart: unless-stopped
-          environment:
-            MYSQL_RANDOM_ROOT_PASSWORD: "true"
-            MYSQL_DATABASE: "passbolt"
-            MYSQL_USER: "passbolt"
-            MYSQL_PASSWORD: "${secrets.passbolt.password}"
-          volumes:
-            - /data/passbolt/mysql:/var/lib/mysql
+        #db:
+        #  image: mariadb:10.11
+        #  restart: unless-stopped
+        #  environment:
+        #    MYSQL_RANDOM_ROOT_PASSWORD: "true"
+        #    MYSQL_DATABASE: "passbolt"
+        #    MYSQL_USER: "passbolt"
+        #    MYSQL_PASSWORD: "${secrets.passbolt.password}"
+        #  volumes:
+        #    - /data/passbolt/mysql:/var/lib/mysql
       
         passbolt:
           image: passbolt/passbolt:latest-ce
           restart: unless-stopped
-          depends_on:
-            - db
+          #depends_on:
+          #  - db
           environment:
             APP_FULL_BASE_URL: https://server.taila2494.ts.net:8443
-            DATASOURCES_DEFAULT_HOST: "db"
+            DATASOURCES_DEFAULT_HOST: "host.docker.internal"
             DATASOURCES_DEFAULT_USERNAME: "passbolt"
             DATASOURCES_DEFAULT_PASSWORD: "${secrets.passbolt.password}"
             DATASOURCES_DEFAULT_DATABASE: "passbolt"
           volumes:
             - /data/passbolt/gpg_volume:/etc/passbolt/gpg
             - /data/passbolt/jwt_volume:/etc/passbolt/jwt
+          extra_hosts:
+            - "host.docker.internal:host-gateway"
           command:
             [
               "/usr/bin/wait-for.sh",
               "-t",
               "0",
-              "db:3306",
+              "host.docker.internal:3306",
               "--",
               "/docker-entrypoint.sh",
             ]
@@ -145,6 +147,12 @@ in
   services.mysql = {
     enable = true;
     package = pkgs.mariadb;
+    dataDir = "/data/mysql/";
+    settings = {
+      mysqld = {
+        bind-address = "127.0.0.1,172.17.0.1";
+      };
+    };
     initialDatabases = [
       { name = "nextcloud"; }
       { name = "passbolt"; }
@@ -167,7 +175,7 @@ in
 
   services.mysqlBackup = {
     enable = true;
-    location = "/backup/mysql";
+    location = "/data/backup/mysql";
     calendar = "01:00:00";
     databases = [ "mysql" "passbolt" "nextcloud" ];
   };
