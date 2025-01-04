@@ -32,5 +32,6 @@
     nixd
     wasmer
     wabt
+    cloc
   ];
 }
