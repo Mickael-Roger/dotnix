@@ -33,5 +33,6 @@
     wasmer
     wabt
     cloc
+    android-studio
   ];
 }
