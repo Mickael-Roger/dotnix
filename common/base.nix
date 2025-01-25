@@ -178,6 +178,8 @@
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
   services.openssh.settings.X11Forwarding = true;
+  services.openssh.settings.X11DisplayOffset = 10;
+  services.openssh.settings.X11UseLocalhost = true;
 
 #  system.extraDependencies = with pkgs; [
 #    python3Minimal

@@ -1,6 +1,15 @@
 { config, pkgs, esp32-idf-src, unstable, ... }:
 let
 
+  creality-print = pkgs.appimageTools.wrapType2 {
+    pname = "creality-print"; 
+    version = "v5.1.17";
+    src = pkgs.fetchurl {
+      url = "https://github.com/CrealityOfficial/CrealityPrint/releases/download/v5.1.7/Creality_Print-v5.1.7.10514-x86_64-Release.AppImage";
+      hash = "sha256-IrVBlNbYs/Lmb9y8Yb/Xfpz+Rsx56nmK+4GkuMHh9zc=";
+    };
+  };
+
   esp32-idf-full = pkgs.writeShellScriptBin "esp32-idf-full"
   ''
     ${pkgs.nix}/bin/nix-shell ${esp32-idf-src}/shells/esp-idf-full.nix
@@ -49,6 +58,7 @@ let
   
 in {
   environment.systemPackages = [
+    creality-print
     pkgs.cura
     unstable.freecad
     pkgs.arduino
