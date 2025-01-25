@@ -27,6 +27,7 @@
     gnumake
     protobuf
     protobufc
+    python3Packages.protobuf
     tinygo
     wazero
     nixd
