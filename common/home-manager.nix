@@ -55,6 +55,7 @@ in
           "obsidian.desktop"
           "mykeepass.desktop"
           "discord.desktop"
+          "terminator.desktop"
           "org.gnome.Console.desktop"
           "virt-manager.desktop"
           "weechat.desktop"
@@ -233,6 +234,18 @@ in
         bind-key -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "wl-copy"
       '';
       historyLimit = 100000;
+    };
+
+    programs.terminator = {
+      enable = true;
+      config = {
+        global_config.borderless = true;
+        global_config.enabled_plugins = "logger";
+        profiles.default.scrollback_lines = "100000";
+
+      };
+
+      
     };
 
     programs.chromium = {

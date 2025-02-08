@@ -148,6 +148,7 @@
     vim
     neovim
     tailscale
+    terminator
     gnome.adwaita-icon-theme
     gnomeExtensions.appindicator
     gnomeExtensions.printers
