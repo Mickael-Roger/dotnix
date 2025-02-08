@@ -203,6 +203,7 @@ in
     };
 
 
+
     programs.bash = {
       enable= true;
       
@@ -221,13 +222,17 @@ in
     }; 
 
     programs.tmux = {
+      enable = true;
       extraConfig = ''
 	set -g default-terminal "tmux-256color"
 	set -g mouse on
 	set -g @plugin 'tmux-plugins/tmux-yank'
 	set -g @yank_with_mouse on
 	set -g @yank_selection 'primary'
+        setw -g mode-keys vi
+        bind-key -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "wl-copy"
       '';
+      historyLimit = 100000;
     };
 
     programs.chromium = {
