@@ -240,7 +240,6 @@ in
       enable = true;
       config = {
         global_config.borderless = true;
-        global_config.enabled_plugins = "logger";
         profiles.default.scrollback_lines = "100000";
 
       };
