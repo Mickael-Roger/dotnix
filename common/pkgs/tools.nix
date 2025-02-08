@@ -24,6 +24,7 @@
     nerdfonts
     gedit
     tmux
+    tmux-mem-cpu-load
     tig
     iotas
     thunderbird

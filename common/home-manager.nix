@@ -231,7 +231,13 @@ in
 	set -g @yank_with_mouse on
 	set -g @yank_selection 'primary'
         setw -g mode-keys vi
+        set -s escape-time 0
         bind-key -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "wl-copy"
+        set -g status-style fg=white,bg=black
+        set -g status-right '#[fg=white] %Y-%m-%d %H:%M:%S'
+        set -g status-interval 2
+        set -g status-left "#[fg=green,bg=black]#(tmux-mem-cpu-load --colors --interval 2)    "
+        set -g status-left-length 120
       '';
       historyLimit = 100000;
     };
