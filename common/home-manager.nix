@@ -239,12 +239,10 @@ in
     programs.terminator = {
       enable = true;
       config = {
-        global_config.borderless = true;
-        profiles.default.scrollback_lines = "100000";
-
+        global_config.enabled_plugins = "Logger,";
+        profiles.default.show_titlebar = "False";
+        profiles.default.scrollback_infinite = "True";
       };
-
-      
     };
 
     programs.chromium = {
