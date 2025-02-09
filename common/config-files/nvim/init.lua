@@ -598,5 +598,19 @@ cmp.setup {
   },
 }
 
+local function open_remote_dir_via_ssh()
+  local server = vim.fn.input("Server (ex: user@192.168.1.10): ")
+
+  if server == "" then
+    print("No server name.")
+    return
+  end
+
+  local remote_path = "scp://" .. server .. "/../../../../../"
+  vim.cmd("edit " .. remote_path)
+end
+vim.keymap.set("n", "<leader>ssh", open_remote_dir_via_ssh, { desc = "Ouvrir un répertoire distant via SSH" })
+
+
 -- The line beneath this is called `modeline`. See `:help modeline`
 -- vim: ts=2 sts=2 sw=2 et

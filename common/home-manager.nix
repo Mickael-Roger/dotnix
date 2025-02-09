@@ -1,6 +1,25 @@
 { pkgs, nur, secretSrc, ... }:
 let
   secrets = import "${secretSrc}/secrets.nix";
+  ssh-connect = pkgs.writeShellScriptBin "ssh-connect" ''
+    #!/bin/bash
+
+    HOSTS=$(${pkgs.gawk}/bin/awk '/^Host / {for (i=2; i<=NF; i++) print $i}' ~/.ssh/config | ${pkgs.coreutils-full}/bin/sort)
+    
+    if [ -z "$HOSTS" ]; then
+        echo "No host found"
+        exit 1
+    fi
+    
+    export FZF_DEFAULT_OPTS="--height=150 --border=rounded --layout=reverse --info=hidden --prompt='SSH Hosts: ' --preview-window=hidden --margin=5,10"
+
+    SELECTED_HOST=$(echo "$HOSTS" | ${pkgs.fzf}/bin/fzf)
+    
+    if [ -n "$SELECTED_HOST" ]; then
+        echo "Connect to $SELECTED_HOST ..."
+        ssh "$SELECTED_HOST"
+    fi
+  '';
 in
 {
   mickael = {
@@ -238,6 +257,7 @@ in
         set -g status-interval 2
         set -g status-left "#(tmux-mem-cpu-load -a 0 --interval 1)  ⌨  "
         set -g status-left-length 120
+        bind h send-keys '${ssh-connect}/bin/ssh-connect' C-m
       '';
       historyLimit = 100000;
     };
