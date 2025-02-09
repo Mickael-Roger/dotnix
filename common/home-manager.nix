@@ -236,7 +236,7 @@ in
         set -g status-style fg=white,bg=black
         set -g status-right '#[fg=white] %Y-%m-%d %H:%M:%S'
         set -g status-interval 2
-        set -g status-left "#[fg=green,bg=black]#(tmux-mem-cpu-load --colors --interval 2)    "
+        set -g status-left "#(tmux-mem-cpu-load -a 0 --interval 1)  ⌨  "
         set -g status-left-length 120
       '';
       historyLimit = 100000;
