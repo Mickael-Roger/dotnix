@@ -20,6 +20,11 @@ let
         ssh "$SELECTED_HOST"
     fi
   '';
+
+  obsidian-term = pkgs.writeShellScriptBin "obsidian-term" ''
+   ${pkgs.findutils}/bin/find ~/Documents/Obsidian/mickael -name "*.md" | ${pkgs.fzf}/bin/fzf | xargs -d '\n' nvim
+  '';
+
 in
 {
   mickael = {
@@ -257,7 +262,8 @@ in
         set -g status-interval 2
         set -g status-left "#(tmux-mem-cpu-load -a 0 --interval 1)  ⌨  "
         set -g status-left-length 120
-        bind h send-keys '${ssh-connect}/bin/ssh-connect' C-m
+        bind h new-window -n "tmp-ssh" '${ssh-connect}/bin/ssh-connect' C-m
+        bind o new-window -n "tmp-obsidian" '${obsidian-term}/bin/obsidian-term' C-m
       '';
       historyLimit = 100000;
     };
@@ -268,6 +274,7 @@ in
         global_config.enabled_plugins = "Logger,";
         profiles.default.show_titlebar = "False";
         profiles.default.scrollback_infinite = "True";
+        profiles.default.scrollbar_position = "disabled";
       };
     };
 
