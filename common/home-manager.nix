@@ -22,7 +22,33 @@ let
   '';
 
   obsidian-term = pkgs.writeShellScriptBin "obsidian-term" ''
-   ${pkgs.findutils}/bin/find ~/Documents/Obsidian/mickael -name "*.md" | ${pkgs.fzf}/bin/fzf | xargs -d '\n' nvim
+   ${pkgs.findutils}/bin/find /data/Obsidian/mickael -name "*.md" | ${pkgs.fzf}/bin/fzf | xargs -d '\n' nvim
+  '';
+
+  alarm = pkgs.buildGoModule rec {
+    pname = "alarm";
+
+    version = "1.3";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "Mickael-Roger";
+      repo = "alarm";
+      rev = "v${version}";
+      sha256 = "sha256-U8JebGdjVAL7BwOxTvpUwyDggNCxpJxcdTW8eoj1JPI=";
+    };
+
+    vendorHash = "sha256-koKCD0w2KZFfG8h33UzAIImOPl82xXgMo+bac9mNUSk=";
+
+    subPackages = [ "." ];
+
+  };
+
+  alarm-term-create = pkgs.writeShellScriptBin "alarm-term-create" ''
+   ${alarm}/bin/alarm create
+  '';
+
+  alarm-term-ack = pkgs.writeShellScriptBin "alarm-term-ack" ''
+   ${alarm}/bin/alarm ack 0
   '';
 
 in
@@ -258,12 +284,15 @@ in
         set -s escape-time 0
         bind-key -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "wl-copy"
         set -g status-style fg=white,bg=black
-        set -g status-right '#[fg=white] %Y-%m-%d %H:%M:%S'
+        set -g status-right '#(${alarm}/bin/alarm get --tmux)     #[fg=white] %Y-%m-%d %H:%M:%S'
         set -g status-interval 2
         set -g status-left "#(tmux-mem-cpu-load -a 0 --interval 1)  ⌨  "
         set -g status-left-length 120
+        set -g status-right-length 120
         bind h new-window -n "tmp-ssh" '${ssh-connect}/bin/ssh-connect' C-m
         bind o new-window -n "tmp-obsidian" '${obsidian-term}/bin/obsidian-term' C-m
+        bind a new-window -n 'tmp-alarm' '${alarm-term-create}/bin/alarm-term-create' C-m
+        bind C-a new-window -n 'tmp-alarm' '${alarm-term-ack}/bin/alarm-term-ack' C-m
       '';
       historyLimit = 100000;
     };
