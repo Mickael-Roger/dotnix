@@ -28,13 +28,13 @@ let
   alarm = pkgs.buildGoModule rec {
     pname = "alarm";
 
-    version = "1.3";
+    version = "1.4";
 
     src = pkgs.fetchFromGitHub {
       owner = "Mickael-Roger";
       repo = "alarm";
       rev = "v${version}";
-      sha256 = "sha256-U8JebGdjVAL7BwOxTvpUwyDggNCxpJxcdTW8eoj1JPI=";
+      sha256 = "sha256-gMkECL9sl7W7GbfdU4TA+jMpykPXtYOTI7aYh/7yDMU=";
     };
 
     vendorHash = "sha256-koKCD0w2KZFfG8h33UzAIImOPl82xXgMo+bac9mNUSk=";
@@ -289,10 +289,13 @@ in
         set -g status-left "#(tmux-mem-cpu-load -a 0 --interval 1)  ⌨  "
         set -g status-left-length 120
         set -g status-right-length 120
+        set-option -g repeat-time 100
         bind h new-window -n "tmp-ssh" '${ssh-connect}/bin/ssh-connect' C-m
         bind o new-window -n "tmp-obsidian" '${obsidian-term}/bin/obsidian-term' C-m
         bind a new-window -n 'tmp-alarm' '${alarm-term-create}/bin/alarm-term-create' C-m
         bind C-a new-window -n 'tmp-alarm' '${alarm-term-ack}/bin/alarm-term-ack' C-m
+        bind -n S-PageUp copy-mode \; send-keys PageUp
+        bind -n S-PageDown send-keys PageDown
       '';
       historyLimit = 100000;
     };
