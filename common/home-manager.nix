@@ -282,30 +282,31 @@ in
     programs.tmux = {
       enable = true;
       terminal = "tmux-256color";
+      mouse = true;
+      clock24 = true;
+      escapeTime = 100;
       extraConfig = ''
-	set -g mouse on
-	set -g @plugin 'tmux-plugins/tmux-yank'
-	set -g @yank_with_mouse on
-	set -g @yank_selection 'primary'
-        setw -g mode-keys vi
-        set -s escape-time 0
-        bind-key -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "wl-copy"
-        set -g status-style fg=white,bg=black
-        set -g status-right '#(${alarm}/bin/alarm get --tmux)     #[fg=white] %Y-%m-%d %H:%M:%S'
-        set -g status-interval 2
-        set -g status-left "#(tmux-mem-cpu-load -a 0 --interval 1)  ⌨  "
-        set -g status-left-length 120
-        set -g status-right-length 120
-        set-option -g repeat-time 100
-        bind h new-window -n "tmp-ssh" '${ssh-connect}/bin/ssh-connect' C-m
-        bind o new-window -n "tmp-obsidian" '${obsidian-term}/bin/obsidian-term' C-m
-        bind a new-window -n 'tmp-alarm' '${alarm-term-create}/bin/alarm-term-create' C-m
-        bind C-a new-window -n 'tmp-alarm' '${alarm-term-ack}/bin/alarm-term-ack' C-m
-        bind * new-window -n "tmp-note" '${create-note}/bin/create-note' C-m
-        bind -n S-PageUp copy-mode \; send-keys PageUp
-        bind -n S-PageDown send-keys PageDown
-        bind-key -T copy-mode-vi v send -X begin-selection
-        bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "wl-copy"
+set -g @plugin 'tmux-plugins/tmux-yank'
+set -g @yank_with_mouse on
+set -g @yank_selection 'primary'
+setw -g mode-keys vi
+bind-key -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "wl-copy"
+set -g status-style fg=white,bg=black
+set -g status-right '#(${alarm}/bin/alarm get --tmux)     #[fg=white] %Y-%m-%d %H:%M:%S'
+set -g status-interval 2
+set -g status-left "#(tmux-mem-cpu-load -a 0 --interval 1)  ⌨  "
+set -g status-left-length 120
+set -g status-right-length 120
+set-option -g repeat-time 300
+bind h new-window -n "tmp-ssh" '${ssh-connect}/bin/ssh-connect' C-m
+bind o new-window -n "tmp-obsidian" '${obsidian-term}/bin/obsidian-term' C-m
+bind a new-window -n 'tmp-alarm' '${alarm-term-create}/bin/alarm-term-create' C-m
+bind C-a new-window -n 'tmp-alarm' '${alarm-term-ack}/bin/alarm-term-ack' C-m
+bind * new-window -n "tmp-note" '${create-note}/bin/create-note' C-m
+bind -n S-PageUp copy-mode \; send-keys PageUp
+bind -n S-PageDown send-keys PageDown
+bind-key -T copy-mode-vi v send -X begin-selection
+bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "wl-copy"
       '';
       historyLimit = 100000;
     };
