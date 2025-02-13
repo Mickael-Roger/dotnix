@@ -281,8 +281,8 @@ in
 
     programs.tmux = {
       enable = true;
+      terminal = "tmux-256color";
       extraConfig = ''
-	set -g default-terminal "tmux-256color"
 	set -g mouse on
 	set -g @plugin 'tmux-plugins/tmux-yank'
 	set -g @yank_with_mouse on
@@ -304,6 +304,8 @@ in
         bind * new-window -n "tmp-note" '${create-note}/bin/create-note' C-m
         bind -n S-PageUp copy-mode \; send-keys PageUp
         bind -n S-PageDown send-keys PageDown
+        bind-key -T copy-mode-vi v send -X begin-selection
+        bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "wl-copy"
       '';
       historyLimit = 100000;
     };
