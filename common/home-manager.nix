@@ -51,6 +51,13 @@ let
    ${alarm}/bin/alarm ack 0
   '';
 
+  create-note = pkgs.writeShellScriptBin "create-note" ''
+    day=`${pkgs.coreutils-full}/bin/date +'%Y-%M-%d'`
+    touch /data/Obsidian/mickael/Inbox/$day.md
+    nvim /data/Obsidian/mickael/Inbox/$day.md
+  '';
+
+
 in
 {
   mickael = {
@@ -294,6 +301,7 @@ in
         bind o new-window -n "tmp-obsidian" '${obsidian-term}/bin/obsidian-term' C-m
         bind a new-window -n 'tmp-alarm' '${alarm-term-create}/bin/alarm-term-create' C-m
         bind C-a new-window -n 'tmp-alarm' '${alarm-term-ack}/bin/alarm-term-ack' C-m
+        bind * new-window -n "tmp-note" '${create-note}/bin/create-note' C-m
         bind -n S-PageUp copy-mode \; send-keys PageUp
         bind -n S-PageDown send-keys PageDown
       '';
