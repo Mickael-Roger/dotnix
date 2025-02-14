@@ -52,7 +52,7 @@ let
   '';
 
   create-note = pkgs.writeShellScriptBin "create-note" ''
-    day=`${pkgs.coreutils-full}/bin/date +'%Y-%M-%d'`
+    day=`${pkgs.coreutils-full}/bin/date +'%Y-%m-%d'`
     touch /data/Obsidian/mickael/Inbox/$day.md
     nvim /data/Obsidian/mickael/Inbox/$day.md
   '';
