@@ -51,6 +51,11 @@ let
    ${alarm}/bin/alarm ack 0
   '';
 
+  cal-term = pkgs.writeShellScriptBin "cal-term" ''
+   ${pkgs.util-linux}/bin/cal -y
+   read -n 1 -s
+  '';
+
   create-note = pkgs.writeShellScriptBin "create-note" ''
     day=`${pkgs.coreutils-full}/bin/date +'%Y-%m-%d'`
     touch /data/Obsidian/mickael/Inbox/$day.md
@@ -303,6 +308,7 @@ bind o new-window -n "tmp-obsidian" '${obsidian-term}/bin/obsidian-term' C-m
 bind a new-window -n 'tmp-alarm' '${alarm-term-create}/bin/alarm-term-create' C-m
 bind C-a new-window -n 'tmp-alarm' '${alarm-term-ack}/bin/alarm-term-ack' C-m
 bind * new-window -n "tmp-note" '${create-note}/bin/create-note' C-m
+bind C-c new-window -n "tmp-cal" '${cal-term}/bin/cal-term' C-m
 bind -n S-PageUp copy-mode \; send-keys PageUp
 bind -n S-PageDown send-keys PageDown
 bind-key -T copy-mode-vi v send -X begin-selection
