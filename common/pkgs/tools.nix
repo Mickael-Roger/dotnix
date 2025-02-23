@@ -42,6 +42,8 @@
 
     wl-clipboard
 
+    ugrep
+
     # Productivity
     anki-bin
     obsidian
