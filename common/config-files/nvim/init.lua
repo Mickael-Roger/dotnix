@@ -495,7 +495,10 @@ require('which-key').register {
 require('lspconfig').nixd.setup{
   on_attach = on_attach,
 }
-require('lspconfig').ccls.setup{
+--require('lspconfig').ccls.setup{
+--  on_attach = on_attach,
+--}
+require('lspconfig').clangd.setup{
   on_attach = on_attach,
 }
 require('lspconfig').pyright.setup{
