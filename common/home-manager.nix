@@ -290,6 +290,10 @@ in
       mouse = true;
       clock24 = true;
       escapeTime = 100;
+      plugins = with pkgs.tmuxPlugins; [
+        resurrect
+        continuum
+      ];
       extraConfig = ''
 set -g @plugin 'tmux-plugins/tmux-yank'
 set -g @yank_with_mouse on
@@ -313,6 +317,10 @@ bind -n S-PageUp copy-mode \; send-keys PageUp
 bind -n S-PageDown send-keys PageDown
 bind-key -T copy-mode-vi v send -X begin-selection
 bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "wl-copy"
+bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel "wl-copy"
+set -g @continuum-restore 'on'
+set -g @continuum-save-interval '5'
+set -g @resurrect-capture-pane-contents 'on'
       '';
       historyLimit = 100000;
     };
