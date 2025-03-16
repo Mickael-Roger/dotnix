@@ -58,6 +58,11 @@ in {
 
     # Stegano
     stegsolve
+    steghide
+    stegseek
+    zsteg
+    foremost
+
 
     # List
     seclists
