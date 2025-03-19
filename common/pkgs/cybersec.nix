@@ -17,6 +17,7 @@ in {
     wireshark
     aircrack-ng
     bully
+    python312Packages.scapy
 
     # Web
     zap

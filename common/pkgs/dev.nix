@@ -29,7 +29,7 @@
     protobuf
     protobufc
     python3Packages.protobuf
-    tinygo
+    #tinygo
     wazero
     nixd
     wasmer
