@@ -59,8 +59,8 @@ let
 in {
   environment.systemPackages = [
     creality-print
-    pkgs.cura
-    unstable.freecad
+    #pkgs.cura
+    pkgs.freecad
     pkgs.arduino
     pkgs.sweethome3d.application
     pkgs.sweethome3d.textures-editor
@@ -72,7 +72,8 @@ in {
 
     pkgs.stm32cubemx
     pkgs.openocd
-    pkgs.gcc-arm-embedded-13
+    #pkgs.gcc-arm-embedded-13
+    pkgs.gcc-arm-embedded
 
     pkgs.rpi-imager
 
