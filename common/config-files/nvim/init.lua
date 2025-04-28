@@ -429,6 +429,10 @@ vim.keymap.set('n', ']d', vim.diagnostic.goto_next, { desc = 'Go to next diagnos
 vim.keymap.set('n', '<leader>e', vim.diagnostic.open_float, { desc = 'Open floating diagnostic message' })
 vim.keymap.set('n', '<leader>q', vim.diagnostic.setloclist, { desc = 'Open diagnostics list' })
 
+
+-- Change Ctrl b when used in tmux
+vim.api.nvim_set_keymap('n', '<C-p>', '<C-^>', { noremap = true, silent = true })
+
 -- Configure LSP
 local on_attach = function(_, bufnr)
   local nmap = function(keys, func, desc)

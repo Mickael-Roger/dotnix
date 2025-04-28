@@ -3,6 +3,7 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    oldnixpkgs.url = "github:NixOS/nixpkgs/nixos-24.05";
 
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-24.11";
     
@@ -30,7 +31,7 @@
 
   };
 
-  outputs = { self, nixpkgs, home-manager, nur-repo, ctfmgntSrc, esp32-idf-src, secretSrc, nixpkgs-unstable, ... }: 
+  outputs = { self, nixpkgs, home-manager, nur-repo, ctfmgntSrc, esp32-idf-src, secretSrc, nixpkgs-unstable, oldnixpkgs, ... }: 
   let
 
     secrets = if builtins.pathExists ./secrets.nix
@@ -38,6 +39,7 @@
                 else {};   
 
     unstable = import nixpkgs-unstable { system = "x86_64-linux"; config.allowUnfree = true; };
+    oldnixpkgs = import nixpkgs-unstable { system = "x86_64-linux"; config.allowUnfree = true; };
 
     nur = import nur-repo { inherit pkgs; }; 
 
@@ -67,7 +69,7 @@
           } 
         ];
 
-        specialArgs = { inherit ctfmgntSrc esp32-idf-src secretSrc unstable nixpkgs; };
+        specialArgs = { inherit ctfmgntSrc esp32-idf-src secretSrc unstable nixpkgs oldnixpkgs; };
 
       };
 
@@ -87,7 +89,7 @@
           } 
         ];
 
-        specialArgs = { inherit ctfmgntSrc esp32-idf-src secretSrc unstable; };
+        specialArgs = { inherit ctfmgntSrc esp32-idf-src secretSrc unstable oldnixpkgs; };
 
       };
 

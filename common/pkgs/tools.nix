@@ -34,6 +34,7 @@
     jdk21
     ffmpeg
     openssl
+    inotify-tools
 
     yubikey-manager
     yubikey-manager-qt

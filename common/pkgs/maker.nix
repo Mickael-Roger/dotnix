@@ -1,4 +1,4 @@
-{ config, pkgs, esp32-idf-src, unstable, ... }:
+{ config, pkgs, esp32-idf-src, unstable, oldnixpkgs, ... }:
 let
 
   creality-print = pkgs.appimageTools.wrapType2 {
@@ -59,7 +59,7 @@ let
 in {
   environment.systemPackages = [
     creality-print
-    #pkgs.cura
+    #oldnixpkgs.cura
     pkgs.freecad
     pkgs.arduino
     pkgs.sweethome3d.application
