@@ -181,6 +181,43 @@ in
   };
 
 
+  services.znc = {
+    enable = true;
+    mutable = false;
+    useLegacyConfig = false;
+    openFirewall = true;
+
+    config = {
+      LoadModule = [ "adminlog" ];
+
+      User.mickael = {
+        Admin = true;
+        Pass.password = {
+          Method = "sha256";
+          Hash = "${secrets.libera.admin_hash}";
+        };
+
+        Network.libera = {
+          Server = "irc.libera.chat +6697";
+          Chan = {
+            "#gcu" = {};
+            "#gcufeed" = {};
+          };
+          Nick = "MickaelR";
+          Settings = {
+            sasl = {
+              Mechanism = "PLAIN";
+              Username = "${secrets.libera.user}";
+              Password = "${secrets.libera.password}";
+            };
+          };
+          LoadModule = [ "sasl" ];
+        };
+      };
+    };
+  };
+
+
   #systemd.timers."update-news" = {
   #  wantedBy = [ "timers.target" ];
   #    timerConfig = {
