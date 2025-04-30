@@ -199,11 +199,6 @@ in
 
         Network.libera = {
           Server = "irc.libera.chat +6697";
-          Chan = {
-            "#gcu" = {};
-            "#gcufeed" = {};
-          };
-          Nick = "MickaelR";
           Settings = {
             sasl = {
               Mechanism = "PLAIN";

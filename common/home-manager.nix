@@ -164,9 +164,10 @@ in
       startInBackground = true;
     };
 
+
     xdg = {
       enable = true;
-      configFile."weechat/irc.conf"= {
+      configFile."weechat/irc.conf" = {
         source = ./config-files/weechat/irc.conf;
       };
     }; 
