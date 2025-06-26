@@ -21,6 +21,18 @@ let
     fi
   '';
 
+  hyprland-help = pkgs.writeShellScriptBin "hyprland-help" ''
+    ${pkgs.hyprland}/bin/hyprctl binds -j | ${pkgs.jq}/bin/jq -r '.[] | ( (.modkeys // "" ) + " " + .key + " → " + .dispatcher + (if .arg=="" then "" else " ("+.arg+")" end) )' | ${pkgs.rofi}/bin/rofi -dmenu -i -p "Hyprland Keybinds"
+  '';
+
+
+  ptrscreen = pkgs.writeShellScriptBin "ptrscreen" ''
+    mkdir -p ~/Pictures
+    #cap_file=`date +%Y%m%d%H%M%S`
+    ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" #~/Pictures/$cap_file.png
+  '';
+
+
   obsidian-term = pkgs.writeShellScriptBin "obsidian-term" ''
    ${pkgs.findutils}/bin/find /data/Obsidian/mickael -name "*.md" | ${pkgs.fzf}/bin/fzf | xargs -d '\n' nvim
   '';
@@ -148,6 +160,152 @@ in
     # Let Home Manager install and manage itself.
     programs.home-manager.enable = true;
 
+
+    wayland.windowManager.hyprland = {
+      enable = true;
+      #package = pkgs.hyprland;
+      xwayland.enable = true;
+      systemd.enable = true;
+      settings = {
+        # Touche de contrôle (mod)
+        "$mod" = "SUPER";
+
+        # Terminal et menu par défaut
+        "$terminal" = "${pkgs.terminator}/bin/terminator -m -b";
+        "$menu"     = "PATH=/run/current-system/sw/bin/ ${pkgs.wofi}/bin/wofi --show drun";
+        "$firefox"     = "${pkgs.firefox}/bin/firefox";
+
+        # Clavier AZERTY
+        input = {
+          kb_layout = "fr";
+        };
+
+        general = {
+          border_size = "0";
+          #no_border_on_floating = "true";
+          gaps_in = "1";
+          gaps_out = "0";
+          resize_on_border = "false";
+          "col.active_border" = "rgba(ffffffff)";
+          "col.inactive_border" = "rgba(ffffffff)";
+
+        };
+        
+        decoration = {
+          #enabled = "yes";
+          dim_inactive = "true";
+          dim_strength = "0.3";
+          dim_special = "0.2";
+          dim_around = "0.1";
+        };
+
+        # Keybindings
+        bind = [
+          # Shortcut
+          "$mod, T, exec, $terminal"
+          "$mod, R, exec, $menu"
+          "$mod, F, exec, $firefox"
+          ", print, exec, ${ptrscreen}/bin/ptrscreen"
+          "$mod, H, exec, ${hyprland-help}/bin/hyprland-help"
+          "$mod, B, exec, ${pkgs.xfce.thunar}/bin/thunar"
+          "$mod, Q, killactive"
+
+
+          "$mod, I, layoutmsg, orientationcycle left top"
+          "$mod, Z, fullscreen, 1"
+          "$mod CTRL, right, resizeactive, 10 0"
+          "$mod CTRL, left , resizeactive, -10 0"
+          "$mod CTRL, up   , resizeactive, 0 -10"
+          "$mod CTRL, down , resizeactive, 0 10"
+
+
+          "$mod, N, workspace, empty m"
+
+          "$mod, mouse_down, workspace, e+1"
+          "$mod, mouse_up, workspace, e-1"
+
+          "$mod, left,  workspace, e-1"
+          "$mod, right, workspace, e+1"
+          "CTRL ALT,           left,  workspace, e-1"
+          "CTRL ALT,           right, workspace, e+1"
+          "$mod SHIFT,        left,  movetoworkspace, e-1"
+          "$mod SHIFT,        right, movetoworkspace, e+1"
+          "CTRL ALT SHIFT,     left,  movetoworkspace, e-1"
+          "CTRL ALT SHIFT,     right, movetoworkspace, e+1"
+
+          "$mod, tab, cyclenext" 
+          "$mod SHIFT, tab, cyclenext, prev" 
+
+
+          "$mod, ampersand, workspace, 1"
+          "$mod, eacute, workspace, 2"
+          "$mod, quotedbl, workspace, 3"
+          "$mod, apostrophe, workspace, 4"
+          "$mod, parenleft, workspace, 5"
+          "$mod, minus, workspace, 6"
+          "$mod, egrave, workspace, 7"
+          "$mod, underscore, workspace, 8"
+          "$mod, ccedilla, workspace, 9"
+          "$mod, agrave, workspace, 10"
+
+          "$mod SHIFT, ampersand, movetoworkspace, 1"
+          "$mod SHIFT, eacute, movetoworkspace, 2"
+          "$mod SHIFT, quotedbl, movetoworkspace, 3"
+          "$mod SHIFT, apostrophe, movetoworkspace, 4"
+          "$mod SHIFT, parenleft, movetoworkspace, 5"
+          "$mod SHIFT, minus, movetoworkspace, 6"
+          "$mod SHIFT, egrave, movetoworkspace, 7"
+          "$mod SHIFT, underscore, movetoworkspace, 8"
+          "$mod SHIFT, ccedilla, movetoworkspace, 9"
+          "$mod SHIFT, agrave, movetoworkspace, 10"
+
+          # Quitter Hyprland
+          "ALT, BACKSPACE, exit"
+        ];
+ 
+        workspace = [
+          "1, name:communication persistent:true"
+          "2, name:brain persistent:true"
+          "3, name:terminal persistent:true"
+          "4, persistent:true"
+          "5, persistent:true"
+          "6, persistent:true"
+          "7, persistent:true"
+          "8, persistent:true"
+          "9, persistent:true"
+          "10, persistent:true"
+        ];
+       
+
+        # Autostart des applications dans les workspaces dédiés
+        exec-once = [
+          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 1"
+          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 2"
+          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 3"
+          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 4"
+          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 5"
+          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 6"
+          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 7"
+          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 8"
+          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 9"
+          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 10"
+          "${pkgs.swaybg}/bin/swaybg -i /home/mickael/background -m fill"
+          "sh -c '${pkgs.hyprland}/bin/hyprctl dispatch workspace 1 && ${pkgs.thunderbird}/bin/thunderbird'"
+          "sh -c '${pkgs.hyprland}/bin/hyprctl dispatch workspace 1 && ${pkgs.discord}/bin/discord'"
+          "sh -c '${pkgs.hyprland}/bin/hyprctl dispatch workspace 2 && ${pkgs.anki}/bin/anki'"
+          "sh -c '${pkgs.hyprland}/bin/hyprctl dispatch workspace 2 && ${pkgs.obsidian}/bin/obsidian'"
+          "sh -c '${pkgs.hyprland}/bin/hyprctl dispatch workspace 3 && ${pkgs.kitty}/bin/kitty --fullscreen'"
+          #"[workspace=1 silent] ${pkgs.thunderbird}/bin/thunderbird"
+          #"[workspace=1 silent] ${pkgs.discord}/bin/discord"
+          #"[workspace=2 silent] ${pkgs.anki-bin}/bin/anki"
+          #"[workspace=2 silent] ${pkgs.obsidian}/bin/obsidian"
+          #"[workspace=3 silent] ${pkgs.kitty}/bin/kitty --fullscreen"
+        ];
+      };
+
+    };
+
+
     xdg.desktopEntries = {
       mykeepass = {
         name = "Keepass";
@@ -171,6 +329,15 @@ in
         source = ./config-files/weechat/irc.conf;
       };
     }; 
+
+    wayland.windowManager.sway = {
+      enable = true;
+      extraConfig = ''
+        input "type:keyboard" {
+          xkb_layout fr
+        }
+      '';
+    };
 
 
     programs.git = {
@@ -285,6 +452,28 @@ in
   
     }; 
 
+    systemd.user.services."tmux-save" = {
+      Service = {
+        Type = "oneshot";
+        Environment = "SCRIPT_OUTPUT=quiet";
+        ExecStart = "${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/scripts/save.sh";
+      };
+    };
+
+    systemd.user.timers."tmux-save" = {
+      Unit = {
+        Description = "Save tmux";
+      };
+      Timer = {
+        OnBootSec = "5min";
+        OnUnitActiveSec = "5min";
+        Unit = "tmux-save.service";
+      };
+      Install = {
+        WantedBy = [ "timers.target" ];
+      };
+    };
+
     programs.tmux = {
       enable = true;
       terminal = "tmux-256color";
@@ -293,9 +482,12 @@ in
       escapeTime = 100;
       plugins = with pkgs.tmuxPlugins; [
         resurrect
-        continuum
+        #continuum
       ];
       extraConfig = ''
+
+run-shell ${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/scripts/restore.sh
+
 set -g @plugin 'tmux-plugins/tmux-yank'
 set -g @yank_with_mouse on
 set -g @yank_selection 'primary'
@@ -319,9 +511,8 @@ bind -n S-PageDown send-keys PageDown
 bind-key -T copy-mode-vi v send -X begin-selection
 bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "wl-copy"
 bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel "wl-copy"
-set -g @continuum-restore 'on'
-set -g @continuum-save-interval '5'
 set -g @resurrect-capture-pane-contents 'on'
+set -g @resurrect-save-shell-history 'on'
       '';
       historyLimit = 100000;
     };

@@ -61,6 +61,7 @@ in {
     creality-print
     #oldnixpkgs.cura
     pkgs.freecad
+    #pkgs.freecad-wayland
     pkgs.arduino
     pkgs.sweethome3d.application
     pkgs.sweethome3d.textures-editor
@@ -85,5 +86,14 @@ in {
     esp32c6-idf
     esp32h2-idf
     esp8266-rtos-idf
+
+
+    pkgs.gst_all_1.gstreamer
+    pkgs.gst_all_1.gst-rtsp-server
+    pkgs.gst_all_1.gst-plugins-base
+    pkgs.gst_all_1.gst-plugins-good
+    pkgs.gst_all_1.gst-plugins-bad
+    pkgs.gst_all_1.gst-plugins-ugly
+    pkgs.gst_all_1.gst-libav
   ];
 }

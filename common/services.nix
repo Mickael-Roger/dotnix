@@ -199,6 +199,7 @@ in
 
         Network.libera = {
           Server = "irc.libera.chat +6697";
+          Nick = "MickaelR";
           Settings = {
             sasl = {
               Mechanism = "PLAIN";
@@ -206,7 +207,7 @@ in
               Password = "${secrets.libera.password}";
             };
           };
-          LoadModule = [ "sasl" ];
+          LoadModule = [ "sasl" "nickserv" ];
         };
       };
     };

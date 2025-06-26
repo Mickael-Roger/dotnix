@@ -17,6 +17,11 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
+
+  environment.variables = {
+    NIXPKGS_ALLOW_UNFREE = 1;
+  };
+
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
@@ -45,9 +50,13 @@
   };
 
   # Enable the X11 windowing system.
-  services.xserver.enable = true;
-  # USe Wayland
+  services.xserver = {
+    enable = true;
+    layout = "fr";
+  };
+  # Use Wayland
   programs.sway.enable = true;
+  xdg.portal.enable = true;
   xdg.portal.wlr.enable = true;
 
   # PCSCd for Yubikey PIV
@@ -56,6 +65,9 @@
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
+  
+  #programs.hyprland.enable = true;
+  #programs.hyprland.xwayland.enable = true;
 
   services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
  
@@ -122,11 +134,14 @@
   users.users.mickael = {
     isNormalUser = true;
     description = "mickael";
+    initialPassword = "mickael";
     extraGroups = [ "networkmanager" "wheel" "libvirtd" "docker" "dialout" ];
     packages = with pkgs; [
       #firefox-wayland
     ];
   };
+
+
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
@@ -145,6 +160,16 @@
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
+    hyprland
+    wofi
+    kitty
+    waybar
+    coreutils
+    util-linux
+    xdg-utils
+
+    xwayland
+
     vim
     neovim
     tailscale
@@ -160,6 +185,7 @@
     gnomeExtensions.printers
     gnomeExtensions.user-themes
     gnomeExtensions.dash-to-dock
+    gnomeExtensions.forge
     avahi
   ];
 
