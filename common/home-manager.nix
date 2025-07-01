@@ -78,7 +78,7 @@ let
 in
 {
   mickael = {
-    home.stateVersion = "24.05";
+    home.stateVersion = "25.05";
 
     home.username = "mickael";
     home.homeDirectory = "/home/mickael"; 
@@ -172,7 +172,7 @@ in
 
         # Terminal et menu par défaut
         "$terminal" = "${pkgs.terminator}/bin/terminator -m -b";
-        "$menu"     = "PATH=/run/current-system/sw/bin/ ${pkgs.wofi}/bin/wofi --show drun";
+        "$menu"     = "PATH=/run/current-system/sw/bin/:$PATH ${pkgs.wofi}/bin/wofi --show drun";
         "$firefox"     = "${pkgs.firefox}/bin/firefox";
 
         # Clavier AZERTY

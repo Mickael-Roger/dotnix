@@ -89,6 +89,8 @@ in
 
   networking.firewall.allowedTCPPorts = [
     443
+    8443
+    8444
   ];
 
   services.nginx.enable = true;
@@ -362,7 +364,6 @@ in
       default_config = {};
     };
   };
-  #networking.firewall.allowedTCPPorts = [ 8123 ];
 
   services.esphome.enable = true;
   

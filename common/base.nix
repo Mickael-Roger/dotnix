@@ -69,24 +69,24 @@
   #programs.hyprland.enable = true;
   #programs.hyprland.xwayland.enable = true;
 
-  services.udev.packages = with pkgs; [ gnome.gnome-settings-daemon ];
+  services.udev.packages = with pkgs; [ gnome-settings-daemon ];
  
   services.gnome.games.enable = false;
   services.gnome.core-developer-tools.enable = false;
   environment.gnome.excludePackages = with pkgs; [
     gnome-photos
     gnome-tour
-    gnome.gnome-music
-    gnome.gnome-calendar
-    gnome.gnome-maps
+    gnome-music
+    gnome-calendar
+    gnome-maps
 #    gnome.gedit
-    gnome.epiphany
-    gnome.geary
-    gnome.evince
-    gnome.totem
-    gnome.cheese
-    gnome.gnome-weather
-    gnome.gnome-contacts
+    epiphany
+    geary
+    evince
+    totem
+    cheese
+    gnome-weather
+    gnome-contacts
     gnome-text-editor
   ];
 
@@ -174,14 +174,14 @@
     neovim
     tailscale
     terminator
-    gnome.adwaita-icon-theme
+    adwaita-icon-theme
     gnomeExtensions.appindicator
     gnomeExtensions.printers
-    gnome.gnome-settings-daemon43
+    gnome-settings-daemon
     gnomeExtensions.dashbar
-    gnome.mutter
+    mutter
     gnomeExtensions.dash-to-panel
-    gnome.dconf-editor
+    dconf-editor
     gnomeExtensions.printers
     gnomeExtensions.user-themes
     gnomeExtensions.dash-to-dock
@@ -225,6 +225,6 @@
   # Or disable the firewall altogether.
   # networking.firewall.enable = false;
 
-  system.stateVersion = "24.11"; # Did you read the comment?
+  system.stateVersion = "25.05";
 
 }

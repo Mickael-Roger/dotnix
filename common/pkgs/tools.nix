@@ -13,6 +13,23 @@ let
     ${pkgs.blueman}/bin/blueman-manager
   '';
 
+  tom = pkgs.buildGoModule {
+    pname = "tom";
+    version = "v0.1";
+    src = pkgs.fetchFromGitHub {
+      owner = "Mickael-Roger";
+      repo = "tom";
+      rev = "v0.1";
+      sha256 = "sha256-uIzCu5ey2rYDoBOCfx+FUGR3WfDcLxPdYkXv/4oIypc=";
+    };
+    outputs = [ "out" ];
+    installPhase = ''
+      install -Dm755 $GOPATH/bin/tui $out/bin/tom
+    '';
+    modRoot = "tui";
+    vendorHash = "sha256-hGDjFrz88pq3n0tbGIrMS6KzQqV83ey485+NTbko8iI=";
+  };
+
 in {
   # For obsidian
   nixpkgs.config.permittedInsecurePackages = [
@@ -24,6 +41,11 @@ in {
     wifi-management
     bluetooth-management
     sound-management
+
+    tom
+   
+    # AI
+    pkgs.gemini-cli
 
     pkgs.xfce.thunar
 
@@ -43,7 +65,7 @@ in {
     pkgs.usbutils
     pkgs.socat
     pkgs.lsof
-    pkgs.nerdfonts
+    #pkgs.nerdfonts
     pkgs.gedit
     pkgs.tmux
     pkgs.tmux-mem-cpu-load

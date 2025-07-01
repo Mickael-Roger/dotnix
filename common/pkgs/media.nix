@@ -5,7 +5,7 @@
     vlc
     drawio
     libreoffice
-    okular
+    libsForQt5.okular
     weechat
     discord
     tuba

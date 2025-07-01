@@ -2,6 +2,7 @@
 
 {
   environment.systemPackages = with pkgs; [
+    nodejs_22
     clang-tools
     docker
     go
@@ -22,7 +23,6 @@
     bear
     python3
     python311Packages.pip
-    python310Packages.pip
     pyright
     cmake
     gnumake
