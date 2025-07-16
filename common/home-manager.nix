@@ -25,6 +25,15 @@ let
     ${pkgs.hyprland}/bin/hyprctl binds -j | ${pkgs.jq}/bin/jq -r '.[] | ( (.modkeys // "" ) + " " + .key + " → " + .dispatcher + (if .arg=="" then "" else " ("+.arg+")" end) )' | ${pkgs.rofi}/bin/rofi -dmenu -i -p "Hyprland Keybinds"
   '';
 
+  run = pkgs.writeShellScriptBin "run" ''
+    PATH=/run/current-system/sw/bin/:$PATH ${pkgs.wofi}/bin/wofi --show drun
+  '';
+
+
+  clock = pkgs.writeShellScriptBin "clock" ''
+    ${pkgs.zenity}/bin/zenity --info --text="$(date '+%H:%M:%S%n%A %d %B %Y')" --timeout=10
+  '';
+
 
   ptrscreen = pkgs.writeShellScriptBin "ptrscreen" ''
     mkdir -p ~/Pictures
@@ -172,7 +181,7 @@ in
 
         # Terminal et menu par défaut
         "$terminal" = "${pkgs.terminator}/bin/terminator -m -b";
-        "$menu"     = "PATH=/run/current-system/sw/bin/:$PATH ${pkgs.wofi}/bin/wofi --show drun";
+        "$menu"     = "${run}/bin/run";
         "$firefox"     = "${pkgs.firefox}/bin/firefox";
 
         # Clavier AZERTY
@@ -208,6 +217,7 @@ in
           ", print, exec, ${ptrscreen}/bin/ptrscreen"
           "$mod, H, exec, ${hyprland-help}/bin/hyprland-help"
           "$mod, B, exec, ${pkgs.xfce.thunar}/bin/thunar"
+          "$mod, C, exec, ${clock}/bin/clock"
           "$mod, Q, killactive"
 
 

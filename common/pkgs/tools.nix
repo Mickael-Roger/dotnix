@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, unstable, ... }:
 let
 
   wifi-management = pkgs.writeShellScriptBin "wifi-management" ''
@@ -14,20 +14,19 @@ let
   '';
 
   tom = pkgs.buildGoModule {
-    pname = "tom";
-    version = "v0.1";
+    pname = "tom-tui";
+    version = "v1.0";
     src = pkgs.fetchFromGitHub {
       owner = "Mickael-Roger";
-      repo = "tom";
-      rev = "v0.1";
-      sha256 = "sha256-uIzCu5ey2rYDoBOCfx+FUGR3WfDcLxPdYkXv/4oIypc=";
+      repo = "tom-tui";
+      rev = "v1.0";
+      sha256 = "sha256-BtBjtxBMWa2QGTWr81RZ4Wp6ixVIavdsJVmdFazbnW0=";
     };
     outputs = [ "out" ];
     installPhase = ''
       install -Dm755 $GOPATH/bin/tui $out/bin/tom
     '';
-    modRoot = "tui";
-    vendorHash = "sha256-hGDjFrz88pq3n0tbGIrMS6KzQqV83ey485+NTbko8iI=";
+    vendorHash = "sha256-/8x5KUcmsMCFpLHw59AHTUuIhPWVBzOiHQ/ymz1CVfc=";
   };
 
 in {
@@ -45,7 +44,8 @@ in {
     tom
    
     # AI
-    pkgs.gemini-cli
+    unstable.gemini-cli
+    unstable.claude-code
 
     pkgs.xfce.thunar
 

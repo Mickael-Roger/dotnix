@@ -248,9 +248,7 @@ in
           --name=tom \
           --network=host \
           -v /etc/localtime:/etc/localtime:ro \
-          -v /data/tom/data/:/app/data/ \
-          -v /data/tom/sessions/:/sessions/ \
-          -v /data/tom/config.yml:/app/config.yml:ro \
+          -v /data/tom/:/data/ \
           tom:current
     '';
     preStop = "${pkgs.docker}/bin/docker stop tom";

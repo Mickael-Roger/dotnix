@@ -66,8 +66,8 @@
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
   
-  #programs.hyprland.enable = true;
-  #programs.hyprland.xwayland.enable = true;
+  programs.hyprland.enable = true;
+  programs.hyprland.xwayland.enable = true;
 
   services.udev.packages = with pkgs; [ gnome-settings-daemon ];
  
