@@ -118,7 +118,15 @@ in
         }];
       };
       "tom" = {
-        locations."/".proxyPass = "http://127.0.0.1:8082/";
+        locations."/" = {
+          proxyPass = "http://127.0.0.1:8082/";
+          extraConfig = ''
+            proxy_connect_timeout 60s;
+            proxy_send_timeout 120s;
+            proxy_read_timeout 300s;
+            send_timeout 300s;
+          '';
+        };
         sslCertificate = "/etc/certs/server.taila2494.ts.net.crt";
         sslCertificateKey = "/etc/certs/server.taila2494.ts.net.key";
         onlySSL = true;

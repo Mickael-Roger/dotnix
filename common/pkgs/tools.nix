@@ -19,8 +19,8 @@ let
     src = pkgs.fetchFromGitHub {
       owner = "Mickael-Roger";
       repo = "tom-tui";
-      rev = "v1.0";
-      sha256 = "sha256-BtBjtxBMWa2QGTWr81RZ4Wp6ixVIavdsJVmdFazbnW0=";
+      rev = "v1.1";
+      sha256 = "sha256-LS4AVffAnLxJU3lUngeS+IxoYMpvtEIuVmXB+fNQQ3Y=";
     };
     outputs = [ "out" ];
     installPhase = ''
