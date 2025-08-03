@@ -15,18 +15,18 @@ let
 
   tom = pkgs.buildGoModule {
     pname = "tom-tui";
-    version = "v1.0";
+    version = "v1.6";
     src = pkgs.fetchFromGitHub {
       owner = "Mickael-Roger";
       repo = "tom-tui";
-      rev = "v1.4";
-      sha256 = "sha256-qTKls+VaNz+Y6GbVtr9ZjcXTm29daJnS/bTOXeH96zw=";
+      rev = "v1.6";
+      sha256 = "sha256-ce4xfnfn1CkPwQn57M/DXKu9WkA/NJMnt76DISzd0tY=";
     };
     outputs = [ "out" ];
     installPhase = ''
       install -Dm755 $GOPATH/bin/tui $out/bin/tom
     '';
-    vendorHash = "sha256-/8x5KUcmsMCFpLHw59AHTUuIhPWVBzOiHQ/ymz1CVfc=";
+    vendorHash = "sha256-kswhENk3y0Dew0cpCy8ff3hNbglBYxLYSxW0fIT6img=";
   };
 
 in {

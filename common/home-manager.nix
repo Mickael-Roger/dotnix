@@ -203,7 +203,7 @@ in
         decoration = {
           #enabled = "yes";
           dim_inactive = "true";
-          dim_strength = "0.3";
+          dim_strength = "0.4";
           dim_special = "0.2";
           dim_around = "0.1";
         };
@@ -523,6 +523,9 @@ bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "wl-copy"
 bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel "wl-copy"
 set -g @resurrect-capture-pane-contents 'on'
 set -g @resurrect-save-shell-history 'on'
+setw -g window-style 'fg=default,bg=colour234'
+setw -g window-active-style 'fg=default,bg=default'
+
       '';
       historyLimit = 100000;
     };
