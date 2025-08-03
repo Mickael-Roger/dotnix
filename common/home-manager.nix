@@ -269,6 +269,31 @@ in
           "$mod SHIFT, ccedilla, movetoworkspace, 9"
           "$mod SHIFT, agrave, movetoworkspace, 10"
 
+
+          ", F1, workspace, 1"
+          ", F2, workspace, 2"
+          ", F3, workspace, 3"
+          ", F4, workspace, 4"
+          ", F5, workspace, 5"
+          ", F6, workspace, 6"
+          ", F7, workspace, 7"
+          ", F8, workspace, 8"
+          ", F9, workspace, 9"
+          ", F10, workspace, 10"
+
+          "SHIFT, F1, movetoworkspace, 1"
+          "SHIFT, F2, movetoworkspace, 2"
+          "SHIFT, F3, movetoworkspace, 3"
+          "SHIFT, F4, movetoworkspace, 4"
+          "SHIFT, F5, movetoworkspace, 5"
+          "SHIFT, F6, movetoworkspace, 6"
+          "SHIFT, F7, movetoworkspace, 7"
+          "SHIFT, F8, movetoworkspace, 8"
+          "SHIFT, F9, movetoworkspace, 9"
+          "SHIFT, F10, movetoworkspace, 10"
+
+
+
           # Quitter Hyprland
           "ALT, BACKSPACE, exit"
         ];
