@@ -187,7 +187,9 @@ in
         # Clavier AZERTY
         input = {
           kb_layout = "fr";
+          numlock_by_default = "true";
         };
+
 
         general = {
           border_size = "0";
@@ -291,6 +293,10 @@ in
           "SHIFT, F8, movetoworkspace, 8"
           "SHIFT, F9, movetoworkspace, 9"
           "SHIFT, F10, movetoworkspace, 10"
+
+          ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
+          ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
+          ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
 
 
 

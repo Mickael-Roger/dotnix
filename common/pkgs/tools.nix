@@ -15,12 +15,12 @@ let
 
   tom = pkgs.buildGoModule {
     pname = "tom-tui";
-    version = "v1.6";
+    version = "v1.7";
     src = pkgs.fetchFromGitHub {
       owner = "Mickael-Roger";
       repo = "tom-tui";
-      rev = "v1.6";
-      sha256 = "sha256-ce4xfnfn1CkPwQn57M/DXKu9WkA/NJMnt76DISzd0tY=";
+      rev = "v1.7";
+      sha256 = "sha256-VkdG6xc6JtBIONmQ1Z/aPEYjv61C3rIg9yQME9DrGhA=";
     };
     outputs = [ "out" ];
     installPhase = ''
