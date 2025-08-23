@@ -25,6 +25,18 @@ let
     ${pkgs.hyprland}/bin/hyprctl binds -j | ${pkgs.jq}/bin/jq -r '.[] | ( (.modkeys // "" ) + " " + .key + " → " + .dispatcher + (if .arg=="" then "" else " ("+.arg+")" end) )' | ${pkgs.rofi}/bin/rofi -dmenu -i -p "Hyprland Keybinds"
   '';
 
+  g-help = pkgs.writeShellScriptBin "g-help" ''
+    echo "Fx    -> Switch to WS x
+    SHIFT Fx    -> Move to WS Fx
+    SUPER Q     -> Close window
+    SUPER T     -> Launch Terminator
+    SUPER F     -> Launch Firefox
+    SUPER B     -> Launch Nautilus
+    SUPER R     -> Launcher
+    SUPER <-    -> Window half screen on left" |  ${pkgs.zenity}/bin/zenity --text-info --width=500 --height=400
+  '';
+
+
   run = pkgs.writeShellScriptBin "run" ''
     PATH=/run/current-system/sw/bin/:$PATH ${pkgs.wofi}/bin/wofi --show drun
   '';
@@ -93,7 +105,7 @@ in
     home.homeDirectory = "/home/mickael"; 
 
     home.file."background" = {
-      source = ./wallpapers/anonymous.jpg;
+      source = ./wallpapers/matrix.jpg;
     };
 
     dconf.settings = {
@@ -138,9 +150,16 @@ in
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/firefox/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/nautilus/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/run/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/help/"
         ];
       };
   
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/help" = {
+        name = "Help";
+        command = "${g-help}/bin/g-help";
+        binding = "<Super>h";
+      };
+
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/terminator" = {
         name = "Terminator";
         command = "${pkgs.terminator}/bin/terminator";
