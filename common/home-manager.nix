@@ -97,6 +97,76 @@ in
     };
 
     dconf.settings = {
+
+      "org/gnome/desktop/wm/keybindings" = {
+        switch-to-workspace-1 = ["F1"];
+        switch-to-workspace-2 = ["F2"];
+        switch-to-workspace-3 = ["F3"];
+        switch-to-workspace-4 = ["F4"];
+        switch-to-workspace-5 = ["F5"];
+        switch-to-workspace-6 = ["F6"];
+        switch-to-workspace-7 = ["F7"];
+        switch-to-workspace-8 = ["F8"];
+        switch-to-workspace-9 = ["F9"];
+        switch-to-workspace-10 = ["F10"];
+      };
+
+      "org/gnome/desktop/wm/keybindings" = {
+        move-to-workspace-1 = ["<Shift>F1"];
+        move-to-workspace-2 = ["<Shift>F2"];
+        move-to-workspace-3 = ["<Shift>F3"];
+        move-to-workspace-4 = ["<Shift>F4"];
+        move-to-workspace-5 = ["<Shift>F5"];
+        move-to-workspace-6 = ["<Shift>F6"];
+        move-to-workspace-7 = ["<Shift>F7"];
+        move-to-workspace-8 = ["<Shift>F8"];
+        move-to-workspace-9 = ["<Shift>F9"];
+        move-to-workspace-10 = ["<Shift>F10"];
+      };
+
+      "org/gnome/desktop/wm/preferences" = {
+        num-workspaces = 10;
+      };
+
+      "org/gnome/desktop/wm/keybindings" = {
+        close = ["<Super>q"];
+      };
+
+      "org/gnome/settings-daemon/plugins/media-keys" = {
+        custom-keybindings = [
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/terminator/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/firefox/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/nautilus/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/run/"
+        ];
+      };
+  
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/terminator" = {
+        name = "Terminator";
+        command = "${pkgs.terminator}/bin/terminator";
+        binding = "<Super>t";
+      };
+
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/firefox" = {
+        name = "Firefox";
+        command = "${pkgs.firefox}/bin/firefox";
+        binding = "<Super>f";
+      };
+
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/nautilus" = {
+        name = "Nautilus";
+        command = "${pkgs.nautilus}/bin/nautilus";
+        binding = "<Super>b";
+      };
+
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/run" = {
+        name = "Run";
+        command = "${run}/bin/run";
+        binding = "<Super>r";
+      };
+
+
+
       "org/gnome/desktop/background" = {
         color-shading-type = "solid";
         picture-options = "zoom";
@@ -105,6 +175,7 @@ in
       }; 
       "org/gnome/mutter" = {
         check-alive-timeout = 60000;
+        dynamic-workspaces = false;
       };
       "org/gnome/desktop/interface" = {
         clock-show-seconds = true;
@@ -128,29 +199,29 @@ in
           "printers@linux-man.org"
           "drive-menu@gnome-shell-extensions.gcampax.github.com"
           "screenshot-window-sizer@gnome-shell-extensions.gcampax.github.com"
-          "dash-to-dock@micxgx.gmail.com"
+          #"dash-to-dock@micxgx.gmail.com"
           "workspace-indicator@gnome-shell-extensions.gcampax.github.com"
           "user-theme@gnome-shell-extensions.gcampax.github.com"
       	];
-        favorite-apps = [
-          "firefox.desktop"
-          "anki.desktop"
-          "obsidian.desktop"
-          "mykeepass.desktop"
-          "discord.desktop"
-          "terminator.desktop"
-          "org.gnome.Console.desktop"
-          "virt-manager.desktop"
-          "weechat.desktop"
-          "gedit.desktop"
-          "org.gnome.gitlab.cheywood.Iotas.desktop"
-          "thunderbird.desktop"
-          "dev.geopjr.Tuba.desktop"
-          "org.gnome.Nautilus.desktop"
-          "io.gitlab.news_flash.NewsFlash.desktop"
-          "org.freecad.FreeCAD.desktop"
-          "freetube.desktop"
-        ];
+        #favorite-apps = [
+        #  "firefox.desktop"
+        #  "anki.desktop"
+        #  "obsidian.desktop"
+        #  "mykeepass.desktop"
+        #  "discord.desktop"
+        #  "terminator.desktop"
+        #  "org.gnome.Console.desktop"
+        #  "virt-manager.desktop"
+        #  "weechat.desktop"
+        #  "gedit.desktop"
+        #  "org.gnome.gitlab.cheywood.Iotas.desktop"
+        #  "thunderbird.desktop"
+        #  "dev.geopjr.Tuba.desktop"
+        #  "org.gnome.Nautilus.desktop"
+        #  "io.gitlab.news_flash.NewsFlash.desktop"
+        #  "org.freecad.FreeCAD.desktop"
+        #  "freetube.desktop"
+        #];
       };
       "org/gnome/shell/extensions/printers" = {
         connect-to = "Gnome Control Center";
