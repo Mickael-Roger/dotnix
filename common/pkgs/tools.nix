@@ -29,6 +29,19 @@ let
     vendorHash = "sha256-kswhENk3y0Dew0cpCy8ff3hNbglBYxLYSxW0fIT6img=";
   };
 
+
+  opencode = pkgs.writeScriptBin "opencode" ''
+    #!${pkgs.runtimeShell}
+    export PATH=${pkgs.nodejs_20}/bin:$PATH
+    exec npx opencode-ai@latest "$@"
+  '';
+
+  gemini = pkgs.writeScriptBin "gemini" ''
+    #!${pkgs.runtimeShell}
+    export PATH=${pkgs.nodejs_20}/bin:$PATH
+    exec npx https://github.com/google-gemini/gemini-cli "$@"
+  '';
+
 in {
   # For obsidian
   nixpkgs.config.permittedInsecurePackages = [
@@ -44,8 +57,11 @@ in {
     tom
    
     # AI
-    unstable.gemini-cli
+    #unstable.gemini-cli
     unstable.claude-code
+    opencode
+    gemini
+
 
     pkgs.xfce.thunar
 

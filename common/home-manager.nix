@@ -108,6 +108,155 @@ in
       source = ./wallpapers/matrix.jpg;
     };
 
+
+    xdg.configFile."opencode/opencode.json".text = ''
+      {
+        "$schema": "https://opencode.ai/config.json",
+        "theme": "opencode",
+        "autoupdate": false,
+        "mcp": {
+          "context7": {
+            "type": "remote",
+            "url": "https://mcp.context7.com/mcp",
+            "enabled": true
+          }
+        },
+        "lsp": {
+          "pyright": {
+            "command": ["${pkgs.pyright}/bin/pyright-langserver", "--stdio"]
+          },
+          "gopls": {
+            "command": ["${pkgs.gopls}/bin/gopls"]
+          }
+        }
+      }
+    '';
+
+    xdg.configFile."opencode/AGENTS.md".text = ''
+# Global Agent Guidelines
+
+This file (`AGENTS.md`) defines global rules and best practices for all projects. If a local `AGENTS.md` does not exist or is empty, create one based on the project's content and these guidelines.
+
+---
+
+## 1. Language and Documentation Standards
+- **Always use English** for:
+  - `README.md` and all markdown files
+  - Code comments
+  - Variable, function, and file names
+  - Any project-related documentation
+
+---
+
+## 2. Local `AGENTS.md` Management
+- **After any action** that modifies code or local files:
+  - Update the local `AGENTS.md` if the change is relevant to the project (e.g., new features, bug fixes, configuration changes).
+  - Ensure all relevant information is recorded in `AGENTS.md`.
+
+---
+
+## 3. File Organization
+- **If `AGENTS.md` becomes too large** or its content can be logically split:
+  - Split it into dedicated markdown files (e.g., `CODING_STYLE.md`, `SETUP.md`, `DEPENDENCIES.md`).
+  - Reference these files in the main `AGENTS.md` under clear sections, e.g.:
+    ```markdown
+    ## Coding Style
+    See [CODING_STYLE.md](CODING_STYLE.md) for detailed guidelines.
+    ```
+
+---
+
+## 4. Error Handling and Learning
+- **When a user points out an error or suboptimal action**:
+  - If the issue is relevant and likely to recur, document it in:
+    - The local `AGENTS.md` (if not split)
+    - The appropriate dedicated file (if split, e.g., `PITFALLS.md` or `LESSONS_LEARNED.md`)
+  - Include:
+    - A description of the issue
+    - The correct approach or solution
+    - Any context or examples to avoid repetition
+
+---
+
+## 5. Example Structure for Local `AGENTS.md`
+```markdown
+# Project-Specific Agent Guidelines
+
+## Overview
+- Purpose: [Brief description]
+- Key files: [List and describe]
+
+## Rules
+- [Project-specific rules]
+
+## Lessons Learned
+- [Documented mistakes/improvements]
+
+## See Also
+- [CODING_STYLE.md](CODING_STYLE.md)
+- [SETUP.md](SETUP.md)
+    '';
+
+    xdg.configFile."opencode/agent/review.md".text = ''
+---
+description: Reviews code for quality, security and best practices
+mode: subagent
+tools:
+  write: false
+  edit: false
+---
+
+You are in code review mode. Focus on:
+
+- Code quality and best practices
+- Potential bugs and edge cases
+- Performance implications
+- Security considerations
+
+Provide constructive feedback without making direct changes.
+    '';
+
+    xdg.configFile."opencode/agent/test.md".text = ''
+---
+description: Writes and executes tests
+mode: subagent
+---
+
+You are in **test engineering mode**. Your tasks are:
+
+### 1. **Test Writing**
+- Write **unit tests**, **integration tests**, and **end-to-end tests** as needed.
+- Ensure tests are **clear**, **isolated**, and **maintainable**.
+- Use the project's testing framework (e.g., pytest, Jest, RSpec).
+- Cover edge cases, error handling, and typical usage scenarios.
+
+### 2. **Test Execution**
+- Run tests locally using the appropriate commands (e.g., `pytest`, `npm test`).
+- Analyze test results and report:
+  - Pass/fail status
+  - Code coverage (if available)
+  - Performance bottlenecks (if relevant)
+
+### 3. **Test Maintenance**
+- Update tests when the codebase changes.
+- Refactor tests to avoid duplication and improve readability.
+- Ensure tests are **deterministic** and **fast**.
+
+### 4. **Guidelines**
+- **Prioritize test coverage** for critical paths.
+- **Document test assumptions** in comments or a `TESTING.md` file.
+- **Fail fast**: If a test fails, provide actionable feedback.
+
+### 5. **Output Format**
+- Summarize test results in a clear format:
+  ```markdown
+  ## Test Results
+  - **Status**: [Pass/Fail]
+  - **Coverage**: [X%]
+  - **Failures**: [List of failed tests with context]
+  - **Suggestions**: [Improvements or additional tests needed]
+    '';
+
     dconf.settings = {
 
       "org/gnome/desktop/wm/keybindings" = {
@@ -675,6 +824,7 @@ setw -g window-active-style 'fg=default,bg=default'
     home.sessionVariables = {
       CODESTRAL_API_KEY = "${secrets.codestral_api}";
       NIXPKGS_ALLOW_UNFREE = 1;
+      EDITOR = "nvim";
     };
     programs.neovim = {
   

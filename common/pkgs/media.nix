@@ -15,5 +15,6 @@
     exiftool
     newsflash
     freetube
+    vdhcoapp
   ];
 }
