@@ -3,6 +3,7 @@
 {
   environment.systemPackages = with pkgs; [
     vlc
+    totem
     drawio
     libreoffice
     libsForQt5.okular

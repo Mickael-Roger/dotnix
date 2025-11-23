@@ -33,13 +33,19 @@ let
   opencode = pkgs.writeScriptBin "opencode" ''
     #!${pkgs.runtimeShell}
     export PATH=${pkgs.nodejs_20}/bin:$PATH
-    exec npx opencode-ai@latest "$@"
+    exec npx -y opencode-ai@latest "$@"
   '';
 
   gemini = pkgs.writeScriptBin "gemini" ''
     #!${pkgs.runtimeShell}
     export PATH=${pkgs.nodejs_20}/bin:$PATH
-    exec npx https://github.com/google-gemini/gemini-cli "$@"
+    exec npx -y https://github.com/google-gemini/gemini-cli "$@"
+  '';
+
+  n8n-mcp = pkgs.writeScriptBin "n8n-mcp" ''
+    #!${pkgs.runtimeShell}
+    export PATH=${pkgs.nodejs_20}/bin:$PATH
+    exec npx -y n8n-mcp@latest "$@"
   '';
 
 in {
@@ -61,6 +67,8 @@ in {
     unstable.claude-code
     opencode
     gemini
+    ## MCP
+    n8n-mcp
 
 
     pkgs.xfce.thunar
