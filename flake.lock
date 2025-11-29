@@ -17,22 +17,6 @@
         "type": "github"
       }
     },
-    "esp32-idf-src": {
-      "flake": false,
-      "locked": {
-        "lastModified": 1738140586,
-        "narHash": "sha256-Vn4PD4eH18QklgDY1vnjXJqNPmP3SJNejcBroW0yTTA=",
-        "owner": "mirrexagon",
-        "repo": "nixpkgs-esp-dev",
-        "rev": "29517b39abe729e04118bf77af526f9947f6c476",
-        "type": "github"
-      },
-      "original": {
-        "owner": "mirrexagon",
-        "repo": "nixpkgs-esp-dev",
-        "type": "github"
-      }
-    },
     "flake-parts": {
       "inputs": {
         "nixpkgs-lib": [
@@ -162,7 +146,6 @@
     "root": {
       "inputs": {
         "ctfmgntSrc": "ctfmgntSrc",
-        "esp32-idf-src": "esp32-idf-src",
         "home-manager": "home-manager",
         "nixpkgs": "nixpkgs",
         "nixpkgs-unstable": "nixpkgs-unstable",

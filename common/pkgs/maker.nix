@@ -1,4 +1,4 @@
-{ config, pkgs, esp32-idf-src, unstable, oldnixpkgs, ... }:
+{ config, pkgs, unstable, oldnixpkgs, ... }:
 let
 
   creality-print = pkgs.appimageTools.wrapType2 {
@@ -12,46 +12,46 @@ let
 
   esp32-idf-full = pkgs.writeShellScriptBin "esp32-idf-full"
   ''
-    ${pkgs.nix}/bin/nix-shell ${esp32-idf-src}/shells/esp-idf-full.nix
+    ${pkgs.nix}/bin/nix develop github:mirrexagon/nixpkgs-esp-dev#esp-idf-full
   '';
  
   esp32-idf = pkgs.writeShellScriptBin "esp32-idf"
   ''
-    ${pkgs.nix}/bin/nix-shell ${esp32-idf-src}/shells/esp32-idf.nix
+    ${pkgs.nix}/bin/nix develop github:mirrexagon/nixpkgs-esp-dev#esp32-idf
   '';
       
   esp32c3-idf = pkgs.writeShellScriptBin "esp32c3-idf"
   ''
-    ${pkgs.nix}/bin/nix-shell ${esp32-idf-src}/shells/esp32c3-idf.nix
+    ${pkgs.nix}/bin/nix develop github:mirrexagon/nixpkgs-esp-dev#esp32c3-idf
   '';
  
 
   esp32s2-idf = pkgs.writeShellScriptBin "esp32s2-idf"
   ''
-    ${pkgs.nix}/bin/nix-shell ${esp32-idf-src}/shells/esp32s2-idf.nix
+    ${pkgs.nix}/bin/nix develop github:mirrexagon/nixpkgs-esp-dev#esp32s2-idf
   '';
  
 
   esp32s3-idf = pkgs.writeShellScriptBin "esp32s3-idf"
   ''
-    ${pkgs.nix}/bin/nix-shell ${esp32-idf-src}/shells/esp32s3-idf.nix
+    ${pkgs.nix}/bin/nix develop github:mirrexagon/nixpkgs-esp-dev#esp32s3-idf
   '';
  
 
   esp32c6-idf = pkgs.writeShellScriptBin "esp32c6-idf"
   ''
-    ${pkgs.nix}/bin/nix-shell ${esp32-idf-src}/shells/esp32c6-idf.nix
+    ${pkgs.nix}/bin/nix develop github:mirrexagon/nixpkgs-esp-dev#esp32c6-idf
   '';
  
 
   esp32h2-idf = pkgs.writeShellScriptBin "esp32h2-idf"
   ''
-    ${pkgs.nix}/bin/nix-shell ${esp32-idf-src}/shells/esp32h2-idf.nix
+    ${pkgs.nix}/bin/nix develop github:mirrexagon/nixpkgs-esp-dev#esp32h2-idf
   '';
  
   esp8266-rtos-idf = pkgs.writeShellScriptBin "esp8266-rtos-idf"
   ''
-    ${pkgs.nix}/bin/nix-shell ${esp32-idf-src}/shells/esp8266-rtos-sdk.nix
+    ${pkgs.nix}/bin/nix develop github:mirrexagon/nixpkgs-esp-dev#esp8266-rtos-sdk
   '';
  
 

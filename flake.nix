@@ -18,11 +18,6 @@
       flake = false;
     };
 
-    esp32-idf-src = { 
-      url = "github:mirrexagon/nixpkgs-esp-dev";
-      flake = false;
-    };
-
     secretSrc = { 
       url = "git+ssh://git@github.com/Mickael-Roger/secrets";
       flake = false;
@@ -31,7 +26,7 @@
 
   };
 
-  outputs = { self, nixpkgs, home-manager, nur-repo, ctfmgntSrc, esp32-idf-src, secretSrc, nixpkgs-unstable, oldnixpkgs, ... }: 
+  outputs = { self, nixpkgs, home-manager, nur-repo, ctfmgntSrc, secretSrc, nixpkgs-unstable, oldnixpkgs, ... }: 
   let
 
     secrets = if builtins.pathExists ./secrets.nix
@@ -69,7 +64,7 @@
           } 
         ];
 
-        specialArgs = { inherit ctfmgntSrc esp32-idf-src secretSrc unstable nixpkgs oldnixpkgs; };
+        specialArgs = { inherit ctfmgntSrc secretSrc unstable nixpkgs oldnixpkgs; };
 
       };
 
@@ -89,7 +84,7 @@
           } 
         ];
 
-        specialArgs = { inherit ctfmgntSrc esp32-idf-src secretSrc unstable oldnixpkgs; };
+        specialArgs = { inherit ctfmgntSrc secretSrc unstable oldnixpkgs; };
 
       };
 
