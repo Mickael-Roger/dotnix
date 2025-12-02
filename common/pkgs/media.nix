@@ -1,4 +1,4 @@
-{ config, pkgs, ... }:
+{ config, pkgs, inputs, yt-x, ... }:
 
 {
   environment.systemPackages = with pkgs; [
@@ -17,5 +17,6 @@
     newsflash
     freetube
     vdhcoapp
+    yt-x.packages."${system}".default
   ];
 }

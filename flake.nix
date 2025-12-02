@@ -13,6 +13,11 @@
     nur-repo.url = "github:nix-community/NUR";
     #nur.inputs.nixpkgs.follows = "nixpkgs";  # Ensure NUR uses the same nixpkgs
 
+    yt-x = {
+      url = "github:Benexl/yt-x";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
     ctfmgntSrc = { 
       url = "github:Mickael-Roger/ctf-mgnt/0.3";
       flake = false;
@@ -26,7 +31,7 @@
 
   };
 
-  outputs = { self, nixpkgs, home-manager, nur-repo, ctfmgntSrc, secretSrc, nixpkgs-unstable, oldnixpkgs, ... }: 
+  outputs = { self, nixpkgs, home-manager, nur-repo, ctfmgntSrc, secretSrc, nixpkgs-unstable, oldnixpkgs, yt-x, ... }: 
   let
 
     secrets = if builtins.pathExists ./secrets.nix
@@ -64,7 +69,7 @@
           } 
         ];
 
-        specialArgs = { inherit ctfmgntSrc secretSrc unstable nixpkgs oldnixpkgs; };
+        specialArgs = { inherit ctfmgntSrc secretSrc unstable nixpkgs oldnixpkgs yt-x; };
 
       };
 
