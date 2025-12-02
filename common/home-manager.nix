@@ -108,7 +108,6 @@ in
       source = ./wallpapers/matrix.jpg;
     };
 
-
     xdg.configFile."opencode/opencode.json".text = ''
       {
         "$schema": "https://opencode.ai/config.json",

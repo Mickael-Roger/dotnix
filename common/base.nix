@@ -189,6 +189,16 @@
     gnomeExtensions.dash-to-dock
     gnomeExtensions.forge
     avahi
+
+  ];
+
+  fonts.packages = with pkgs; [
+    nerd-fonts.fira-code
+    nerd-fonts.droid-sans-mono
+    nerd-fonts.noto
+    nerd-fonts.hack
+    nerd-fonts.ubuntu
+
   ];
 
   services.gnome.gnome-settings-daemon.enable = true;
