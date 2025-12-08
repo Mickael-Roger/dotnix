@@ -29,6 +29,26 @@ let
     vendorHash = "sha256-kswhENk3y0Dew0cpCy8ff3hNbglBYxLYSxW0fIT6img=";
   };
 
+  firefox-tui = pkgs.buildGoModule {
+    pname = "firefox-tui";
+    version = "v1.0";
+    src = pkgs.fetchFromGitHub {
+      owner = "Mickael-Roger";
+      repo = "ff-tui";
+      rev = "v1.0";
+      sha256 = "sha256-6hurGmZkHIJcZAPRH4rf5pXE4TZZV0sAPA8L/6IoyC0=";
+    };
+    outputs = [ "out" ];
+    installPhase = ''
+      install -Dm755 $GOPATH/bin/firefox-tui $out/bin/firefox-tui
+    '';
+    vendorHash = "sha256-lKSr05aeK+HBxJKIbBPSesYpokf6D2Yol8p4OHHjNQ8=";
+  };
+
+  ffgo = pkgs.writeShellScriptBin "ff" ''
+    ${firefox-tui}/bin/firefox-tui --command list | ${pkgs.fzf}/bin/fzf --delimiter=' ' --with-nth=2.. | ${pkgs.gawk}/bin/awk '{print $1}' | ${pkgs.findutils}/bin/xargs -I{} ${firefox-tui}/bin/firefox-tui --command go {}
+  '';
+
 
   opencode = pkgs.writeScriptBin "opencode" ''
     #!${pkgs.runtimeShell}
@@ -61,6 +81,10 @@ in {
     sound-management
 
     tom
+    # Needed to manage windows into virtual desktop
+    ffgo
+    firefox-tui
+    wmctrl 
    
     # AI
     #unstable.gemini-cli

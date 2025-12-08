@@ -2,12 +2,13 @@
 
 {
   environment.systemPackages = with pkgs; [
-    firefox-wayland
+    #firefox-wayland
+    firefox
     google-chrome
   ];
   
   environment.sessionVariables = {
-    MOZ_ENABLE_WAYLAND = "1";
+    #MOZ_ENABLE_WAYLAND = "1";
     # only needed for Sway
     #XDG_CURRENT_DESKTOP = "sway"; 
   };

@@ -38,7 +38,22 @@ let
 
 
   run = pkgs.writeShellScriptBin "run" ''
-    PATH=/run/current-system/sw/bin/:$PATH ${pkgs.wofi}/bin/wofi --show drun
+    PATH=/run/current-system/sw/bin/:$PATH
+    if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+        ${pkgs.wofi}/bin/wofi --show drun
+    elif [ "$XDG_SESSION_TYPE" = "x11" ]; then
+        ${pkgs.rofi}/bin/rofi -show drun
+    fi
+  '';
+
+  ff-api-extension-xpi = pkgs.fetchurl {
+    url = "https://github.com/Mickael-Roger/firefox-api-extension/releases/download/v0.1.6/firefox-api-extension-v0.1.6.xpi";
+    sha256 = "1mfv9dwx8r147ls1gjl53n7kvg7nh3jp015m6bqk3r24rwcpc18y";
+  };
+
+  ff-api-extension = pkgs.runCommand "firefox-api-extension" {} ''
+    mkdir -p $out
+    cp ${ff-api-extension-xpi} $out/firefox-api-extension.xpi
   '';
 
 
@@ -55,8 +70,18 @@ let
 
 
   obsidian-term = pkgs.writeShellScriptBin "obsidian-term" ''
-   ${pkgs.findutils}/bin/find /data/Obsidian/mickael -name "*.md" | ${pkgs.fzf}/bin/fzf | xargs -d '\n' nvim
+    ${pkgs.findutils}/bin/find /data/Obsidian/mickael -name "*.md" | ${pkgs.fzf}/bin/fzf | xargs -d '\n' nvim
   '';
+
+
+  clipboard-copy = pkgs.writeShellScriptBin "clipboard-copy" ''
+    if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
+      ${pkgs.wl-clipboard}/bin/wl-copy
+    else
+      ${pkgs.xclip}/bin/xclip -selection clipboard
+    fi
+  '';
+
 
   alarm = pkgs.buildGoModule rec {
     pname = "alarm";
@@ -94,7 +119,6 @@ let
     touch /data/Obsidian/mickael/Inbox/$day.md
     nvim /data/Obsidian/mickael/Inbox/$day.md
   '';
-
 
 in
 {
@@ -328,6 +352,7 @@ You are in **test engineering mode**. Your tasks are:
 
       "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/firefox" = {
         name = "Firefox";
+        #command = "${pkgs.firefox}/bin/firefox --marionette";
         command = "${pkgs.firefox}/bin/firefox";
         binding = "<Super>f";
       };
@@ -432,6 +457,7 @@ You are in **test engineering mode**. Your tasks are:
         # Terminal et menu par défaut
         "$terminal" = "${pkgs.terminator}/bin/terminator -m -b";
         "$menu"     = "${run}/bin/run";
+        #"$firefox"     = "${pkgs.firefox}/bin/firefox --marionette";
         "$firefox"     = "${pkgs.firefox}/bin/firefox";
 
         # Clavier AZERTY
@@ -718,7 +744,8 @@ You are in **test engineering mode**. Your tasks are:
                 startpage-private-search 
                 privacy-redirect
                 passbolt
-            ];
+                ff-api-extension
+          ];
         };       
       };     
 
@@ -783,7 +810,7 @@ set -g @plugin 'tmux-plugins/tmux-yank'
 set -g @yank_with_mouse on
 set -g @yank_selection 'primary'
 setw -g mode-keys vi
-bind-key -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "wl-copy"
+bind-key -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "${clipboard-copy}/bin/clipboard-copy"
 set -g status-style fg=white,bg=black
 set -g status-right '#(${alarm}/bin/alarm get --tmux)     #[fg=white] %Y-%m-%d %H:%M:%S'
 set -g status-interval 2
@@ -797,11 +824,12 @@ bind a new-window -n 'tmp-alarm' '${alarm-term-create}/bin/alarm-term-create' C-
 bind C-a new-window -n 'tmp-alarm' '${alarm-term-ack}/bin/alarm-term-ack' C-m
 bind * new-window -n "tmp-note" '${create-note}/bin/create-note' C-m
 bind C-c new-window -n "tmp-cal" '${cal-term}/bin/cal-term' C-m
+bind f new-window -n "tmp-ff" '/var/run/current-system/sw/bin/ff' C-m
 bind -n S-PageUp copy-mode \; send-keys PageUp
 bind -n S-PageDown send-keys PageDown
 bind-key -T copy-mode-vi v send -X begin-selection
-bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "wl-copy"
-bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel "wl-copy"
+bind-key -T copy-mode-vi y send -X copy-pipe-and-cancel "${clipboard-copy}/bin/clipboard-copy"
+bind-key -T copy-mode-vi Enter send -X copy-pipe-and-cancel "${clipboard-copy}/bin/clipboard-copy"
 set -g @resurrect-capture-pane-contents 'on'
 set -g @resurrect-save-shell-history 'on'
 setw -g window-style 'fg=default,bg=colour234'
