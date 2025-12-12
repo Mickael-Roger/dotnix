@@ -35,8 +35,8 @@ let
     src = pkgs.fetchFromGitHub {
       owner = "Mickael-Roger";
       repo = "ff-tui";
-      rev = "v1.0";
-      sha256 = "sha256-6hurGmZkHIJcZAPRH4rf5pXE4TZZV0sAPA8L/6IoyC0=";
+      rev = "v1.1";
+      sha256 = "sha256-GInY2ffIrx53lqcRxwMXjcQYbEm7YGMIN3IZNqSR+tE=";
     };
     outputs = [ "out" ];
     installPhase = ''
