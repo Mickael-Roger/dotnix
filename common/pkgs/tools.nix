@@ -45,6 +45,27 @@ let
     vendorHash = "sha256-lKSr05aeK+HBxJKIbBPSesYpokf6D2Yol8p4OHHjNQ8=";
   };
 
+ 
+  news-cli = pkgs.buildGoModule {
+    pname = "news-cli";
+    version = "v1.2";
+    src = pkgs.fetchFromGitHub {
+      owner = "Mickael-Roger";
+      repo = "news-cli";
+      rev = "v1.2";
+      sha256 = "sha256-4BsidibEgzGMcUffZdo+QX2Tv2pdDl0yZ0qJvBHqZh8=";
+    };
+    outputs = [ "out" ];
+    installPhase = ''
+      install -Dm755 $GOPATH/bin/news-cli $out/bin/news-cli
+      mkdir -p $out/share/bash-completion/completions
+      install -m644 news-cli-completion.bash $out/share/bash-completion/completions/news-cli
+    '';
+    vendorHash = "sha256-odNmstOQ5IaAaWjnr7ibx3npK+xIh5XF5mUjOkJb2/U=";
+  };
+
+ 
+
   ffgo = pkgs.writeShellScriptBin "ff" ''
     ${firefox-tui}/bin/firefox-tui --command list | ${pkgs.fzf}/bin/fzf --delimiter=' ' --with-nth=2.. | ${pkgs.gawk}/bin/awk '{print $1}' | ${pkgs.findutils}/bin/xargs -I{} ${firefox-tui}/bin/firefox-tui --command go {}
   '';
@@ -85,6 +106,9 @@ in {
     ffgo
     firefox-tui
     wmctrl 
+
+    # Tooling
+    news-cli
    
     # AI
     #unstable.gemini-cli
@@ -96,6 +120,9 @@ in {
 
 
     pkgs.xfce.thunar
+
+
+    pkgs.fzf
 
 
     pkgs.dig

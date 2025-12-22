@@ -21,10 +21,6 @@ let
     fi
   '';
 
-  hyprland-help = pkgs.writeShellScriptBin "hyprland-help" ''
-    ${pkgs.hyprland}/bin/hyprctl binds -j | ${pkgs.jq}/bin/jq -r '.[] | ( (.modkeys // "" ) + " " + .key + " → " + .dispatcher + (if .arg=="" then "" else " ("+.arg+")" end) )' | ${pkgs.rofi}/bin/rofi -dmenu -i -p "Hyprland Keybinds"
-  '';
-
 
   goto-window = pkgs.writeShellScriptBin "goto-window" ''
     ${pkgs.wmctrl}/bin/wmctrl -l | ${pkgs.gawk}/bin/awk '{printf $1" "; for(i=4;i<=NF;i++) printf $i" "; print ""}' | ${pkgs.fzf}/bin/fzf  --delimiter=' ' --with-nth=2.. | ${pkgs.gawk}/bin/awk '{print $1}' | ${pkgs.findutils}/bin/xargs -I{} ${pkgs.wmctrl}/bin/wmctrl -i -a {}
@@ -96,6 +92,30 @@ let
   '';
 
 
+  my-news = pkgs.writeShellScriptBin "my-news" ''
+
+    if [ -z "$1" ] || [ "$1" = "list" ]; then
+        news-cli -list-unread -json | jq -r '.[] | "\(.feedName)\t\(.id)\t\(if (.title | length) > 80 then (.title[:77] + "...") else .title end)"' | fzf --delimiter='\t' --with-nth=1,3 --no-select-1 | cut -f2
+    elif [ "$1" = "read" ]; then
+        news_id=`news-cli -list-unread -json | jq -r '.[] | "\(.feedName)\t\(.id)\t\(if (.title | length) > 80 then (.title[:77] + "...") else .title end)"' | fzf --delimiter='\t' --with-nth=1,3 | cut -f2`
+        news_url=`news-cli -get-url $news_id`
+        firefox --new-window "$news_url"        
+    elif [ "$1" = "readandmark" ]; then
+        news_id=`news-cli -list-unread -json | jq -r '.[] | "\(.feedName)\t\(.id)\t\(if (.title | length) > 80 then (.title[:77] + "...") else .title end)"' | fzf --delimiter='\t' --with-nth=1,3 | cut -f2`
+        news_url=`news-cli -get-url $news_id`
+        firefox --new-window "$news_url"        
+        news-cli -mark-read $news_id
+    fi
+  '';
+
+  my-shortcut = pkgs.writeShellScriptBin "my-shortcut" ''
+    command=`cat ~/.config/shortcut | ${pkgs.fzf}/bin/fzf --delimiter='|' --with-nth=2.. --prompt='Shortcut > ' | awk -F'|' '{print $1}'`
+    if [ -n "$command" ]; then
+      eval "$command"
+    fi
+  '';
+
+
   alarm = pkgs.buildGoModule rec {
     pname = "alarm";
 
@@ -144,6 +164,21 @@ in
     home.file."background" = {
       source = ./wallpapers/matrix.jpg;
     };
+
+    xdg.configFile."shortcut".text = ''
+      ${my-news}/bin/my-news list | News: List news
+      ${my-news}/bin/my-news read | News: Open
+      ${my-news}/bin/my-news readandmark | News: Open and mark it read
+      ${ssh-connect}/bin/ssh-connect | SSH: Connect
+      ${obsidian-term}/bin/obsidian-term | Obsidian: Open a note
+      ${create-note}/bin/create-note | Obsidian: Create a note
+      ${alarm}/bin/alarm create | Alarm: Create
+      ${alarm}/bin/alarm list | Alarm: list
+      ${goto-window}/bin/goto-window | Windows: Goto an application window
+      ${cal-term}/bin/cal-term | Calendar
+      /var/run/current-system/sw/bin/ff | Firefox: Goto a tab
+    '';
+
 
     xdg.configFile."opencode/opencode.json".text = ''
       {
@@ -458,184 +493,6 @@ You are in **test engineering mode**. Your tasks are:
     programs.home-manager.enable = true;
 
 
-    wayland.windowManager.hyprland = {
-      enable = true;
-      #package = pkgs.hyprland;
-      xwayland.enable = true;
-      systemd.enable = true;
-      settings = {
-        # Touche de contrôle (mod)
-        "$mod" = "SUPER";
-
-        # Terminal et menu par défaut
-        "$terminal" = "${pkgs.terminator}/bin/terminator -m -b";
-        "$menu"     = "${run}/bin/run";
-        #"$firefox"     = "${pkgs.firefox}/bin/firefox --marionette";
-        "$firefox"     = "${pkgs.firefox}/bin/firefox";
-
-        # Clavier AZERTY
-        input = {
-          kb_layout = "fr";
-          numlock_by_default = "true";
-        };
-
-
-        general = {
-          border_size = "0";
-          #no_border_on_floating = "true";
-          gaps_in = "1";
-          gaps_out = "0";
-          resize_on_border = "false";
-          "col.active_border" = "rgba(ffffffff)";
-          "col.inactive_border" = "rgba(ffffffff)";
-
-        };
-        
-        decoration = {
-          #enabled = "yes";
-          dim_inactive = "true";
-          dim_strength = "0.4";
-          dim_special = "0.2";
-          dim_around = "0.1";
-        };
-
-        # Keybindings
-        bind = [
-          # Shortcut
-          "$mod, T, exec, $terminal"
-          "$mod, R, exec, $menu"
-          "$mod, F, exec, $firefox"
-          ", print, exec, ${ptrscreen}/bin/ptrscreen"
-          "$mod, H, exec, ${hyprland-help}/bin/hyprland-help"
-          "$mod, B, exec, ${pkgs.xfce.thunar}/bin/thunar"
-          "$mod, C, exec, ${clock}/bin/clock"
-          "$mod, Q, killactive"
-
-
-          "$mod, I, layoutmsg, orientationcycle left top"
-          "$mod, Z, fullscreen, 1"
-          "$mod CTRL, right, resizeactive, 10 0"
-          "$mod CTRL, left , resizeactive, -10 0"
-          "$mod CTRL, up   , resizeactive, 0 -10"
-          "$mod CTRL, down , resizeactive, 0 10"
-
-
-          "$mod, N, workspace, empty m"
-
-          "$mod, mouse_down, workspace, e+1"
-          "$mod, mouse_up, workspace, e-1"
-
-          "$mod, left,  workspace, e-1"
-          "$mod, right, workspace, e+1"
-          "CTRL ALT,           left,  workspace, e-1"
-          "CTRL ALT,           right, workspace, e+1"
-          "$mod SHIFT,        left,  movetoworkspace, e-1"
-          "$mod SHIFT,        right, movetoworkspace, e+1"
-          "CTRL ALT SHIFT,     left,  movetoworkspace, e-1"
-          "CTRL ALT SHIFT,     right, movetoworkspace, e+1"
-
-          "$mod, tab, cyclenext" 
-          "$mod SHIFT, tab, cyclenext, prev" 
-
-
-          "$mod, ampersand, workspace, 1"
-          "$mod, eacute, workspace, 2"
-          "$mod, quotedbl, workspace, 3"
-          "$mod, apostrophe, workspace, 4"
-          "$mod, parenleft, workspace, 5"
-          "$mod, minus, workspace, 6"
-          "$mod, egrave, workspace, 7"
-          "$mod, underscore, workspace, 8"
-          "$mod, ccedilla, workspace, 9"
-          "$mod, agrave, workspace, 10"
-
-          "$mod SHIFT, ampersand, movetoworkspace, 1"
-          "$mod SHIFT, eacute, movetoworkspace, 2"
-          "$mod SHIFT, quotedbl, movetoworkspace, 3"
-          "$mod SHIFT, apostrophe, movetoworkspace, 4"
-          "$mod SHIFT, parenleft, movetoworkspace, 5"
-          "$mod SHIFT, minus, movetoworkspace, 6"
-          "$mod SHIFT, egrave, movetoworkspace, 7"
-          "$mod SHIFT, underscore, movetoworkspace, 8"
-          "$mod SHIFT, ccedilla, movetoworkspace, 9"
-          "$mod SHIFT, agrave, movetoworkspace, 10"
-
-
-          ", F1, workspace, 1"
-          ", F2, workspace, 2"
-          ", F3, workspace, 3"
-          ", F4, workspace, 4"
-          ", F5, workspace, 5"
-          ", F6, workspace, 6"
-          ", F7, workspace, 7"
-          ", F8, workspace, 8"
-          ", F9, workspace, 9"
-          ", F10, workspace, 10"
-
-          "SHIFT, F1, movetoworkspace, 1"
-          "SHIFT, F2, movetoworkspace, 2"
-          "SHIFT, F3, movetoworkspace, 3"
-          "SHIFT, F4, movetoworkspace, 4"
-          "SHIFT, F5, movetoworkspace, 5"
-          "SHIFT, F6, movetoworkspace, 6"
-          "SHIFT, F7, movetoworkspace, 7"
-          "SHIFT, F8, movetoworkspace, 8"
-          "SHIFT, F9, movetoworkspace, 9"
-          "SHIFT, F10, movetoworkspace, 10"
-
-          ", XF86AudioLowerVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%-"
-          ", XF86AudioRaiseVolume, exec, wpctl set-volume @DEFAULT_AUDIO_SINK@ 5%+"
-          ", XF86AudioMute, exec, wpctl set-mute @DEFAULT_AUDIO_SINK@ toggle"
-
-
-
-          # Quitter Hyprland
-          "ALT, BACKSPACE, exit"
-        ];
- 
-        workspace = [
-          "1, name:communication persistent:true"
-          "2, name:brain persistent:true"
-          "3, name:terminal persistent:true"
-          "4, persistent:true"
-          "5, persistent:true"
-          "6, persistent:true"
-          "7, persistent:true"
-          "8, persistent:true"
-          "9, persistent:true"
-          "10, persistent:true"
-        ];
-       
-
-        # Autostart des applications dans les workspaces dédiés
-        exec-once = [
-          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 1"
-          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 2"
-          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 3"
-          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 4"
-          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 5"
-          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 6"
-          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 7"
-          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 8"
-          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 9"
-          "${pkgs.hyprland}/bin/hyprctl dispatch workspace 10"
-          "${pkgs.swaybg}/bin/swaybg -i /home/mickael/background -m fill"
-          "sh -c '${pkgs.hyprland}/bin/hyprctl dispatch workspace 1 && ${pkgs.thunderbird}/bin/thunderbird'"
-          "sh -c '${pkgs.hyprland}/bin/hyprctl dispatch workspace 1 && ${pkgs.discord}/bin/discord'"
-          "sh -c '${pkgs.hyprland}/bin/hyprctl dispatch workspace 2 && ${pkgs.anki}/bin/anki'"
-          "sh -c '${pkgs.hyprland}/bin/hyprctl dispatch workspace 2 && ${pkgs.obsidian}/bin/obsidian'"
-          "sh -c '${pkgs.hyprland}/bin/hyprctl dispatch workspace 3 && ${pkgs.kitty}/bin/kitty --fullscreen'"
-          #"[workspace=1 silent] ${pkgs.thunderbird}/bin/thunderbird"
-          #"[workspace=1 silent] ${pkgs.discord}/bin/discord"
-          #"[workspace=2 silent] ${pkgs.anki-bin}/bin/anki"
-          #"[workspace=2 silent] ${pkgs.obsidian}/bin/obsidian"
-          #"[workspace=3 silent] ${pkgs.kitty}/bin/kitty --fullscreen"
-        ];
-      };
-
-    };
-
-
     xdg.desktopEntries = {
       mykeepass = {
         name = "Keepass";
@@ -848,6 +705,8 @@ bind C-a new-window -n 'tmp-alarm' '${alarm-term-ack}/bin/alarm-term-ack' C-m
 bind * new-window -n "tmp-note" '${create-note}/bin/create-note' C-m
 bind g new-window -n "tmp-goto" '${goto-window}/bin/goto-window' C-m
 bind C-c new-window -n "tmp-cal" '${cal-term}/bin/cal-term' C-m
+#bind s new-window -n "tmp-shortcut" '${my-shortcut}/bin/my-shortcut' C-m
+bind s run-shell "tmux display-popup -E -h 70% -w 70% -T 'Shortcut' '${my-shortcut}/bin/my-shortcut'" C-m
 bind f new-window -n "tmp-ff" '/var/run/current-system/sw/bin/ff' C-m
 bind -n S-PageUp copy-mode \; send-keys PageUp
 bind -n S-PageDown send-keys PageDown
