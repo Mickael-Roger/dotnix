@@ -91,6 +91,39 @@ let
     fi
   '';
 
+  copyq-buff = pkgs.writeShellScriptBin "copyq-buff" ''
+    #list=""
+    #count=$(copyq count)
+    #i=0
+    #while [ $i -lt $count ]; do
+    #    entry=$(copyq read $i | tr '\n' '\u2029')
+    #    list="$list$i:$entry"$'\n'
+    #    i=$((i + 1))
+    #done
+    #
+    #selected=$(printf "%s" "$list" | fzf --ansi --preview "echo {} | tr '\u2029' '\n'" --height 100%)
+    #
+    #if [ -n "$selected" ]; then
+    #    index=$(echo "$selected" | cut -d':' -f1)
+    #    copyq select $index
+    #fi
+    count=$(copyq count)
+
+    if [ "$count" -gt 100 ]; then
+        count=100
+    fi
+    
+    selected=$(seq 0 $((count - 1)) | while read i; do
+        copyq read $i | tr '\n' '\u2029' | awk -v idx="$i" '{print idx ":" $0}'
+    done | fzf --ansi --preview "echo {} | tr '\u2029' '\n'" --height 100%)
+    
+    if [ -n "$selected" ]; then
+        index=$(echo "$selected" | cut -d':' -f1)
+        copyq select $index
+    fi
+  '';
+
+
 
   my-news = pkgs.writeShellScriptBin "my-news" ''
 
@@ -169,14 +202,15 @@ in
       ${my-news}/bin/my-news list | News: List news
       ${my-news}/bin/my-news read | News: Open
       ${my-news}/bin/my-news readandmark | News: Open and mark it read
-      ${ssh-connect}/bin/ssh-connect | SSH: Connect
-      ${obsidian-term}/bin/obsidian-term | Obsidian: Open a note
-      ${create-note}/bin/create-note | Obsidian: Create a note
-      ${alarm}/bin/alarm create | Alarm: Create
-      ${alarm}/bin/alarm list | Alarm: list
-      ${goto-window}/bin/goto-window | Windows: Goto an application window
-      ${cal-term}/bin/cal-term | Calendar
-      /var/run/current-system/sw/bin/ff | Firefox: Goto a tab
+      ${ssh-connect}/bin/ssh-connect | SSH: Connect \[Ctrl-b h]
+      ${obsidian-term}/bin/obsidian-term | Obsidian: Open a note [Ctrl-b o]
+      ${create-note}/bin/create-note | Obsidian: Create a note [Ctrl-b *]
+      ${alarm}/bin/alarm create | Alarm: Create [Ctrl-b a]
+      ${alarm}/bin/alarm list; read -n 1 -s | Alarm: list
+      ${goto-window}/bin/goto-window | Windows: Goto an application window [Ctrl-b g]
+      ${cal-term}/bin/cal-term | Calendar: Print calendar [Ctrl-b Ctrl-c]
+      /var/run/current-system/sw/bin/ff | Firefox: Goto a tab [Ctrl-b f]
+      ${copyq-buff}/bin/copyq-buff | Copyq: Select in buffer [Ctrl-b b]
     '';
 
 
@@ -705,8 +739,8 @@ bind C-a new-window -n 'tmp-alarm' '${alarm-term-ack}/bin/alarm-term-ack' C-m
 bind * new-window -n "tmp-note" '${create-note}/bin/create-note' C-m
 bind g new-window -n "tmp-goto" '${goto-window}/bin/goto-window' C-m
 bind C-c new-window -n "tmp-cal" '${cal-term}/bin/cal-term' C-m
-#bind s new-window -n "tmp-shortcut" '${my-shortcut}/bin/my-shortcut' C-m
 bind s run-shell "tmux display-popup -E -h 70% -w 70% -T 'Shortcut' '${my-shortcut}/bin/my-shortcut'" C-m
+bind b run-shell "tmux display-popup -E -h 70% -w 70% -T 'Copyq' '${copyq-buff}/bin/copyq-buff'" C-m
 bind f new-window -n "tmp-ff" '/var/run/current-system/sw/bin/ff' C-m
 bind -n S-PageUp copy-mode \; send-keys PageUp
 bind -n S-PageDown send-keys PageDown

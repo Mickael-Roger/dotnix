@@ -109,6 +109,7 @@ in {
 
     # Tooling
     news-cli
+    xclip
    
     # AI
     #unstable.gemini-cli
