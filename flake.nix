@@ -31,7 +31,7 @@
 
   };
 
-  outputs = { self, nixpkgs, home-manager, nur-repo, ctfmgntSrc, secretSrc, nixpkgs-unstable, oldnixpkgs, yt-x, ... }: 
+  outputs = { self, nixpkgs, newnixpkgs, home-manager, nur-repo, ctfmgntSrc, secretSrc, nixpkgs-unstable, oldnixpkgs, yt-x, ... }: 
   let
 
     secrets = if builtins.pathExists ./secrets.nix
@@ -89,7 +89,7 @@
           } 
         ];
 
-        specialArgs = { inherit ctfmgntSrc secretSrc unstable oldnixpkgs; };
+        specialArgs = { inherit ctfmgntSrc secretSrc unstable oldnixpkgs yt-x; };
 
       };
 

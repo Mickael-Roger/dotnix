@@ -71,13 +71,6 @@ let
   '';
 
 
-  ptrscreen = pkgs.writeShellScriptBin "ptrscreen" ''
-    mkdir -p ~/Pictures
-    #cap_file=`date +%Y%m%d%H%M%S`
-    ${pkgs.grim}/bin/grim -g "$(${pkgs.slurp}/bin/slurp)" #~/Pictures/$cap_file.png
-  '';
-
-
   obsidian-term = pkgs.writeShellScriptBin "obsidian-term" ''
     ${pkgs.findutils}/bin/find /data/Obsidian/mickael -name "*.md" | ${pkgs.fzf}/bin/fzf | xargs -d '\n' nvim
   '';
@@ -92,21 +85,6 @@ let
   '';
 
   copyq-buff = pkgs.writeShellScriptBin "copyq-buff" ''
-    #list=""
-    #count=$(copyq count)
-    #i=0
-    #while [ $i -lt $count ]; do
-    #    entry=$(copyq read $i | tr '\n' '\u2029')
-    #    list="$list$i:$entry"$'\n'
-    #    i=$((i + 1))
-    #done
-    #
-    #selected=$(printf "%s" "$list" | fzf --ansi --preview "echo {} | tr '\u2029' '\n'" --height 100%)
-    #
-    #if [ -n "$selected" ]; then
-    #    index=$(echo "$selected" | cut -d':' -f1)
-    #    copyq select $index
-    #fi
     count=$(copyq count)
 
     if [ "$count" -gt 100 ]; then
@@ -202,7 +180,7 @@ in
       ${my-news}/bin/my-news list | News: List news
       ${my-news}/bin/my-news read | News: Open
       ${my-news}/bin/my-news readandmark | News: Open and mark it read
-      ${ssh-connect}/bin/ssh-connect | SSH: Connect \[Ctrl-b h]
+      ${ssh-connect}/bin/ssh-connect | SSH: Connect [Ctrl-b h]
       ${obsidian-term}/bin/obsidian-term | Obsidian: Open a note [Ctrl-b o]
       ${create-note}/bin/create-note | Obsidian: Create a note [Ctrl-b *]
       ${alarm}/bin/alarm create | Alarm: Create [Ctrl-b a]
@@ -726,9 +704,9 @@ set -g @yank_selection 'primary'
 setw -g mode-keys vi
 bind-key -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "${clipboard-copy}/bin/clipboard-copy"
 set -g status-style fg=white,bg=black
-set -g status-right '#(${alarm}/bin/alarm get --tmux)     #[fg=white] %Y-%m-%d %H:%M:%S'
+set -g status-right '#(${alarm}/bin/alarm get --tmux)     #[fg=green] %Y-%m-%d #[fg=orange] %H:%M:%S'
 set -g status-interval 2
-set -g status-left "#(tmux-mem-cpu-load -a 0 --interval 1)  ⌨  "
+set -g status-left "#(tmux-mem-cpu-load -a 0 --interval 1)  󱂬  "
 set -g status-left-length 120
 set -g status-right-length 120
 set-option -g repeat-time 300
