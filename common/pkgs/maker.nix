@@ -1,4 +1,4 @@
-{ config, pkgs, unstable, oldnixpkgs, ... }:
+{ config, pkgs, unstable, ... }:
 let
 
   creality-print = pkgs.appimageTools.wrapType2 {

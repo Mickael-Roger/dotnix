@@ -6,7 +6,7 @@
     totem
     drawio
     libreoffice
-    libsForQt5.okular
+    kdePackages.okular
     weechat
     discord
     tuba

@@ -2,12 +2,12 @@
   description = "Mickael NixOS configuration for my systems";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.05";
-    oldnixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    #oldnixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
 
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     
-    home-manager.url = "github:nix-community/home-manager/release-25.05";
+    home-manager.url = "github:nix-community/home-manager/release-25.11";
     home-manager.inputs.nixpkgs.follows = "nixpkgs";  # Ensure Home Manager uses the same nixpkgs
 
     nur-repo.url = "github:nix-community/NUR";
@@ -19,7 +19,7 @@
     };
 
     ctfmgntSrc = { 
-      url = "github:Mickael-Roger/ctf-mgnt/0.3";
+      url = "github:Mickael-Roger/ctf-mgnt/0.3.3";
       flake = false;
     };
 
@@ -31,7 +31,7 @@
 
   };
 
-  outputs = { self, nixpkgs, newnixpkgs, home-manager, nur-repo, ctfmgntSrc, secretSrc, nixpkgs-unstable, oldnixpkgs, yt-x, ... }: 
+  outputs = { self, nixpkgs, home-manager, nur-repo, ctfmgntSrc, secretSrc, nixpkgs-unstable, yt-x, ... }: 
   let
 
     secrets = if builtins.pathExists ./secrets.nix
@@ -69,7 +69,7 @@
           } 
         ];
 
-        specialArgs = { inherit ctfmgntSrc secretSrc unstable nixpkgs oldnixpkgs yt-x; };
+        specialArgs = { inherit ctfmgntSrc secretSrc unstable nixpkgs yt-x; };
 
       };
 
@@ -89,7 +89,7 @@
           } 
         ];
 
-        specialArgs = { inherit ctfmgntSrc secretSrc unstable oldnixpkgs yt-x; };
+        specialArgs = { inherit ctfmgntSrc secretSrc unstable yt-x; };
 
       };
 

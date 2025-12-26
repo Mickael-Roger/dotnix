@@ -13,7 +13,7 @@
     gotests
     iferr
     borg-sans-mono
-    ansible-language-server
+    #ansible-language-server
     gdb
     gef
     gcc
@@ -29,10 +29,10 @@
     protobuf
     protobufc
     python3Packages.protobuf
-    #tinygo
+    tinygo
     wazero
     nixd
-    wasmer
+    #wasmer
     wabt
     cloc
     android-studio

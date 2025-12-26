@@ -159,7 +159,6 @@ in {
     pkgs.googleearth-pro
 
     pkgs.yubikey-manager
-    pkgs.yubikey-manager-qt
 
     pkgs.sqlite
 

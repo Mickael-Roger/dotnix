@@ -704,7 +704,7 @@ set -g @yank_selection 'primary'
 setw -g mode-keys vi
 bind-key -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "${clipboard-copy}/bin/clipboard-copy"
 set -g status-style fg=white,bg=black
-set -g status-right '#(${alarm}/bin/alarm get --tmux)     #[fg=green] %Y-%m-%d #[fg=orange] %H:%M:%S'
+set -g status-right '#(${alarm}/bin/alarm get --tmux)     #[fg=orange] %d.%m.%Y #[fg=pink] %H:%M:%S'
 set -g status-interval 2
 set -g status-left "#(tmux-mem-cpu-load -a 0 --interval 1)  󱂬  "
 set -g status-left-length 120
