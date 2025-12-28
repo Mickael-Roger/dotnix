@@ -34,6 +34,7 @@ let
     SUPER F     -> Launch Firefox
     SUPER B     -> Launch Nautilus
     SUPER R     -> Launcher
+    SUPER G     -> Goto Window
     SUPER <-    -> Window half screen on left" |  ${pkgs.zenity}/bin/zenity --text-info --width=500 --height=400
   '';
 
@@ -395,6 +396,7 @@ You are in **test engineering mode**. Your tasks are:
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/nautilus/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/run/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/help/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/goto/"
         ];
       };
   
@@ -429,6 +431,11 @@ You are in **test engineering mode**. Your tasks are:
         binding = "<Super>r";
       };
 
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/goto" = {
+        name = "Goto";
+        command = "${pkgs.rofi}/bin/rofi -show window";
+        binding = "<Super>g";
+      };
 
 
       "org/gnome/desktop/background" = {
