@@ -23,14 +23,10 @@
   networking.hostName = "xps-mick"; 
 
   # Power management for laptop - don't sleep when on AC power
-  powerManagement = {
-    enable = true;
-    # Don't suspend when lid is closed if external monitor is connected
-    logind = {
-      handleLidSwitch = "ignore";
-      handleLidSwitchExternalPower = "ignore";
-      handleLidSwitchDocked = "ignore";
-    };
+  services.logind.settings.Login = {
+    handleLidSwitch = "ignore";
+    handleLidSwitchExternalPower = "ignore";
+    handleLidSwitchDocked = "ignore";
   };
 
   # Additional power settings to prevent sleep on AC power
