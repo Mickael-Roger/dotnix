@@ -54,10 +54,6 @@
     enable = true;
     layout = "fr";
   };
-  # Use Wayland
-  programs.sway.enable = true;
-  xdg.portal.enable = true;
-  xdg.portal.wlr.enable = true;
 
   # PCSCd for Yubikey PIV
   services.pcscd.enable = true;
@@ -66,8 +62,9 @@
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
   
-  programs.hyprland.enable = true;
-  programs.hyprland.xwayland.enable = true;
+  # Disable Wayland compositors to force Xorg
+  programs.hyprland.enable = false;
+  programs.sway.enable = false;
 
   services.udev.packages = with pkgs; [ gnome-settings-daemon ];
  
