@@ -452,12 +452,6 @@ You are in **test engineering mode**. Your tasks are:
         clock-show-seconds = true;
         clock-show-weekday = true;
       };
-      "org/gnome/gitlab/cheywood/Iotas" = {
-        nextcloud-endpoint = "https://nextcloud.taila2494.ts.net";
-        nextcloud-username = "mickael";
-        backup-note-extension = "md";
-        index-category-style = "blue";
-      };
       "org/gnome/desktop/wm/preferences" = {
         button-layout = "menu:minimize,maximize,spacer,close";
       };
@@ -522,12 +516,6 @@ You are in **test engineering mode**. Your tasks are:
         categories = [ "Application" ];
       };
     };
-
-    services.nextcloud-client = { 
-      enable = true;
-      startInBackground = true;
-    };
-
 
     xdg = {
       enable = true;
