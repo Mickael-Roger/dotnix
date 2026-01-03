@@ -533,6 +533,10 @@ You are in **test engineering mode**. Your tasks are:
       '';
     };
 
+    programs.rofi.enable = true;
+    programs.rofi.package = pkgs.rofi-wayland;
+
+
 
     programs.git = {
       enable = true;
