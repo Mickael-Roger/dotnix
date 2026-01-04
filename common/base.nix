@@ -61,6 +61,11 @@
   # Enable the GNOME Desktop Environment.
   services.xserver.displayManager.gdm.enable = true;
   services.xserver.desktopManager.gnome.enable = true;
+
+  # Cosmic
+  services.desktopManager.cosmic.enable = true;
+  hardware.opengl.enable = true;
+
   
   # Disable Wayland compositors to force Xorg
   programs.hyprland.enable = false;

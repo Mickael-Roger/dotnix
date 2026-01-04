@@ -533,6 +533,52 @@ You are in **test engineering mode**. Your tasks are:
       '';
     };
 
+
+    xdg.configFile."cosmic/settings.ron".text = ''
+      {
+        panel: {
+          enabled: false
+        }
+      }
+    '';
+
+    xdg.configFile."cosmic/shortcuts.ron".text = ''
+      [
+        # Workspace navigation
+        (action: WorkspaceNext, binding: "Ctrl+Alt+Right"),
+        (action: WorkspacePrev, binding: "Ctrl+Alt+Left"),
+
+        # Snap / Move window
+        (action: MoveWindowLeft,  binding: "Super+Left"),
+        (action: MoveWindowRight, binding: "Super+Right"),
+        (action: MoveWindowUp,    binding: "Super+Up"),
+        (action: MoveWindowDown,  binding: "Super+Down"),
+
+        # Move window to another workspace
+        (action: MoveWindowNextWorkspace, binding: "Ctrl+Super+Right"),
+        (action: MoveWindowPrevWorkspace, binding: "Ctrl+Super+Left"),
+  
+        # Rofi
+        (action: Spawn("rofi -show drun"), binding: "Super+r"),
+  
+        # Help
+        (action: Spawn("${g-help}/bin/g-help"), binding: "Super+h"),
+
+        # Terminator
+        (action: Spawn("${pkgs.terminator}/bin/terminator"), binding: "Super+t"),
+
+        # Firefox
+        (action: Spawn("${pkgs.firefox}/bin/firefox"), binding: "Super+f"),
+
+        # File browser
+        (action: Spawn("${pkgs.cosmic-files}/bin/cosmic-files"), binding: "Super+b"),
+
+        # Go to Window
+        (action: Spawn("${pkgs.cosmic-launcher}/bin/cosmic-launcher"), binding: "Super+g")
+
+      ]
+    '';
+
     programs.rofi.enable = true;
     programs.rofi.package = pkgs.rofi;
 
