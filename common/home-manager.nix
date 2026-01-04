@@ -542,6 +542,12 @@ You are in **test engineering mode**. Your tasks are:
       }
     '';
 
+    xdg.configFile."cosmic/com.system76.CosmicPanel/v1/entries".text = ''
+      [
+        "Panel",
+      ]
+    '';
+
     xdg.configFile."cosmic/com.system76.CosmicSettings.Shortcuts/v1/custom".text = ''
       {
         (modifiers: [ Super, ], key: "Left", ): Move(Left),
@@ -552,7 +558,7 @@ You are in **test engineering mode**. Your tasks are:
         (modifiers: [ Super, Ctrl, ], key: "Right", ): MoveToNextWorkspace,
         (modifiers: [ Super, Ctrl, ], key: "Left", ): MoveToPrevWorkspace,
   
-        (modifiers: [ Super, ], key: "v", description: Some("Rofi"), ): Spawn("rofi -show drun"),
+        (modifiers: [ Super, ], key: "r", description: Some("Rofi"), ): Spawn("rofi -show drun"),
   
         (modifiers: [ Super, ], key: "h", description: Some("Help"), ): Spawn("${g-help}/bin/g-help"),
 
