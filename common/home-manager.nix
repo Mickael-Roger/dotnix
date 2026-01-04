@@ -544,34 +544,24 @@ You are in **test engineering mode**. Your tasks are:
 
     xdg.configFile."cosmic/com.system76.CosmicSettings.Shortcuts/v1/custom".text = ''
       {
-        # Workspace navigation
-
-        # Snap / Move window
         (modifiers: [ Super, ], key: "Left", ): Move(Left),
         (modifiers: [ Super, ], key: "Right", ): Move(Right),
         (modifiers: [ Super, ], key: "Up", ): Move(Up),
         (modifiers: [ Super, ], key: "Down", ): Move(Down),
 
-        # Move window to another workspace
         (modifiers: [ Super, Ctrl, ], key: "Right", ): MoveToNextWorkspace,
         (modifiers: [ Super, Ctrl, ], key: "Left", ): MoveToPrevWorkspace,
   
-        # Rofi
         (modifiers: [ Super, ], key: "v", description: Some("Rofi"), ): Spawn("rofi -show drun"),
   
-        # Help
         (modifiers: [ Super, ], key: "h", description: Some("Help"), ): Spawn("${g-help}/bin/g-help"),
 
-        # Terminator
         (modifiers: [ Super, ], key: "t", description: Some("Terminator"), ): Spawn("${pkgs.terminator}/bin/terminator"),
 
-        # Firefox
         (modifiers: [ Super, ], key: "f", description: Some("Firefox"), ): Spawn("${pkgs.firefox}/bin/firefox"),
 
-        # File browser
         (modifiers: [ Super, ], key: "b", description: Some("Browse"), ): Spawn("${pkgs.cosmic-files}/bin/cosmic-files"),
 
-        # Go to Window
         (modifiers: [ Super, ], key: "g", description: Some("Goto"), ): Spawn("${pkgs.cosmic-launcher}/bin/cosmic-launcher"),
 
       }
