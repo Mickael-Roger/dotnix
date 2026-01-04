@@ -534,12 +534,10 @@ You are in **test engineering mode**. Your tasks are:
     };
 
 
-    xdg.configFile."cosmic/settings.ron".text = ''
-      {
-        panel: {
-          enabled: false
-        }
-      }
+    xdg.configFile."cosmic/com.system76.CosmicSettings.Wallpaper/v1/custom-images".text = ''
+      [
+        "/home/mickael/background",
+      ]
     '';
 
     xdg.configFile."cosmic/com.system76.CosmicPanel/v1/entries".text = ''
