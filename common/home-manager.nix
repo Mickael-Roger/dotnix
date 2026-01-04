@@ -542,41 +542,39 @@ You are in **test engineering mode**. Your tasks are:
       }
     '';
 
-    xdg.configFile."cosmic/shortcuts.ron".text = ''
-      [
+    xdg.configFile."cosmic/com.system76.CosmicSettings.Shortcuts/v1/custom".text = ''
+      {
         # Workspace navigation
-        (action: WorkspaceNext, binding: "Ctrl+Alt+Right"),
-        (action: WorkspacePrev, binding: "Ctrl+Alt+Left"),
 
         # Snap / Move window
-        (action: MoveWindowLeft,  binding: "Super+Left"),
-        (action: MoveWindowRight, binding: "Super+Right"),
-        (action: MoveWindowUp,    binding: "Super+Up"),
-        (action: MoveWindowDown,  binding: "Super+Down"),
+        (modifiers: [ Super, ], key: "Left", ): Move(Left),
+        (modifiers: [ Super, ], key: "Right", ): Move(Right),
+        (modifiers: [ Super, ], key: "Up", ): Move(Up),
+        (modifiers: [ Super, ], key: "Down", ): Move(Down),
 
         # Move window to another workspace
-        (action: MoveWindowNextWorkspace, binding: "Ctrl+Super+Right"),
-        (action: MoveWindowPrevWorkspace, binding: "Ctrl+Super+Left"),
+        (modifiers: [ Super, Ctrl, ], key: "Right", ): MoveToNextWorkspace,
+        (modifiers: [ Super, Ctrl, ], key: "Left", ): MoveToPrevWorkspace,
   
         # Rofi
-        (action: Spawn("rofi -show drun"), binding: "Super+r"),
+        (modifiers: [ Super, ], key: "v", description: Some("Rofi"), ): Spawn("rofi -show drun"),
   
         # Help
-        (action: Spawn("${g-help}/bin/g-help"), binding: "Super+h"),
+        (modifiers: [ Super, ], key: "h", description: Some("Help"), ): Spawn("${g-help}/bin/g-help"),
 
         # Terminator
-        (action: Spawn("${pkgs.terminator}/bin/terminator"), binding: "Super+t"),
+        (modifiers: [ Super, ], key: "t", description: Some("Terminator"), ): Spawn("${pkgs.terminator}/bin/terminator"),
 
         # Firefox
-        (action: Spawn("${pkgs.firefox}/bin/firefox"), binding: "Super+f"),
+        (modifiers: [ Super, ], key: "f", description: Some("Firefox"), ): Spawn("${pkgs.firefox}/bin/firefox"),
 
         # File browser
-        (action: Spawn("${pkgs.cosmic-files}/bin/cosmic-files"), binding: "Super+b"),
+        (modifiers: [ Super, ], key: "b", description: Some("Browse"), ): Spawn("${pkgs.cosmic-files}/bin/cosmic-files"),
 
         # Go to Window
-        (action: Spawn("${pkgs.cosmic-launcher}/bin/cosmic-launcher"), binding: "Super+g")
+        (modifiers: [ Super, ], key: "g", description: Some("Goto"), ): Spawn("${pkgs.cosmic-launcher}/bin/cosmic-launcher"),
 
-      ]
+      }
     '';
 
     programs.rofi.enable = true;
