@@ -60,11 +60,21 @@ let
 
 
   firefox-api-extension = pkgs.fetchFromGitHub {
-      owner = "Mickael-Roger";
-      repo = "firefox-api-extension";
-      rev = "v1.0.21";
-      sha256 = "sha256-a2vhpSgAcm9WGmowV5RMafk65J11P6VjS0iIMP93Y4k=";
-    };
+    owner = "Mickael-Roger";
+    repo = "firefox-api-extension";
+    rev = "v1.0.21";
+    sha256 = "sha256-a2vhpSgAcm9WGmowV5RMafk65J11P6VjS0iIMP93Y4k=";
+  };
+
+  next-meeting =  pkgs.writeShellScriptBin "next-meeting" ''
+    ${pkgs.khal}/bin/khal list today --json start-long --json title | ${pkgs.jq}/bin/jq -s --arg now "$(date '+%Y-%m-%d %H:%M')" '
+      flatten
+      | map(select(.["start-long"] >= $now))
+      | sort_by(."start-long")
+      | .[0]
+      | "\(.["start-long"] | strptime("%Y-%m-%d %H:%M") | strftime("%d-%m %H:%M")) \(.title)"
+    '
+  '';
 
 
   clock = pkgs.writeShellScriptBin "clock" ''
@@ -199,7 +209,7 @@ in
       type = calendar
       
       [[perso]]
-      path = /home/mickael/.local/share/vdirsyncer/calendars/Famille
+      path = /home/mickael/.local/share/vdirsyncer/calendars/Calendar
       type = calendar
       
       [locale]
@@ -667,12 +677,14 @@ set -g @yank_selection 'primary'
 setw -g mode-keys vi
 bind-key -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "${clipboard-copy}/bin/clipboard-copy"
 set -g status-style fg=white,bg=black
-set -g status-right '#(${alarm}/bin/alarm get --tmux)     #[fg=orange] %d.%m.%Y #[fg=pink] %H:%M:%S'
+set -g status-right '#[fg=green] #(${next-meeting}/bin/next-meeting)  #[fg=white]#(${alarm}/bin/alarm get --tmux)   #[fg=orange] %d.%m.%Y #[fg=pink]%H:%M:%S'
 set -g status-interval 2
-set -g status-left "#(tmux-mem-cpu-load -a 0 --interval 1)  󱂬  "
+set -g status-left "#(tmux-mem-cpu-load -a 0 --interval 1) "
 set -g status-left-length 120
 set -g status-right-length 120
 set-option -g repeat-time 300
+set -g window-status-format ""
+set -g window-status-current-format ""
 bind h new-window -n "tmp-ssh" '${ssh-connect}/bin/ssh-connect' C-m
 bind o new-window -n "tmp-obsidian" '${obsidian-term}/bin/obsidian-term' C-m
 bind a new-window -n 'tmp-alarm' '${alarm-term-create}/bin/alarm-term-create' C-m
