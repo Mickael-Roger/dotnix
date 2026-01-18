@@ -116,6 +116,9 @@ in {
     unstable.claude-code
     opencode
     gemini
+    pkgs.llm
+    pkgs.python313Packages.llm-mistral
+    pkgs.python313Packages.llm-openrouter
     ## MCP
     n8n-mcp
 
