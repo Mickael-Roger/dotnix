@@ -169,6 +169,9 @@ in {
     # Productivity
     pkgs.anki-bin
     pkgs.obsidian
+    pkgs.basalt
+    pkgs.khal
+    pkgs.todoman
     #pkgs.synology-drive-client
     #pkgs.nextcloud-client
   ];

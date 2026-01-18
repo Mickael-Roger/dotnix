@@ -76,6 +76,10 @@ let
     ${pkgs.findutils}/bin/find /data/Obsidian/mickael -name "*.md" | ${pkgs.fzf}/bin/fzf | xargs -d '\n' nvim
   '';
 
+  todo-term = pkgs.writeShellScriptBin "todo-term" ''
+    ${pkgs.todoman}/bin/todo list --sort due
+   read -n1
+  '';
 
   clipboard-copy = pkgs.writeShellScriptBin "clipboard-copy" ''
     if [ "$XDG_SESSION_TYPE" = "wayland" ]; then
@@ -128,6 +132,15 @@ let
   '';
 
 
+  tmux-windows = pkgs.writeShellScriptBin "tmux-windows" ''
+    window=$(${pkgs.tmux}/bin/tmux list-windows -F '#W' | ${pkgs.fzf}/bin/fzf --prompt="tmux window > ")
+    
+    if [ -n "$window" ]; then
+        ${pkgs.tmux}/bin/tmux select-window -t "$window"
+    fi
+  '';
+
+
   alarm = pkgs.buildGoModule rec {
     pname = "alarm";
 
@@ -155,9 +168,10 @@ let
   '';
 
   cal-term = pkgs.writeShellScriptBin "cal-term" ''
-   ${pkgs.util-linux}/bin/cal -y
-   read -n 1 -s
+   ${pkgs.khal}/bin/ikhal
   '';
+
+
 
   create-note = pkgs.writeShellScriptBin "create-note" ''
     day=`${pkgs.coreutils-full}/bin/date +'%Y-%m-%d'`
@@ -177,6 +191,38 @@ in
       source = ./wallpapers/matrix.jpg;
     };
 
+    xdg.configFile."khal/config".text = ''
+      [calendars]
+
+      [[famille]]
+      path = /home/mickael/.local/share/vdirsyncer/calendars/Famille
+      type = calendar
+      
+      [[perso]]
+      path = /home/mickael/.local/share/vdirsyncer/calendars/Famille
+      type = calendar
+      
+      [locale]
+      timeformat = %H:%M
+      dateformat = %Y-%m-%d
+      longdateformat = %Y-%m-%d
+      datetimeformat = %Y-%m-%d %H:%M
+      longdatetimeformat = %Y-%m-%d %H:%M
+      
+      [default]
+      default_calendar = famille
+
+    '';
+
+    xdg.configFile."todoman/config.py".text = ''
+      path = "~/.local/share/vdirsyncer/tasks/*"
+      time_format = "%H:%M"
+      date_format = "%Y-%m-%d"
+      default_list = "Todo"
+      default_due = 48
+      
+    '';
+
     xdg.configFile."shortcut".text = ''
       ${my-news}/bin/my-news list | News: List news
       ${my-news}/bin/my-news read | News: Open
@@ -190,6 +236,7 @@ in
       ${cal-term}/bin/cal-term | Calendar: Print calendar [Ctrl-b Ctrl-c]
       /var/run/current-system/sw/bin/ff | Firefox: Goto a tab [Ctrl-b f]
       ${copyq-buff}/bin/copyq-buff | Copyq: Select in buffer [Ctrl-b b]
+      ${todo-term}/bin/todo-term | Todo: List Todo [Ctrl-b t]
     '';
 
 
@@ -228,130 +275,9 @@ in
       }
     '';
 
-    xdg.configFile."opencode/AGENTS.md".text = ''
-# Global Agent Guidelines
-
-This file (`AGENTS.md`) defines global rules and best practices for all projects. If a local `AGENTS.md` does not exist or is empty, create one based on the project's content and these guidelines.
-
----
-
-## 1. Language and Documentation Standards
-- **Always use English** for:
-  - `README.md` and all markdown files
-  - Code comments
-  - Variable, function, and file names
-  - Any project-related documentation
-
----
-
-## 2. Local `AGENTS.md` Management
-- **After any action** that modifies code or local files:
-  - Update the local `AGENTS.md` if the change is relevant to the project (e.g., new features, bug fixes, configuration changes).
-  - Ensure all relevant information is recorded in `AGENTS.md`.
-
----
-
-## 3. File Organization
-- **If `AGENTS.md` becomes too large** or its content can be logically split:
-  - Split it into dedicated markdown files (e.g., `CODING_STYLE.md`, `SETUP.md`, `DEPENDENCIES.md`).
-  - Reference these files in the main `AGENTS.md` under clear sections, e.g.:
-    ```markdown
-    ## Coding Style
-    See [CODING_STYLE.md](CODING_STYLE.md) for detailed guidelines.
-    ```
-
----
-
-## 4. Error Handling and Learning
-- **When a user points out an error or suboptimal action**:
-  - If the issue is relevant and likely to recur, document it in:
-    - The local `AGENTS.md` (if not split)
-    - The appropriate dedicated file (if split, e.g., `PITFALLS.md` or `LESSONS_LEARNED.md`)
-  - Include:
-    - A description of the issue
-    - The correct approach or solution
-    - Any context or examples to avoid repetition
-
----
-
-## 5. Example Structure for Local `AGENTS.md`
-```markdown
-# Project-Specific Agent Guidelines
-
-## Overview
-- Purpose: [Brief description]
-- Key files: [List and describe]
-
-## Rules
-- [Project-specific rules]
-
-## Lessons Learned
-- [Documented mistakes/improvements]
-
-## See Also
-- [CODING_STYLE.md](CODING_STYLE.md)
-- [SETUP.md](SETUP.md)
-    '';
-
-    xdg.configFile."opencode/agent/review.md".text = ''
----
-description: Reviews code for quality, security and best practices
-mode: subagent
-tools:
-  write: false
-  edit: false
----
-
-You are in code review mode. Focus on:
-
-- Code quality and best practices
-- Potential bugs and edge cases
-- Performance implications
-- Security considerations
-
-Provide constructive feedback without making direct changes.
-    '';
-
-    xdg.configFile."opencode/agent/test.md".text = ''
----
-description: Writes and executes tests
-mode: subagent
----
-
-You are in **test engineering mode**. Your tasks are:
-
-### 1. **Test Writing**
-- Write **unit tests**, **integration tests**, and **end-to-end tests** as needed.
-- Ensure tests are **clear**, **isolated**, and **maintainable**.
-- Use the project's testing framework (e.g., pytest, Jest, RSpec).
-- Cover edge cases, error handling, and typical usage scenarios.
-
-### 2. **Test Execution**
-- Run tests locally using the appropriate commands (e.g., `pytest`, `npm test`).
-- Analyze test results and report:
-  - Pass/fail status
-  - Code coverage (if available)
-  - Performance bottlenecks (if relevant)
-
-### 3. **Test Maintenance**
-- Update tests when the codebase changes.
-- Refactor tests to avoid duplication and improve readability.
-- Ensure tests are **deterministic** and **fast**.
-
-### 4. **Guidelines**
-- **Prioritize test coverage** for critical paths.
-- **Document test assumptions** in comments or a `TESTING.md` file.
-- **Fail fast**: If a test fails, provide actionable feedback.
-
-### 5. **Output Format**
-- Summarize test results in a clear format:
-  ```markdown
-  ## Test Results
-  - **Status**: [Pass/Fail]
-  - **Coverage**: [X%]
-  - **Failures**: [List of failed tests with context]
-  - **Suggestions**: [Improvements or additional tests needed]
-    '';
+    xdg.configFile."opencode/AGENTS.md".text = builtins.readFile ./config-files/opencode/AGENTS.md;
+    xdg.configFile."opencode/agent/review.md".text =  builtins.readFile ./config-files/opencode/agent/review.md;
+    xdg.configFile."opencode/agent/test.md".text =  builtins.readFile ./config-files/opencode/agent/test.md;
 
     dconf.settings = {
 
@@ -753,9 +679,12 @@ bind a new-window -n 'tmp-alarm' '${alarm-term-create}/bin/alarm-term-create' C-
 bind C-a new-window -n 'tmp-alarm' '${alarm-term-ack}/bin/alarm-term-ack' C-m
 bind * new-window -n "tmp-note" '${create-note}/bin/create-note' C-m
 bind g new-window -n "tmp-goto" '${goto-window}/bin/goto-window' C-m
-bind C-c new-window -n "tmp-cal" '${cal-term}/bin/cal-term' C-m
+#bind C-c new-window -n "tmp-cal" '${cal-term}/bin/cal-term' C-m
+bind C-c run-shell "tmux display-popup -E -h 70% -w 70% -T 'Calendar' '${cal-term}/bin/cal-term'" C-m
 bind s run-shell "tmux display-popup -E -h 70% -w 70% -T 'Shortcut' '${my-shortcut}/bin/my-shortcut'" C-m
 bind b run-shell "tmux display-popup -E -h 70% -w 70% -T 'Copyq' '${copyq-buff}/bin/copyq-buff'" C-m
+bind w run-shell "tmux display-popup -E -h 70% -w 70% -T 'Windows' '${tmux-windows}/bin/tmux-windows'" C-m
+bind t run-shell "tmux display-popup -E -h 70% -w 70% -T 'Todo' '${todo-term}/bin/todo-term'" C-m
 bind f new-window -n "tmp-ff" '/var/run/current-system/sw/bin/ff' C-m
 bind -n S-PageUp copy-mode \; send-keys PageUp
 bind -n S-PageDown send-keys PageDown
@@ -810,7 +739,7 @@ setw -g window-active-style 'fg=default,bg=default'
 	nvchad
       ];
 
-      extraLuaConfig = builtins.readFile  ./config-files/nvim/init.lua;
+      extraLuaConfig = builtins.readFile ./config-files/nvim/init.lua;
   
     };
 
