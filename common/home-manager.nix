@@ -135,7 +135,7 @@ let
   '';
 
   my-shortcut = pkgs.writeShellScriptBin "my-shortcut" ''
-    command=`cat ~/.config/shortcut | ${pkgs.fzf}/bin/fzf --delimiter='|' --with-nth=2.. --prompt='Shortcut > ' | awk -F'|' '{print $1}'`
+    command=`cat ~/.config/shortcut | ${pkgs.fzf}/bin/fzf --delimiter='|' --with-nth=2.. --prompt='Shortcut > ' | ${pkgs.gawk}/bin/awk -F'|' '{print $1}'`
     if [ -n "$command" ]; then
       eval "$command"
     fi
@@ -143,7 +143,7 @@ let
 
 
   tmux-windows = pkgs.writeShellScriptBin "tmux-windows" ''
-    window=$(${pkgs.tmux}/bin/tmux list-windows -F '#W' | ${pkgs.fzf}/bin/fzf --prompt="tmux window > ")
+    window=$(${pkgs.tmux}/bin/tmux list-windows -F '#I #W' | ${pkgs.fzf}/bin/fzf --prompt="tmux window > " | ${pkgs.gawk}/bin/awk '{print $1}')
     
     if [ -n "$window" ]; then
         ${pkgs.tmux}/bin/tmux select-window -t "$window"
@@ -679,7 +679,7 @@ bind-key -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "${clipb
 set -g status-style fg=white,bg=black
 set -g status-right '#[fg=green] #(${next-meeting}/bin/next-meeting)  #[fg=white]#(${alarm}/bin/alarm get --tmux)   #[fg=orange] %d.%m.%Y #[fg=pink]%H:%M:%S'
 set -g status-interval 2
-set -g status-left "#(tmux-mem-cpu-load -a 0 --interval 1) "
+set -g status-left "#(tmux-mem-cpu-load -a 0 --interval 1) #[fg=blue] 󱂬 #(tmux display-message -p '#{window_name}')"
 set -g status-left-length 120
 set -g status-right-length 120
 set-option -g repeat-time 300

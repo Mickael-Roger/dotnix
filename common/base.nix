@@ -260,6 +260,13 @@
 
   };
 
+
+  # Reachy Mini USB rules
+  services.udev.extraRules = ''
+    SUBSYSTEM=="usb", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="55d3", MODE="0666", GROUP="dialout"
+    SUBSYSTEM=="usb", ATTRS{idVendor}=="38fb", ATTRS{idProduct}=="1001", MODE="0666", GROUP="dialout"
+  '';
+
   services.gnome.gnome-settings-daemon.enable = true;
 
   # Some programs need SUID wrappers, can be configured further or are
