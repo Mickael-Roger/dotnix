@@ -23,6 +23,8 @@
     bear
     python3
     python311Packages.pip
+    python313Packages.numpy
+    uv
     pyright
     cmake
     gnumake

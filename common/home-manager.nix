@@ -16,6 +16,7 @@ let
     SELECTED_HOST=$(echo "$HOSTS" | ${pkgs.fzf}/bin/fzf)
     
     if [ -n "$SELECTED_HOST" ]; then
+        ${pkgs.tmux}/bin/tmux rename-window "ssh $SELECTED_HOST"
         echo "Connect to $SELECTED_HOST ..."
         ssh "$SELECTED_HOST"
     fi
@@ -24,6 +25,10 @@ let
 
   goto-window = pkgs.writeShellScriptBin "goto-window" ''
     ${pkgs.wmctrl}/bin/wmctrl -l | ${pkgs.gawk}/bin/awk '{printf $1" "; for(i=4;i<=NF;i++) printf $i" "; print ""}' | ${pkgs.fzf}/bin/fzf  --delimiter=' ' --with-nth=2.. | ${pkgs.gawk}/bin/awk '{print $1}' | ${pkgs.findutils}/bin/xargs -I{} ${pkgs.wmctrl}/bin/wmctrl -i -a {}
+  '';
+
+  goto-ff = pkgs.writeShellScriptBin "goto-ff" ''
+    ${pkgs.wmctrl}/bin/wmctrl -l | ${pkgs.gnugrep}/bin/grep "Mozilla Firefox$" | ${pkgs.gawk}/bin/awk  {' print $1 '} | ${pkgs.findutils}/bin/xargs -I{} ${pkgs.wmctrl}/bin/wmctrl -i -a {}
   '';
 
   g-help = pkgs.writeShellScriptBin "g-help" ''
@@ -48,24 +53,6 @@ let
     fi
   '';
 
-  ff-api-extension-xpi = pkgs.fetchurl {
-    url = "https://github.com/Mickael-Roger/firefox-api-extension/releases/download/v1.0.19/firefox-api-extension-v1.0.19.xpi";
-    sha256 = "sha256-RLAXf4UGTXmiynYECvHB5cPiFokasqHERFk2HIglSEQ=";
-  };
-
-  ff-api-extension = pkgs.runCommand "firefox-api-extension" {} ''
-    mkdir -p $out
-    cp ${ff-api-extension-xpi} $out/firefox-api-extension@famille-roger.com.xpi
-  '';
-
-
-  firefox-api-extension = pkgs.fetchFromGitHub {
-    owner = "Mickael-Roger";
-    repo = "firefox-api-extension";
-    rev = "v1.0.21";
-    sha256 = "sha256-a2vhpSgAcm9WGmowV5RMafk65J11P6VjS0iIMP93Y4k=";
-  };
-
   next-meeting =  pkgs.writeShellScriptBin "next-meeting" ''
     ${pkgs.khal}/bin/khal list today --json start-long --json title | ${pkgs.jq}/bin/jq -s --arg now "$(date '+%Y-%m-%d %H:%M')" '
       flatten
@@ -83,7 +70,10 @@ let
 
 
   obsidian-term = pkgs.writeShellScriptBin "obsidian-term" ''
-    ${pkgs.findutils}/bin/find /data/Obsidian/mickael -name "*.md" | ${pkgs.fzf}/bin/fzf | xargs -d '\n' nvim
+    my_file=`${pkgs.findutils}/bin/find /data/Obsidian/mickael -name "*.md" | ${pkgs.fzf}/bin/fzf | xargs -d '\n'`
+    myfile_name=`${pkgs.coreutils}/bin/basename "$my_file"`
+    ${pkgs.tmux}/bin/tmux rename-window "Obsidian $myfile_name"
+    nvim "$my_file"
   '';
 
   todo-term = pkgs.writeShellScriptBin "todo-term" ''
@@ -564,16 +554,6 @@ in
       '';
     };
 
-    home.file.".mozilla/native-messaging-hosts/firefox_api_extension.json".text = ''
-      {
-        "name": "firefox_api_extension",
-        "description": "Native host for Firefox REST API",
-        "path": "${firefox-api-extension}/native/native_host.js",
-        "type": "stdio",
-        "allowed_extensions": ["ff-api-extension@famille-roger.com"]
-      }
-    '';
-
     programs.firefox = {
       enable = true;
       policies = {
@@ -594,6 +574,11 @@ in
             install_url = "https://addons.mozilla.org/firefox/downloads/file/4097921/reload_motive_haunt_turf5_excu-1.2.0.xpi";
             installation_mode = "force_installed";
 	  };
+          # Tab search
+          "tabsearch" = {
+            install_url = "https://addons.mozilla.org/firefox/downloads/latest/tab_search/latest.xpi";
+            installation_mode = "force_installed";
+          };
         };
       };
 
@@ -609,7 +594,6 @@ in
                 startpage-private-search 
                 privacy-redirect
                 passbolt
-                ff-api-extension
            ];
         };       
       };     
@@ -691,13 +675,12 @@ bind a new-window -n 'tmp-alarm' '${alarm-term-create}/bin/alarm-term-create' C-
 bind C-a new-window -n 'tmp-alarm' '${alarm-term-ack}/bin/alarm-term-ack' C-m
 bind * new-window -n "tmp-note" '${create-note}/bin/create-note' C-m
 bind g new-window -n "tmp-goto" '${goto-window}/bin/goto-window' C-m
-#bind C-c new-window -n "tmp-cal" '${cal-term}/bin/cal-term' C-m
 bind C-c run-shell "tmux display-popup -E -h 70% -w 70% -T 'Calendar' '${cal-term}/bin/cal-term'" C-m
 bind s run-shell "tmux display-popup -E -h 70% -w 70% -T 'Shortcut' '${my-shortcut}/bin/my-shortcut'" C-m
 bind b run-shell "tmux display-popup -E -h 70% -w 70% -T 'Copyq' '${copyq-buff}/bin/copyq-buff'" C-m
 bind w run-shell "tmux display-popup -E -h 70% -w 70% -T 'Windows' '${tmux-windows}/bin/tmux-windows'" C-m
 bind t run-shell "tmux display-popup -E -h 70% -w 70% -T 'Todo' '${todo-term}/bin/todo-term'" C-m
-bind f new-window -n "tmp-ff" '/var/run/current-system/sw/bin/ff' C-m
+bind f new-window -n "tmp-ff" '${goto-ff}/bin/goto-ff' C-m
 bind -n S-PageUp copy-mode \; send-keys PageUp
 bind -n S-PageDown send-keys PageDown
 bind-key -T copy-mode-vi v send -X begin-selection
