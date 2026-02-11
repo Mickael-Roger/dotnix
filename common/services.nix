@@ -95,17 +95,17 @@ in
 
   services.nginx.enable = true;
   services.nginx.virtualHosts = {
-      "nextcloud" = {
-        locations."/".proxyPass = "http://127.0.0.1:80/";
-        sslCertificate = "/etc/certs/server.taila2494.ts.net.crt";
-        sslCertificateKey = "/etc/certs/server.taila2494.ts.net.key";
-        onlySSL = true;
-        #listen = [{
-        #  addr = "0.0.0.0";
-        #  port = 443;
-        #  ssl = true;
-        #}];
-      };
+      #"nextcloud" = {
+      #  locations."/".proxyPass = "http://127.0.0.1:80/";
+      #  sslCertificate = "/etc/certs/server.taila2494.ts.net.crt";
+      #  sslCertificateKey = "/etc/certs/server.taila2494.ts.net.key";
+      #  onlySSL = true;
+      #  #listen = [{
+      #  #  addr = "0.0.0.0";
+      #  #  port = 443;
+      #  #  ssl = true;
+      #  #}];
+      #};
       "passbolt" = {
         locations."/".proxyPass = "http://127.0.0.1:8081/";
         sslCertificate = "/etc/certs/server.taila2494.ts.net.crt";
@@ -117,25 +117,25 @@ in
           ssl = true;
         }];
       };
-      "tom" = {
-        locations."/" = {
-          proxyPass = "http://127.0.0.1:8082/";
-          extraConfig = ''
-            proxy_connect_timeout 60s;
-            proxy_send_timeout 120s;
-            proxy_read_timeout 300s;
-            send_timeout 300s;
-          '';
-        };
-        sslCertificate = "/etc/certs/server.taila2494.ts.net.crt";
-        sslCertificateKey = "/etc/certs/server.taila2494.ts.net.key";
-        onlySSL = true;
-        listen = [{
-          addr = "0.0.0.0";
-          port = 8444;
-          ssl = true;
-        }];
-      };
+      #"tom" = {
+      #  locations."/" = {
+      #    proxyPass = "http://127.0.0.1:8082/";
+      #    extraConfig = ''
+      #      proxy_connect_timeout 60s;
+      #      proxy_send_timeout 120s;
+      #      proxy_read_timeout 300s;
+      #      send_timeout 300s;
+      #    '';
+      #  };
+      #  sslCertificate = "/etc/certs/server.taila2494.ts.net.crt";
+      #  sslCertificateKey = "/etc/certs/server.taila2494.ts.net.key";
+      #  onlySSL = true;
+      #  listen = [{
+      #    addr = "0.0.0.0";
+      #    port = 8444;
+      #    ssl = true;
+      #  }];
+      #};
    };
 
 #  services.nextcloud = {
@@ -245,33 +245,33 @@ in
   #  };
   #};
 
-  systemd.services.tom = {
-    description = "Tom";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "docker.service" "docker.socket" ];
-    requires = [ "docker.service" "docker.socket" ];
-    script = ''
-      exec ${pkgs.docker}/bin/docker run \
-          -e "TZ=Europe/Paris" \
-          --name=tom \
-          --network=host \
-          -v /etc/localtime:/etc/localtime:ro \
-          -v /data/tom/:/data/ \
-          tom:current
-    '';
-    preStop = "${pkgs.docker}/bin/docker stop tom";
-    reload = "${pkgs.docker}/bin/docker restart tom";
-    serviceConfig = {
-      ExecStartPre = [
-        "-${pkgs.docker}/bin/docker rm -f tom"
-        "-${pkgs.docker}/bin/docker image prune -f"
-      ];
-      ExecStopPost = "-${pkgs.docker}/bin/docker rm -f tom";
-      TimeoutStartSec = 0;
-      TimeoutStopSec = 120;
-      Restart = "always";
-    };
-  };
+  #systemd.services.tom = {
+  #  description = "Tom";
+  #  wantedBy = [ "multi-user.target" ];
+  #  after = [ "docker.service" "docker.socket" ];
+  #  requires = [ "docker.service" "docker.socket" ];
+  #  script = ''
+  #    exec ${pkgs.docker}/bin/docker run \
+  #        -e "TZ=Europe/Paris" \
+  #        --name=tom \
+  #        --network=host \
+  #        -v /etc/localtime:/etc/localtime:ro \
+  #        -v /data/tom/:/data/ \
+  #        tom:current
+  #  '';
+  #  preStop = "${pkgs.docker}/bin/docker stop tom";
+  #  reload = "${pkgs.docker}/bin/docker restart tom";
+  #  serviceConfig = {
+  #    ExecStartPre = [
+  #      "-${pkgs.docker}/bin/docker rm -f tom"
+  #      "-${pkgs.docker}/bin/docker image prune -f"
+  #    ];
+  #    ExecStopPost = "-${pkgs.docker}/bin/docker rm -f tom";
+  #    TimeoutStartSec = 0;
+  #    TimeoutStopSec = 120;
+  #    Restart = "always";
+  #  };
+  #};
 
 
   systemd.services.syno-backup = {
@@ -293,52 +293,52 @@ in
     wantedBy = [ "timers.target" ];
   };
 
-  systemd.services.nextcloud-update = {
-    description = "Run cron nextcloud update";
-    serviceConfig = {
-      Type = "oneshot";
-      ExecCondition = "${pkgs.docker}/bin/docker exec -t -u www-data nextcloud php -f /var/www/html/occ status -e";
-      ExecStart = "${pkgs.docker}/bin/docker exec -t -u www-data nextcloud php -f /var/www/html/cron.php";
-    };
-    wantedBy = [ "timers.target" ];
-  };
+  #systemd.services.nextcloud-update = {
+  #  description = "Run cron nextcloud update";
+  #  serviceConfig = {
+  #    Type = "oneshot";
+  #    ExecCondition = "${pkgs.docker}/bin/docker exec -t -u www-data nextcloud php -f /var/www/html/occ status -e";
+  #    ExecStart = "${pkgs.docker}/bin/docker exec -t -u www-data nextcloud php -f /var/www/html/cron.php";
+  #  };
+  #  wantedBy = [ "timers.target" ];
+  #};
 
-  systemd.timers.nextcloud-update = {
-    description = "Run nextcloud cron update every 10 minutes";
-    timerConfig = {
-      OnCalendar = "*:0/10";
-      Persistent = true;
-    };
-    wantedBy = [ "timers.target" ];
-    requires = [ "nextcloud.service" ];
-    after = [ "nextcloud.service" ];
-  };
+  #systemd.timers.nextcloud-update = {
+  #  description = "Run nextcloud cron update every 10 minutes";
+  #  timerConfig = {
+  #    OnCalendar = "*:0/10";
+  #    Persistent = true;
+  #  };
+  #  wantedBy = [ "timers.target" ];
+  #  requires = [ "nextcloud.service" ];
+  #  after = [ "nextcloud.service" ];
+  #};
 
 
-  systemd.services.nextcloud = {
-    description = "Nextcloud";
-    wantedBy = [ "multi-user.target" ];
-    after = [ "docker.service" "docker.socket" ];
-    requires = [ "docker.service" "docker.socket" ];
-    script = ''
-      exec ${pkgs.docker}/bin/docker run \
-          --name=nextcloud \
-          --network=host \
-          -v /data/Nextcloud/:/var/www/ \
-          -v /data/Nextcloud/data/:/var/www/data/ \
-          -v /data/Nextcloud/html/:/var/www/html/ \
-          nextcloud:stable-apache
-    '';
-    preStop = "${pkgs.docker}/bin/docker stop nextcloud";
-    reload = "${pkgs.docker}/bin/docker restart nextcloud";
-    serviceConfig = {
-      ExecStartPre = "-${pkgs.docker}/bin/docker rm -f nextcloud";
-      ExecStopPost = "-${pkgs.docker}/bin/docker rm -f nextcloud";
-      TimeoutStartSec = 0;
-      TimeoutStopSec = 120;
-      Restart = "always";
-    };
-  };
+  #systemd.services.nextcloud = {
+  #  description = "Nextcloud";
+  #  wantedBy = [ "multi-user.target" ];
+  #  after = [ "docker.service" "docker.socket" ];
+  #  requires = [ "docker.service" "docker.socket" ];
+  #  script = ''
+  #    exec ${pkgs.docker}/bin/docker run \
+  #        --name=nextcloud \
+  #        --network=host \
+  #        -v /data/Nextcloud/:/var/www/ \
+  #        -v /data/Nextcloud/data/:/var/www/data/ \
+  #        -v /data/Nextcloud/html/:/var/www/html/ \
+  #        nextcloud:stable-apache
+  #  '';
+  #  preStop = "${pkgs.docker}/bin/docker stop nextcloud";
+  #  reload = "${pkgs.docker}/bin/docker restart nextcloud";
+  #  serviceConfig = {
+  #    ExecStartPre = "-${pkgs.docker}/bin/docker rm -f nextcloud";
+  #    ExecStopPost = "-${pkgs.docker}/bin/docker rm -f nextcloud";
+  #    TimeoutStartSec = 0;
+  #    TimeoutStopSec = 120;
+  #    Restart = "always";
+  #  };
+  #};
 
   systemd.services.passbolt = {
     description = "passbolt";
