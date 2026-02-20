@@ -89,6 +89,42 @@ let
     exec npx -y n8n-mcp@latest "$@"
   '';
 
+  github-mcp = pkgs.buildGoModule (finalAttrs: {
+    pname = "github-mcp-server";
+    version = "0.31.0";
+  
+    src = pkgs.fetchFromGitHub {
+      owner = "github";
+      repo = "github-mcp-server";
+      tag = "v${finalAttrs.version}";
+      hash = "sha256-7vcDkN0q/bNr2dHQgM4YzmQjDjMyLLtkbdBjhmUM1/4=";
+    };
+  
+    vendorHash = "sha256-zxisK5o2zqeAkQEPKd1w8rFXoJsDB4VNEdD27uos250=";
+  
+    ldflags = [
+      "-s"
+      "-w"
+      "-X=main.version=${finalAttrs.version}"
+      "-X=main.commit=${finalAttrs.src.rev}"
+      "-X=main.date=1970-01-01T00:00:00Z"
+    ];
+  
+    __darwinAllowLocalNetworking = true;
+  
+    doInstallCheck = true;
+    versionCheckProgramArg = "--version";
+  
+    meta = {
+      changelog = "https://github.com/github/github-mcp-server/releases/tag/v${finalAttrs.version}";
+      description = "GitHub's official MCP Server";
+      homepage = "https://github.com/github/github-mcp-server";
+      license = pkgs.lib.licenses.mit;
+      mainProgram = "github-mcp-server";
+      maintainers = with pkgs.lib.maintainers; [ logger ];
+    };
+  });
+
 in {
   # For obsidian
   nixpkgs.config.permittedInsecurePackages = [
@@ -119,14 +155,19 @@ in {
     pkgs.llm
     pkgs.python313Packages.llm-mistral
     pkgs.python313Packages.llm-openrouter
+
     ## MCP
     n8n-mcp
+    github-mcp
 
 
     pkgs.xfce.thunar
 
 
     pkgs.fzf
+
+    pkgs.podman
+    pkgs.podman-compose
 
 
     pkgs.dig

@@ -2,6 +2,8 @@
 
 This file (`AGENTS.md`) defines global rules and best practices for all projects. If a local `AGENTS.md` does not exist or is empty, create one based on the project's content and these guidelines.
 
+**Always use Context7 MCP when I need library/API documentation, code generation, setup or configuration steps without me having to explicitly ask.**
+
 ---
 
 ## 1. Language and Documentation Standards

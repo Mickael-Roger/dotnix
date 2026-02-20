@@ -144,13 +144,13 @@ let
   alarm = pkgs.buildGoModule rec {
     pname = "alarm";
 
-    version = "1.4";
+    version = "1.5";
 
     src = pkgs.fetchFromGitHub {
       owner = "Mickael-Roger";
       repo = "alarm";
       rev = "v${version}";
-      sha256 = "sha256-gMkECL9sl7W7GbfdU4TA+jMpykPXtYOTI7aYh/7yDMU=";
+      sha256 = "sha256-liBeO93BdedDQHGsYMiqFOdf8aXqtd80mOWaZrd5nnI=";
     };
 
     vendorHash = "sha256-koKCD0w2KZFfG8h33UzAIImOPl82xXgMo+bac9mNUSk=";
@@ -239,7 +239,6 @@ in
       ${todo-term}/bin/todo-term | Todo: List Todo [Ctrl-b t]
     '';
 
-
     xdg.configFile."opencode/opencode.json".text = ''
       {
         "$schema": "https://opencode.ai/config.json",
@@ -249,9 +248,12 @@ in
           "context7": {
             "type": "remote",
             "url": "https://mcp.context7.com/mcp",
-            "enabled": true
+            "enabled": true,
+            "headers": {
+              "CONTEXT7_API_KEY": "${secrets.context7_api}"
+            },
           },
-          "n8n-mcp": {
+          "n8n": {
             "type": "local",
             "command": ["n8n-mcp"],
             "enabled": true,
@@ -262,7 +264,41 @@ in
               "N8N_API_URL": "${secrets.n8n.url}",
               "N8N_API_KEY": "${secrets.n8n.token}"
             }
-          }
+          },
+          "github": {
+            "type": "local",
+            "command": ["github-mcp-server"],
+            "enabled": true,
+            "environment": {
+              "GITHUB_PERSONAL_ACCESS_TOKEN": "${secrets.github_token}",
+            }
+          },
+        },
+        "tools": {
+          "n8n_*": false,
+          "github_*": false,
+          //Needs OPENCODE_ENABLE_EXA=1 env var
+          "websearch": true
+        },
+        "agent": {
+          "Git": {
+            "tools": {
+              "github_*": true,
+              "bash": true,
+              "webfetch": false,
+              "write": false,
+              "edit": false
+            }
+          },
+          "n8n": {
+            "tools": {
+              "n8n_*": true,
+              "bash": true,
+              "webfetch": true,
+              "write": true,
+              "edit": true
+            }
+          },
         },
         "lsp": {
           "pyright": {
@@ -278,6 +314,8 @@ in
     xdg.configFile."opencode/AGENTS.md".text = builtins.readFile ./config-files/opencode/AGENTS.md;
     xdg.configFile."opencode/agent/review.md".text =  builtins.readFile ./config-files/opencode/agent/review.md;
     xdg.configFile."opencode/agent/test.md".text =  builtins.readFile ./config-files/opencode/agent/test.md;
+    xdg.configFile."opencode/agent/Git.md".text =  builtins.readFile ./config-files/opencode/agent/Git.md;
+    xdg.configFile."opencode/agent/n8n.md".text =  builtins.readFile ./config-files/opencode/agent/n8n.md;
 
     dconf.settings = {
 
@@ -504,8 +542,10 @@ in
 
     programs.git = {
       enable = true;
-      userName  = "MickaelRoger";
-      userEmail = "mickael@mickael-roger.com";
+      settings = {
+        user.name  = "MickaelRoger";
+        user.email = "mickael@mickael-roger.com";
+      };
       lfs.enable = true;
       extraConfig = {
         core = {
@@ -610,6 +650,8 @@ in
           git branch 2> /dev/null | sed -e '/^[^*]/d' -e 's/* \(.*\)/ (\1)/'
         }
         export PS1="\[$(tput setaf 77)\][\u\[$(tput setaf 171)\]@\h \[$(tput setaf 39)\]\w\[$(tput sgr0)\]\[\033[32m\]\[\033[33m\]\$(parse_git_branch)\[\033[00m\]\[$(tput setaf 77)\]]\[$(tput sgr0)\]$ "
+        
+        export OPENCODE_ENABLE_EXA=1
       ''; 
     
       shellAliases = {
@@ -661,7 +703,7 @@ set -g @yank_selection 'primary'
 setw -g mode-keys vi
 bind-key -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "${clipboard-copy}/bin/clipboard-copy"
 set -g status-style fg=white,bg=black
-set -g status-right '#[fg=green] #(${next-meeting}/bin/next-meeting)  #[fg=white]#(${alarm}/bin/alarm get --tmux)   #[fg=orange] %d.%m.%Y #[fg=pink]%H:%M:%S'
+set -g status-right '#[fg=green] #(${next-meeting}/bin/next-meeting)  #[fg=white] #(${alarm}/bin/alarm get --tmux)   #[fg=orange] %d.%m.%Y #[fg=pink]%H:%M:%S'
 set -g status-interval 2
 set -g status-left "#(tmux-mem-cpu-load -a 0 --interval 1) #[fg=blue] 󱂬 #(tmux display-message -p '#{window_name}')"
 set -g status-left-length 120
