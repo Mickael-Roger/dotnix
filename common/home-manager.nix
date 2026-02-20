@@ -267,7 +267,7 @@ in
           },
           "github": {
             "type": "local",
-            "command": ["github-mcp-server"],
+            "command": ["github-mcp-server", "stdio"],
             "enabled": true,
             "environment": {
               "GITHUB_PERSONAL_ACCESS_TOKEN": "${secrets.github_token}",
