@@ -125,6 +125,7 @@ let
     };
   });
 
+
 in {
   # For obsidian
   nixpkgs.config.permittedInsecurePackages = [
@@ -204,7 +205,7 @@ in {
 
     pkgs.yubikey-manager
 
-    pkgs.sqlite
+    pkgs.sqlite-interactive
 
     pkgs.wl-clipboard
 

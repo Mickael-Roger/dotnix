@@ -159,6 +159,43 @@ let
 
   };
 
+  mcp-freshrss = pkgs.buildGoModule rec {
+    pname = "mcp-freshrss";
+
+    version = "1.0";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "Mickael-Roger";
+      repo = "mcp-freshrss";
+      rev = "v${version}";
+      sha256 = "sha256-8V8MCvwaUeLZLSU05PPz+0mRRD9XGzQ2k7N6sdy90OI=";
+    };
+
+    vendorHash = "sha256-6/twJmmCNFjQz3YHqms2to8QkprkuNGoNmpLsfAR2+o=";
+
+    subPackages = [ "." ];
+
+  };
+
+
+  mcp-tasks = pkgs.buildGoModule rec {
+    pname = "mcp-webdav-tasks";
+
+    version = "0.1";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "Mickael-Roger";
+      repo = "mcp-webdav-tasks";
+      rev = "v${version}";
+      sha256 = "sha256-xf2kcfrUfSbzBwweKiqti+JJHyVM0YYk2t2hir25nI0=";
+    };
+
+    vendorHash = "sha256-Foyk/KOJQgredlbA1YG2k6k7YEILytTCdSwUrRnlnJg=";
+
+    subPackages = [ "." ];
+
+  };
+
   alarm-term-create = pkgs.writeShellScriptBin "alarm-term-create" ''
    ${alarm}/bin/alarm create
   '';
@@ -243,8 +280,39 @@ in
       {
         "$schema": "https://opencode.ai/config.json",
         "theme": "opencode",
+        "plugin": ["opencode-gemini-auth@latest"],
         "autoupdate": false,
+        "permission": {
+          "external_directory": {
+            "{env:OPENCODE_ARCHIVER_DIRECTORY}/**": "allow"
+          },
+          "edit": {
+            "{env:OPENCODE_ARCHIVER_DIRECTORY}/**": "deny"
+          },
+          "write": {
+            "{env:OPENCODE_ARCHIVER_DIRECTORY}/**": "deny"
+          },
+        },
         "mcp": {
+          "tasks": {
+            "type": "local",
+            "command": ["${mcp-tasks}/bin/mcp-webdav-tasks"],
+            "enabled": true,
+            "environment": {
+              "MCP_WEBDAV_TASKS_SERVER": "https://zimbra1.mail.ovh.net/dav/${secrets.mail.username}/",
+              "MCP_WEBDAV_TASKS_USERNAME": "${secrets.mail.username}",
+              "MCP_WEBDAV_TASKS_PASSWORD": "${secrets.mail.password}",
+            },
+          },
+          "news": {
+            "type": "local",
+            "command": ["${mcp-freshrss}/bin/mcp-freshrss"],
+            "enabled": true,
+            "environment": {
+              "FRESHRSS_URL": "${secrets.freshrss.url}",
+              "FRESHRSS_API_KEY": "${secrets.freshrss.token}",
+            },
+          },
           "context7": {
             "type": "remote",
             "url": "https://mcp.context7.com/mcp",
@@ -273,10 +341,20 @@ in
               "GITHUB_PERSONAL_ACCESS_TOKEN": "${secrets.github_token}",
             }
           },
+          //"memory": {
+          //  "type": "local",
+          //  // Must be first installed using opencode-memory
+          //  "command": ["/home/mickael/.local/bin/opencode-memory", "--stdio"],
+          //  "enabled": true,
+          //  "environment": {
+          //    "OPENAI_API_KEY": "${secrets.opencode_memory_openai_token}"
+          //  }
+          //},
         },
         "tools": {
           "n8n_*": false,
           "github_*": false,
+          "memory_*": false,
           //Needs OPENCODE_ENABLE_EXA=1 env var
           "websearch": true
         },
@@ -285,7 +363,7 @@ in
             "tools": {
               "github_*": true,
               "bash": true,
-              "webfetch": false,
+              "webfetch": true,
               "write": false,
               "edit": false
             }
@@ -297,6 +375,21 @@ in
               "webfetch": true,
               "write": true,
               "edit": true
+            }
+          },
+          "Chat": {
+            "tools": {
+              "memory_*": true,
+              "bash": false,
+              "grep": true,
+              "webfetch": true,
+              "write": false,
+              "edit": false
+            },
+            "permission": {
+              "external_directory": {
+                "{env:OPENCODE_ARCHIVER_DIRECTORY}/**": "allow"
+              }
             }
           },
         },
@@ -316,6 +409,8 @@ in
     xdg.configFile."opencode/agent/test.md".text =  builtins.readFile ./config-files/opencode/agent/test.md;
     xdg.configFile."opencode/agent/Git.md".text =  builtins.readFile ./config-files/opencode/agent/Git.md;
     xdg.configFile."opencode/agent/n8n.md".text =  builtins.readFile ./config-files/opencode/agent/n8n.md;
+    xdg.configFile."opencode/agent/Chat.md".text =  builtins.readFile ./config-files/opencode/agent/Chat.md;
+    xdg.configFile."opencode/commands/archive.md".text =  builtins.readFile ./config-files/opencode/commands/archive.md;
 
     dconf.settings = {
 
@@ -542,12 +637,11 @@ in
 
     programs.git = {
       enable = true;
+      lfs.enable = true;
       settings = {
         user.name  = "MickaelRoger";
         user.email = "mickael@mickael-roger.com";
-      };
-      lfs.enable = true;
-      extraConfig = {
+
         core = {
           editor = "vim";
           askPass = "";
@@ -652,6 +746,7 @@ in
         export PS1="\[$(tput setaf 77)\][\u\[$(tput setaf 171)\]@\h \[$(tput setaf 39)\]\w\[$(tput sgr0)\]\[\033[32m\]\[\033[33m\]\$(parse_git_branch)\[\033[00m\]\[$(tput setaf 77)\]]\[$(tput sgr0)\]$ "
         
         export OPENCODE_ENABLE_EXA=1
+        export OPENCODE_ARCHIVER_DIRECTORY="/data/Obsidian/mickael/Logger/Opencode/"
       ''; 
     
       shellAliases = {

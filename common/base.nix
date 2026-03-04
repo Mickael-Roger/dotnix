@@ -20,6 +20,7 @@
 
   environment.variables = {
     NIXPKGS_ALLOW_UNFREE = 1;
+    LD_LIBRARY_PATH = pkgs.lib.makeLibraryPath [ pkgs.stdenv.cc.cc.lib ];
   };
 
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
@@ -52,19 +53,18 @@
   # Enable the X11 windowing system.
   services.xserver = {
     enable = true;
-    layout = "fr";
   };
 
   # PCSCd for Yubikey PIV
   services.pcscd.enable = true;
 
   # Enable the GNOME Desktop Environment.
-  services.xserver.displayManager.gdm.enable = true;
-  services.xserver.desktopManager.gnome.enable = true;
+  services.displayManager.gdm.enable = true;
+  services.desktopManager.gnome.enable = true;
 
   # Cosmic
   services.desktopManager.cosmic.enable = true;
-  hardware.opengl.enable = true;
+  hardware.graphics.enable = true;
 
   
   # Disable Wayland compositors to force Xorg
@@ -115,7 +115,7 @@
 
   # Enable sound with pipewire.
   #sound.enable = true;
-  hardware.pulseaudio.enable = false;
+  services.pulseaudio.enable = false;
   security.rtkit.enable = true;
   services.pipewire = {
     enable = true;
