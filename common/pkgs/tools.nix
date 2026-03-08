@@ -160,6 +160,7 @@ in {
     ## MCP
     n8n-mcp
     github-mcp
+    yt-dlp
 
 
     pkgs.xfce.thunar

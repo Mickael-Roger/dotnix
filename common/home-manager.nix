@@ -162,16 +162,16 @@ let
   mcp-freshrss = pkgs.buildGoModule rec {
     pname = "mcp-freshrss";
 
-    version = "1.0";
+    version = "1.4";
 
     src = pkgs.fetchFromGitHub {
       owner = "Mickael-Roger";
       repo = "mcp-freshrss";
       rev = "v${version}";
-      sha256 = "sha256-8V8MCvwaUeLZLSU05PPz+0mRRD9XGzQ2k7N6sdy90OI=";
+      sha256 = "sha256-uLEMBdxB7eBMfHsFEpgd4KIgISTls+bmremh/XwekY0=";
     };
 
-    vendorHash = "sha256-6/twJmmCNFjQz3YHqms2to8QkprkuNGoNmpLsfAR2+o=";
+    vendorHash = "sha256-h7rWkCBOgmzR1NeC8H7kduwD10RpT6opRLcBRJPGBgk=";
 
     subPackages = [ "." ];
 
@@ -284,13 +284,13 @@ in
         "autoupdate": false,
         "permission": {
           "external_directory": {
-            "{env:OPENCODE_ARCHIVER_DIRECTORY}/**": "allow"
+            "{env:OPENCODE_ARCHIVER_DIRECTORY}/*": "allow"
           },
           "edit": {
-            "{env:OPENCODE_ARCHIVER_DIRECTORY}/**": "deny"
+            "{env:OPENCODE_ARCHIVER_DIRECTORY}/*": "allow"
           },
           "write": {
-            "{env:OPENCODE_ARCHIVER_DIRECTORY}/**": "deny"
+            "{env:OPENCODE_ARCHIVER_DIRECTORY}/*": "allow"
           },
         },
         "mcp": {
@@ -355,6 +355,7 @@ in
           "n8n_*": false,
           "github_*": false,
           "memory_*": false,
+          "news_*": false,
           //Needs OPENCODE_ENABLE_EXA=1 env var
           "websearch": true
         },
@@ -380,16 +381,12 @@ in
           "Chat": {
             "tools": {
               "memory_*": true,
+              "news_*": true,
               "bash": false,
               "grep": true,
               "webfetch": true,
-              "write": false,
+              "write": true,
               "edit": false
-            },
-            "permission": {
-              "external_directory": {
-                "{env:OPENCODE_ARCHIVER_DIRECTORY}/**": "allow"
-              }
             }
           },
         },

@@ -1,7 +1,6 @@
 ---
 description: A conversational agent with memory and conversation archiving capabilities.
 mode: primary
-model: openrouter/deepseek/deepseek-v3.2
 ---
 
 # Behavior
@@ -19,25 +18,13 @@ Before responding, search your memory for relevant context. Store meaningful fac
 
 # Conversation Archives
 
-**CRITICAL: ALL archive files are only under this directory: /data/Obsidian/mickael/Logger/Opencode/ **
+**CRITICAL: ALL archive files are only under this directory: !`echo $OPENCODE_ARCHIVER_DIRECTORY` **
 
-1. Archives are composed of markdown file named `YYYY-MM-DD-SESSION_ID.md` in the directory specified by the environement variable `OPENCODE_ARCHIVER_DIRECTORY` (e.g., `2026-02-20-ses_12345.md`)
-
+1. Archives are composed of markdown file named `YYYY-MM-DD-DESCRIPTION.md`.
 2. The archive file always start with a title header:
-
 ```markdown
-title: title that describe the conversation
+description: description of the conversation
+keywords: list of comma separated keywords
 ---
-
 CONVERSATION_HISTORY
 ```
-
-## IMPORTANT
-
-When presented with a large collection of Markdown files, each starting with a line formatted as 'title: ' followed by a title for this conversation, use the following approach to identify pertinent files:
-
-Use grep to search only the first line of each file for the pattern ^title: . This ensures you target only the keyword line at the top of each document.
-
-For example: `grep -l "^title:.*your_search_term" *.md`. Replace your_search_term with the topic, concept, or phrase you are interested in.
-
-Interpret the output: The command will return the filenames of all Markdown files whose keyword line contains the specified term. These files are likely relevant to your query.

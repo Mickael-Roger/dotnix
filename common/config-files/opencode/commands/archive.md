@@ -3,7 +3,12 @@ description: Archive this conversation
 subtask: true
 ---
 
-Create a markdown file in `/data/Obsidian/mickael/Logger/Opencode/` that summarizes the current conversation.
+Create a markdown file in !`echo $OPENCODE_ARCHIVER_DIRECTORY` that summarizes the current conversation.
+
+User can ask for particular consign for this archive. Here are the user consign:
+```
+$ARGUMENTS
+```
 
 The filename must follow this format: `YYYY-MM-DD-TOPIC.md`
 -   `YYYY-MM-DD` is today's date.
