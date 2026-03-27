@@ -196,6 +196,45 @@ let
 
   };
 
+  # MCP Tree sitter
+  mcp-treesitter = pkgs.python312.pkgs.buildPythonApplication {
+    pname = "mcp-server-tree-sitter";
+    version = "0.5.1";
+
+    src = pkgs.fetchFromGitHub {
+      owner = "wrale";
+      repo = "mcp-server-tree-sitter";
+      rev = "v0.5.1";
+      sha256 = "sha256-YRnTEzs8OAY0ADkTT3b20owVDnEJ5om4VoDFDRbjXVs=";
+    };
+
+    pyproject = true;
+
+    nativeBuildInputs = with pkgs.python312.pkgs; [
+      hatchling
+      pip
+      setuptools
+      wheel
+    ];
+
+    propagatedBuildInputs = with pkgs.python312.pkgs; [
+      mcp
+      tree-sitter
+      tree-sitter-language-pack
+      pyyaml
+      types-pyyaml
+      fastapi
+      uvicorn
+      pydantic
+    ];
+
+    pythonImportsCheck = [ "mcp_server_tree_sitter" ];
+
+    meta = {
+      description = "MCP server for tree-sitter";
+    };
+  };
+
   alarm-term-create = pkgs.writeShellScriptBin "alarm-term-create" ''
    ${alarm}/bin/alarm create
   '';
@@ -280,7 +319,7 @@ in
       {
         "$schema": "https://opencode.ai/config.json",
         "theme": "opencode",
-        "plugin": ["opencode-gemini-auth@latest"],
+        "plugin": ["opencode-gemini-auth@latest", "opencode-claude-auth@latest"],
         "autoupdate": false,
         "permission": {
           "external_directory": {
@@ -294,6 +333,14 @@ in
           },
         },
         "mcp": {
+          "brave-search": {
+            "type": "local",
+            "enabled": true,
+            "command": ["npx", "-y", "@brave/brave-search-mcp-server", "--transport", "stdio"],
+            "environment": {
+              "BRAVE_API_KEY": "${secrets.brave_api_key}"
+            }
+          },
           "tasks": {
             "type": "local",
             "command": ["${mcp-tasks}/bin/mcp-webdav-tasks"],
@@ -341,6 +388,16 @@ in
               "GITHUB_PERSONAL_ACCESS_TOKEN": "${secrets.github_token}",
             }
           },
+          "playwright": {
+            "type": "local",
+            "command": ["${pkgs.playwright-mcp}/bin/mcp-server-playwright"],
+            "enabled": true
+          },
+          "treesitter": {
+            "type": "local",
+            "command": ["${mcp-treesitter}/bin/mcp-server-tree-sitter"],
+            "enabled": true,
+          },
           //"memory": {
           //  "type": "local",
           //  // Must be first installed using opencode-memory
@@ -353,17 +410,42 @@ in
         },
         "tools": {
           "n8n_*": false,
+          "playwright_*": false,
           "github_*": false,
           "memory_*": false,
           "news_*": false,
+          "tasks_*": false,
+          "brave-search_*": false,
+          "treesitter_*": true,
           //Needs OPENCODE_ENABLE_EXA=1 env var
           "websearch": true
         },
         "agent": {
-          "Git": {
+          "review": {
             "tools": {
               "github_*": true,
               "bash": true,
+              "webfetch": true,
+              "glob": true,
+              "write": false,
+              "edit": false
+            }
+          },
+          "security-review": {
+            "tools": {
+              "github_*": true,
+              "bash": true,
+              "webfetch": true,
+              "glob": true,
+              "write": false,
+              "edit": false
+            }
+          },
+          "git": {
+            "tools": {
+              "github_*": true,
+              "bash": true,
+              "treesitter_*": false,
               "webfetch": true,
               "write": false,
               "edit": false
@@ -373,13 +455,26 @@ in
             "tools": {
               "n8n_*": true,
               "bash": true,
+              "treesitter_*": false,
               "webfetch": true,
               "write": true,
               "edit": true
             }
           },
-          "Chat": {
+          "webbrowser": {
             "tools": {
+              "playwright_*": true,
+              "treesitter_*": false,
+              "bash": true,
+              "webfetch": true,
+            }
+          },
+          "chat": {
+            "tools": {
+              "tasks_*": true,
+              "websearch_*": false,
+              "treesitter_*": false,
+              "brave-search_*": true,
               "memory_*": true,
               "news_*": true,
               "bash": false,
@@ -396,6 +491,21 @@ in
           },
           "gopls": {
             "command": ["${pkgs.gopls}/bin/gopls"]
+          },
+          "typescript": {
+            "command": ["${pkgs.typescript-language-server}/bin/typescript-language-server"]
+          },
+          "bash": {
+            "command": ["${pkgs.bash-language-server}/bin/bash-language-server"]
+          },
+          "clangd": {
+            "command": ["${pkgs.clang-tools}/bin/clangd"]
+          },
+          "nixd": {
+            "command": ["${pkgs.nixd}/bin/nixd"]
+          },
+          "yaml-ls": {
+            "command": ["${pkgs.yaml-language-server}/bin/yaml-language-server", "--stdio"]
           }
         }
       }
@@ -403,10 +513,12 @@ in
 
     xdg.configFile."opencode/AGENTS.md".text = builtins.readFile ./config-files/opencode/AGENTS.md;
     xdg.configFile."opencode/agent/review.md".text =  builtins.readFile ./config-files/opencode/agent/review.md;
+    xdg.configFile."opencode/agent/security-review.md".text =  builtins.readFile ./config-files/opencode/agent/security-review.md;
     xdg.configFile."opencode/agent/test.md".text =  builtins.readFile ./config-files/opencode/agent/test.md;
-    xdg.configFile."opencode/agent/Git.md".text =  builtins.readFile ./config-files/opencode/agent/Git.md;
+    xdg.configFile."opencode/agent/git.md".text =  builtins.readFile ./config-files/opencode/agent/git.md;
     xdg.configFile."opencode/agent/n8n.md".text =  builtins.readFile ./config-files/opencode/agent/n8n.md;
-    xdg.configFile."opencode/agent/Chat.md".text =  builtins.readFile ./config-files/opencode/agent/Chat.md;
+    xdg.configFile."opencode/agent/chat.md".text =  builtins.readFile ./config-files/opencode/agent/chat.md;
+    xdg.configFile."opencode/agent/webbrowser.md".text =  builtins.readFile ./config-files/opencode/agent/webbrowser.md;
     xdg.configFile."opencode/commands/archive.md".text =  builtins.readFile ./config-files/opencode/commands/archive.md;
 
     dconf.settings = {
@@ -787,7 +899,7 @@ in
       ];
       extraConfig = ''
 
-run-shell ${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/scripts/restore.sh
+#run-shell ${pkgs.tmuxPlugins.resurrect}/share/tmux-plugins/resurrect/scripts/restore.sh
 
 set -g @plugin 'tmux-plugins/tmux-yank'
 set -g @yank_with_mouse on
@@ -809,11 +921,11 @@ bind a new-window -n 'tmp-alarm' '${alarm-term-create}/bin/alarm-term-create' C-
 bind C-a new-window -n 'tmp-alarm' '${alarm-term-ack}/bin/alarm-term-ack' C-m
 bind * new-window -n "tmp-note" '${create-note}/bin/create-note' C-m
 bind g new-window -n "tmp-goto" '${goto-window}/bin/goto-window' C-m
-bind C-c run-shell "tmux display-popup -E -h 70% -w 70% -T 'Calendar' '${cal-term}/bin/cal-term'" C-m
-bind s run-shell "tmux display-popup -E -h 70% -w 70% -T 'Shortcut' '${my-shortcut}/bin/my-shortcut'" C-m
-bind b run-shell "tmux display-popup -E -h 70% -w 70% -T 'Copyq' '${copyq-buff}/bin/copyq-buff'" C-m
-bind w run-shell "tmux display-popup -E -h 70% -w 70% -T 'Windows' '${tmux-windows}/bin/tmux-windows'" C-m
-bind t run-shell "tmux display-popup -E -h 70% -w 70% -T 'Todo' '${todo-term}/bin/todo-term'" C-m
+bind C-c run-shell "tmux display-popup -E -h 70% -w 70% -T 'Calendar' '${cal-term}/bin/cal-term'" 
+bind s run-shell "tmux display-popup -E -h 70% -w 70% -T 'Shortcut' '${my-shortcut}/bin/my-shortcut'" 
+bind b run-shell "tmux display-popup -E -h 70% -w 70% -T 'Copyq' '${copyq-buff}/bin/copyq-buff'" 
+bind w run-shell "tmux display-popup -E -h 70% -w 70% -T 'Windows' '${tmux-windows}/bin/tmux-windows'"
+bind t run-shell "tmux display-popup -E -h 70% -w 70% -T 'Todo' '${todo-term}/bin/todo-term'" 
 bind f new-window -n "tmp-ff" '${goto-ff}/bin/goto-ff' C-m
 bind -n S-PageUp copy-mode \; send-keys PageUp
 bind -n S-PageDown send-keys PageDown

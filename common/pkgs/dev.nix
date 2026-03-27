@@ -13,6 +13,7 @@
     gotests
     iferr
     borg-sans-mono
+    claude-code
     #ansible-language-server
     gdb
     gef
