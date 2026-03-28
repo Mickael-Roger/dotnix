@@ -393,11 +393,11 @@ in
             "command": ["${pkgs.playwright-mcp}/bin/mcp-server-playwright"],
             "enabled": true
           },
-          "treesitter": {
-            "type": "local",
-            "command": ["${mcp-treesitter}/bin/mcp-server-tree-sitter"],
-            "enabled": true,
-          },
+          //"treesitter": {
+          //  "type": "local",
+          //  "command": ["${mcp-treesitter}/bin/mcp-server-tree-sitter"],
+          //  "enabled": true,
+          //},
           //"memory": {
           //  "type": "local",
           //  // Must be first installed using opencode-memory
@@ -416,11 +416,26 @@ in
           "news_*": false,
           "tasks_*": false,
           "brave-search_*": false,
-          "treesitter_*": true,
           //Needs OPENCODE_ENABLE_EXA=1 env var
           "websearch": true
         },
         "agent": {
+          "explore": {
+            "permission": {
+              "lsp": "allow"
+            },
+            "tools": {
+              "goToDefinition": true,
+              "findReferences": true,
+              "hover": true,
+              "documentSymbol": true,
+              "workspaceSymbol": true,
+              "goToImplementation": true,
+              "prepareCallHierarchy": true,
+              "incomingCalls": true,
+              "outgoingCall": true
+            }
+          },
           "review": {
             "tools": {
               "github_*": true,
@@ -445,7 +460,6 @@ in
             "tools": {
               "github_*": true,
               "bash": true,
-              "treesitter_*": false,
               "webfetch": true,
               "write": false,
               "edit": false
@@ -455,7 +469,6 @@ in
             "tools": {
               "n8n_*": true,
               "bash": true,
-              "treesitter_*": false,
               "webfetch": true,
               "write": true,
               "edit": true
@@ -464,7 +477,6 @@ in
           "webbrowser": {
             "tools": {
               "playwright_*": true,
-              "treesitter_*": false,
               "bash": true,
               "webfetch": true,
             }
@@ -473,7 +485,6 @@ in
             "tools": {
               "tasks_*": true,
               "websearch_*": false,
-              "treesitter_*": false,
               "brave-search_*": true,
               "memory_*": true,
               "news_*": true,
@@ -855,6 +866,7 @@ in
         export PS1="\[$(tput setaf 77)\][\u\[$(tput setaf 171)\]@\h \[$(tput setaf 39)\]\w\[$(tput sgr0)\]\[\033[32m\]\[\033[33m\]\$(parse_git_branch)\[\033[00m\]\[$(tput setaf 77)\]]\[$(tput sgr0)\]$ "
         
         export OPENCODE_ENABLE_EXA=1
+        export OPENCODE_EXPERIMENTAL_LSP_TOOL=true
         export OPENCODE_ARCHIVER_DIRECTORY="/data/Obsidian/mickael/Logger/Opencode/"
       ''; 
     

@@ -2,28 +2,28 @@
 
 This file (`AGENTS.md`) defines global rules and best practices for all projects. If a local `AGENTS.md` does not exist or is empty, create one based on the project's content and these guidelines.
 
-**Always use Context7 MCP when I need library/API documentation, code generation, setup or configuration steps without me having to explicitly ask.**
+## IMPORTANT
 
----
 
-## 1. Language and Documentation Standards
+- Always use Context7 MCP when I need library/API documentation, code generation, setup or configuration steps without me having to explicitly ask.
+- Always use the TodoWrite tool to plan and track tasks throughout the conversation.
+- Always use LSP tools (definition, references, symbols, types) to analyze the codebase. Do not rely on guesses or plain text search when LSP is available.
+
+
+## Language and Documentation Standards
 - **Always use English** for:
   - `README.md` and all markdown files
   - Code comments
   - Variable, function, and file names
   - Any project-related documentation
 
----
-
-## 2. Local `AGENTS.md` Management
+## Local `AGENTS.md` Management
 - **After any action** that modifies code or local files:
   - Update the local `AGENTS.md` if the change is relevant to the project (e.g., new features, bug fixes, configuration changes).
   - Ensure all relevant information is recorded in `AGENTS.md`.
 
----
-
-## 3. File Organization
-- **If `AGENTS.md` becomes too large** or its content can be logically split:
+## File Organization
+- **If `AGENTS.md` becomes too large** (more than around 100 lines) or its content can be logically split:
   - Split it into dedicated markdown files (e.g., `CODING_STYLE.md`, `SETUP.md`, `DEPENDENCIES.md`).
   - Reference these files in the main `AGENTS.md` under clear sections, e.g.:
     ```markdown
@@ -31,9 +31,7 @@ This file (`AGENTS.md`) defines global rules and best practices for all projects
     See [CODING_STYLE.md](CODING_STYLE.md) for detailed guidelines.
     ```
 
----
-
-## 4. Error Handling and Learning
+## Error Handling and Learning
 - **When a user points out an error or suboptimal action**:
   - If the issue is relevant and likely to recur, document it in:
     - The local `AGENTS.md` (if not split)
@@ -43,9 +41,7 @@ This file (`AGENTS.md`) defines global rules and best practices for all projects
     - The correct approach or solution
     - Any context or examples to avoid repetition
 
----
-
-## 5. Example Structure for Local `AGENTS.md`
+## Example Structure for Local `AGENTS.md`
 ```markdown
 # Project-Specific Agent Guidelines
 
