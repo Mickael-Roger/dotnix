@@ -178,6 +178,37 @@ let
   };
 
 
+  memory-mcp = pkgs.python313Packages.buildPythonApplication rec {
+    pname = "memory-mcp";
+    version = "0.4.3";
+  
+    src = pkgs.fetchFromGitHub {
+      owner = "Mickael-Roger";
+      repo = "memory-mcp";
+      rev = "v${version}";
+      sha256 = "sha256-wrrs/981APU1wO7/WX06weK+mz2z9PWfG4dTCeHCFhE=";
+    };
+  
+    format = "pyproject";
+  
+    dependencies = with pkgs.python313Packages; [
+      faiss
+      mcp
+      python-dotenv
+      requests
+      pydantic
+      openai
+    ];
+  
+    build-system = with pkgs.python313Packages; [
+      hatchling
+    ];
+  
+    pythonImportsCheck = [ "memory_mcp" ];
+  };
+
+
+
   mcp-tasks = pkgs.buildGoModule rec {
     pname = "mcp-webdav-tasks";
 
@@ -194,45 +225,6 @@ let
 
     subPackages = [ "." ];
 
-  };
-
-  # MCP Tree sitter
-  mcp-treesitter = pkgs.python312.pkgs.buildPythonApplication {
-    pname = "mcp-server-tree-sitter";
-    version = "0.5.1";
-
-    src = pkgs.fetchFromGitHub {
-      owner = "wrale";
-      repo = "mcp-server-tree-sitter";
-      rev = "v0.5.1";
-      sha256 = "sha256-YRnTEzs8OAY0ADkTT3b20owVDnEJ5om4VoDFDRbjXVs=";
-    };
-
-    pyproject = true;
-
-    nativeBuildInputs = with pkgs.python312.pkgs; [
-      hatchling
-      pip
-      setuptools
-      wheel
-    ];
-
-    propagatedBuildInputs = with pkgs.python312.pkgs; [
-      mcp
-      tree-sitter
-      tree-sitter-language-pack
-      pyyaml
-      types-pyyaml
-      fastapi
-      uvicorn
-      pydantic
-    ];
-
-    pythonImportsCheck = [ "mcp_server_tree_sitter" ];
-
-    meta = {
-      description = "MCP server for tree-sitter";
-    };
   };
 
   alarm-term-create = pkgs.writeShellScriptBin "alarm-term-create" ''
@@ -393,20 +385,17 @@ in
             "command": ["${pkgs.playwright-mcp}/bin/mcp-server-playwright"],
             "enabled": true
           },
-          //"treesitter": {
-          //  "type": "local",
-          //  "command": ["${mcp-treesitter}/bin/mcp-server-tree-sitter"],
-          //  "enabled": true,
-          //},
-          //"memory": {
-          //  "type": "local",
-          //  // Must be first installed using opencode-memory
-          //  "command": ["/home/mickael/.local/bin/opencode-memory", "--stdio"],
-          //  "enabled": true,
-          //  "environment": {
-          //    "OPENAI_API_KEY": "${secrets.opencode_memory_openai_token}"
-          //  }
-          //},
+          "memory": {
+            "type": "local",
+            "command": ["${memory-mcp}/bin/memory-mcp", "--stdio"],
+            "enabled": true,
+            "environment": {
+              "MEMORY_USER_ID": "mickael",
+              "MEMORY_DATA_DIR": "{env:HOME}/.memory/",
+              "EMBEDDING_PROVIDER": "openai",
+              "EMBEDDING_API_KEY": "${secrets.opencode_memory_openai_token}"
+            }
+          },
         },
         "tools": {
           "n8n_*": false,

@@ -8,6 +8,8 @@ This file (`AGENTS.md`) defines global rules and best practices for all projects
 - Always use Context7 MCP when I need library/API documentation, code generation, setup or configuration steps without me having to explicitly ask.
 - Always use the TodoWrite tool to plan and track tasks throughout the conversation.
 - Always use LSP tools (definition, references, symbols, types) to analyze the codebase. Do not rely on guesses or plain text search when LSP is available.
+- Always prioritize using a dedicated subagent for a task whenever one exists, even if a CLI or direct method could also accomplish it.
+- Before running git add or committing after modifying code, you must perform both a code review and a security analysis using @review and @security-review, and only consider the task complete once these checks are finished.
 
 
 ## Language and Documentation Standards
