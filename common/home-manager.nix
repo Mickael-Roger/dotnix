@@ -178,34 +178,34 @@ let
   };
 
 
-  memory-mcp = pkgs.python313Packages.buildPythonApplication rec {
-    pname = "memory-mcp";
-    version = "0.4.3";
-  
-    src = pkgs.fetchFromGitHub {
-      owner = "Mickael-Roger";
-      repo = "memory-mcp";
-      rev = "v${version}";
-      sha256 = "sha256-wrrs/981APU1wO7/WX06weK+mz2z9PWfG4dTCeHCFhE=";
-    };
-  
-    format = "pyproject";
-  
-    dependencies = with pkgs.python313Packages; [
-      faiss
-      mcp
-      python-dotenv
-      requests
-      pydantic
-      openai
-    ];
-  
-    build-system = with pkgs.python313Packages; [
-      hatchling
-    ];
-  
-    pythonImportsCheck = [ "memory_mcp" ];
-  };
+  #memory-mcp = pkgs.python313Packages.buildPythonApplication rec {
+  #  pname = "memory-mcp";
+  #  version = "0.4.3";
+  #
+  #  src = pkgs.fetchFromGitHub {
+  #    owner = "Mickael-Roger";
+  #    repo = "memory-mcp";
+  #    rev = "v${version}";
+  #    sha256 = "sha256-FCxkBSXDcCMV/zn6uBGNqXKiQnb4YF1tqbBprF82sP8=";
+  #  };
+  #
+  #  format = "pyproject";
+  #
+  #  dependencies = with pkgs.python313Packages; [
+  #    faiss
+  #    mcp
+  #    python-dotenv
+  #    requests
+  #    pydantic
+  #    openai
+  #  ];
+  #
+  #  build-system = with pkgs.python313Packages; [
+  #    hatchling
+  #  ];
+  #
+  #  pythonImportsCheck = [ "memory_mcp" ];
+  #};
 
 
 
@@ -387,7 +387,7 @@ in
           },
           "memory": {
             "type": "local",
-            "command": ["${memory-mcp}/bin/memory-mcp", "--stdio"],
+            "command": ["${pkgs.uv}/bin/uvx", "--from", "opencode-memory@latest", "memory-mcp", "--stdio"],
             "enabled": true,
             "environment": {
               "MEMORY_USER_ID": "mickael",
@@ -401,7 +401,7 @@ in
           "n8n_*": false,
           "playwright_*": false,
           "github_*": false,
-          "memory_*": false,
+          "memory_*": true,
           "news_*": false,
           "tasks_*": false,
           "brave-search_*": false,
@@ -520,6 +520,7 @@ in
     xdg.configFile."opencode/agent/chat.md".text =  builtins.readFile ./config-files/opencode/agent/chat.md;
     xdg.configFile."opencode/agent/webbrowser.md".text =  builtins.readFile ./config-files/opencode/agent/webbrowser.md;
     xdg.configFile."opencode/commands/archive.md".text =  builtins.readFile ./config-files/opencode/commands/archive.md;
+    xdg.configFile."opencode/commands/memory.md".text =  builtins.readFile ./config-files/opencode/commands/memory.md;
 
     dconf.settings = {
 
