@@ -23,10 +23,33 @@ let
   #  };
   #};
 
+  oc-monitor = pkgs.python3Packages.buildPythonPackage {
+    pname = "opencode-monitor";
+    version = "1.0.3";
+    src = pkgs.fetchFromGitHub {
+      owner = "Shlomob";
+      repo = "ocmonitor-share";
+      rev = "e9c44ecd4b8f8a3627dd898e8f06f49c2944370d";
+      hash = "sha256-mCwGAZm/ilOwQvm7+UD3e/XEbRYFhIO+LKDCyLVMFmk=";
+    };
+    format = "pyproject";
+    buildInputs = [ pkgs.python3Packages.setuptools ];
+    propagatedBuildInputs = with pkgs.python3Packages; [
+      click
+      rich
+      pydantic
+      toml
+      pyyaml
+      prometheus-client
+    ];
+    doCheck = false;
+  };
+
 in {
   environment.systemPackages = with pkgs; [
     #AI
     #rtk
+    oc-monitor
 
     nodejs_22
     clang-tools

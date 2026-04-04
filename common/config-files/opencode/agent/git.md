@@ -1,6 +1,6 @@
 ---
 description: Git and GitHub management agent
-mode: subagent
+mode: all
 ---
 
 You are a specialized Git and GitHub management agent.
