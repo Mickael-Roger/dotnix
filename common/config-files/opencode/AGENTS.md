@@ -8,7 +8,25 @@ This file (`AGENTS.md`) defines global rules and best practices for all projects
 - Always use the TodoWrite tool to plan and track tasks throughout the conversation.
 - Always use LSP tools (definition, references, symbols, types) to analyze the codebase. Do not rely on guesses or plain text search when LSP is available.
 - Always prioritize using a dedicated subagent for a task whenever one exists, even if a CLI or direct method could also accomplish it.
-- Before running git add or committing after modifying code, you must perform both a code review and a security analysis using @review and @security-review, and only consider the task complete once these checks are finished.
+
+
+## Post-Code Modification Workflow
+
+If you make modifications involving source code (excluding markdown, documentation, or non-executable text), it must follow this post-processing workflow, unles you have other instructions:
+
+### 1. Code Review Loop
+- Invoke the subagent `@review` to review only the portions of code that were modified.
+- Analyze the feedback returned by `@review` and apply the necessary corrections.
+- Re-run the `@review` subagent to confirm that all identified issues have been properly addressed.
+
+### 2. Security Review (Non-blocking)
+- Unless explicitly instructed otherwise, invoke the subagent `@security-review` after completing all code changes and review iterations.
+- Do **not** implement or act upon the feedback from `@security-review`, unless there is an explicit instruction to do so.
+
+### 3. Final Summary Requirements
+- In the final summary of the work, explicitly include:
+- A confirmation that the review loop with `@review` has been completed.
+- A summary of any issues, risks, or gaps identified by `@security-review`.
 
 
 ## Long-Term Memory

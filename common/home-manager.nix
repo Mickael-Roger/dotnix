@@ -409,9 +409,48 @@ in
           "websearch": true
         },
         "agent": {
+          "agent-builder": {
+            "hidden": true
+          },
+          "build": {
+            "permission": {
+              "task": {
+                "agent-*": "deny"
+              }
+            },
+          },
+          "planificator": {
+            "permission": {
+              "github_*": "allow",
+              "playwright_*": "allow",
+              "bash": "allow",
+              "webfetch": "allow",
+              "glob": "allow",
+              "write": "deny",
+              "edit": "deny",
+              "lsp": "allow",
+              "task": {
+                "agent-*": "allow"
+              }
+            },
+            "tools": {
+              "goToDefinition": true,
+              "findReferences": true,
+              "hover": true,
+              "documentSymbol": true,
+              "workspaceSymbol": true,
+              "goToImplementation": true,
+              "prepareCallHierarchy": true,
+              "incomingCalls": true,
+              "outgoingCall": true
+            }
+          },
           "explore": {
             "permission": {
-              "lsp": "allow"
+              "lsp": "allow",
+              "task": {
+                "agent-*": "deny"
+              }
             },
             "tools": {
               "goToDefinition": true,
@@ -426,6 +465,11 @@ in
             }
           },
           "review": {
+            "permission": {
+              "task": {
+                "agent-*": "deny"
+              }
+            },
             "tools": {
               "github_*": true,
               "bash": true,
@@ -436,6 +480,11 @@ in
             }
           },
           "security-review": {
+            "permission": {
+              "task": {
+                "agent-*": "deny"
+              }
+            },
             "tools": {
               "github_*": true,
               "bash": true,
@@ -446,6 +495,11 @@ in
             }
           },
           "git": {
+            "permission": {
+              "task": {
+                "agent-*": "deny"
+              }
+            },
             "tools": {
               "github_*": true,
               "bash": true,
@@ -455,6 +509,11 @@ in
             }
           },
           "n8n": {
+            "permission": {
+              "task": {
+                "agent-*": "deny"
+              }
+            },
             "tools": {
               "n8n_*": true,
               "bash": true,
@@ -464,6 +523,11 @@ in
             }
           },
           "webbrowser": {
+            "permission": {
+              "task": {
+                "agent-*": "deny"
+              }
+            },
             "tools": {
               "playwright_*": true,
               "bash": true,
@@ -471,6 +535,11 @@ in
             }
           },
           "chat": {
+            "permission": {
+              "task": {
+                "agent-*": "deny"
+              }
+            },
             "tools": {
               "tasks_*": true,
               "websearch_*": false,
@@ -519,8 +588,14 @@ in
     xdg.configFile."opencode/agent/n8n.md".text =  builtins.readFile ./config-files/opencode/agent/n8n.md;
     xdg.configFile."opencode/agent/chat.md".text =  builtins.readFile ./config-files/opencode/agent/chat.md;
     xdg.configFile."opencode/agent/webbrowser.md".text =  builtins.readFile ./config-files/opencode/agent/webbrowser.md;
+    xdg.configFile."opencode/agent/planificator.md".text =  builtins.readFile ./config-files/opencode/agent/planificator.md;
+    xdg.configFile."opencode/agent/slop-remover.md".text =  builtins.readFile ./config-files/opencode/agent/slop-remover.md;
+    xdg.configFile."opencode/agent/agent-builder.md".text =  builtins.readFile ./config-files/opencode/agent/agent-builder.md;
     xdg.configFile."opencode/commands/archive.md".text =  builtins.readFile ./config-files/opencode/commands/archive.md;
     xdg.configFile."opencode/commands/memory.md".text =  builtins.readFile ./config-files/opencode/commands/memory.md;
+    #xdg.configFile."opencode/plugins/anthropic-prompt.txt".text =  builtins.readFile ./config-files/opencode/plugins/anthropic-prompt.txt;
+
+
 
     dconf.settings = {
 
@@ -881,7 +956,7 @@ in
       };
       Timer = {
         OnBootSec = "5min";
-        OnUnitActiveSec = "5min";
+        OnUnitActiveSec = "6h";
         Unit = "tmux-save.service";
       };
       Install = {
@@ -938,6 +1013,8 @@ set -g @resurrect-capture-pane-contents 'on'
 set -g @resurrect-save-shell-history 'on'
 setw -g window-style 'fg=default,bg=colour234'
 setw -g window-active-style 'fg=default,bg=default'
+bind-key 4 new-window \; split-window -h \; split-window -v \; select-pane -t 0 \; split-window -v \; select-layout tiled
+bind-key 6 new-window \; split-window -h -l '67%' \; split-window -h -l '50%' \; select-pane -t 0 \; split-window -v \; select-pane -t 2 \; split-window -v \; select-pane -t 4 \; split-window -v
 
       '';
       historyLimit = 100000;

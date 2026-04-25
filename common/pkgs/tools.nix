@@ -133,6 +133,7 @@ in {
     "googleearth-pro-7.3.6.9796"
   ];
   environment.systemPackages = with pkgs; [
+    sshfs
     # shortcut
     wifi-management
     bluetooth-management
