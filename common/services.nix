@@ -51,22 +51,22 @@ let
 in
 {
 
-  systemd.services.anki = {
-    enable = true;
-    environment = {
-      SYNC_USER1 = "mickael:${secrets.anki.mickael.password}";
-      SYNC_USER2 = "ambre:${secrets.anki.ambre.password}";
-      SYNC_USER3 = "charlotte:${secrets.anki.charlotte.password}";
-      SYNC_USER4 = "test:${secrets.anki.test.password}";
-      SYNC_BASE = "/data/Anki";
-    };
-    serviceConfig = {
-       ExecStart = "${pkgs.anki-bin}/bin/anki --syncserver";
-       User = "mickael";
-    };
-    wantedBy = ["multi-user.target"];
-    after = [ "network.target" ];
-  };
+  #systemd.services.anki = {
+  #  enable = true;
+  #  environment = {
+  #    SYNC_USER1 = "mickael:${secrets.anki.mickael.password}";
+  #    SYNC_USER2 = "ambre:${secrets.anki.ambre.password}";
+  #    SYNC_USER3 = "charlotte:${secrets.anki.charlotte.password}";
+  #    SYNC_USER4 = "test:${secrets.anki.test.password}";
+  #    SYNC_BASE = "/data/Anki";
+  #  };
+  #  serviceConfig = {
+  #     ExecStart = "${pkgs.anki-bin}/bin/anki --syncserver";
+  #     User = "mickael";
+  #  };
+  #  wantedBy = ["multi-user.target"];
+  #  after = [ "network.target" ];
+  #};
 
 
 ##  services.anki-sync-server = {

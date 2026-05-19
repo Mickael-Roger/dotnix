@@ -70,6 +70,7 @@
   # Disable Wayland compositors to force Xorg
   programs.hyprland.enable = false;
   programs.sway.enable = false;
+  programs.xwayland.enable = true;
 
   services.udev.packages = with pkgs; [ gnome-settings-daemon ];
  
@@ -265,6 +266,7 @@
   services.udev.extraRules = ''
     SUBSYSTEM=="usb", ATTRS{idVendor}=="1a86", ATTRS{idProduct}=="55d3", MODE="0666", GROUP="dialout"
     SUBSYSTEM=="usb", ATTRS{idVendor}=="38fb", ATTRS{idProduct}=="1001", MODE="0666", GROUP="dialout"
+    SUBSYSTEM=="usb", ATTRS{idVendor}=="38fb", ATTRS{idProduct}=="1002", MODE="0660", GROUP="dialout"
   '';
 
   services.gnome.gnome-settings-daemon.enable = true;

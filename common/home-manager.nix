@@ -177,37 +177,12 @@ let
 
   };
 
-
-  #memory-mcp = pkgs.python313Packages.buildPythonApplication rec {
-  #  pname = "memory-mcp";
-  #  version = "0.4.3";
-  #
-  #  src = pkgs.fetchFromGitHub {
-  #    owner = "Mickael-Roger";
-  #    repo = "memory-mcp";
-  #    rev = "v${version}";
-  #    sha256 = "sha256-FCxkBSXDcCMV/zn6uBGNqXKiQnb4YF1tqbBprF82sP8=";
-  #  };
-  #
-  #  format = "pyproject";
-  #
-  #  dependencies = with pkgs.python313Packages; [
-  #    faiss
-  #    mcp
-  #    python-dotenv
-  #    requests
-  #    pydantic
-  #    openai
-  #  ];
-  #
-  #  build-system = with pkgs.python313Packages; [
-  #    hatchling
-  #  ];
-  #
-  #  pythonImportsCheck = [ "memory_mcp" ];
-  #};
-
-
+  agentmemoryVersion = "0.9.20";
+  agentmemoryOpencodeRev = "c2f231fe8bcf9b1fa296ad5ee81267eec94de768";
+  agentmemoryOpencodeFile = path: hash: pkgs.fetchurl {
+    url = "https://raw.githubusercontent.com/rohitg00/agentmemory/${agentmemoryOpencodeRev}/${path}";
+    inherit hash;
+  };
 
   mcp-tasks = pkgs.buildGoModule rec {
     pname = "mcp-webdav-tasks";
@@ -309,22 +284,16 @@ in
 
     xdg.configFile."opencode/opencode.json".text = ''
       {
-        "$schema": "https://opencode.ai/config.json",
-        "theme": "opencode",
-        "plugin": ["opencode-gemini-auth@latest", "opencode-claude-auth@latest"],
-        "autoupdate": false,
-        "permission": {
-          "external_directory": {
-            "{env:OPENCODE_ARCHIVER_DIRECTORY}/*": "allow"
-          },
-          "edit": {
-            "{env:OPENCODE_ARCHIVER_DIRECTORY}/*": "allow"
-          },
-          "write": {
-            "{env:OPENCODE_ARCHIVER_DIRECTORY}/*": "allow"
-          },
-        },
-        "mcp": {
+       "$schema": "https://opencode.ai/config.json",
+       "theme": "opencode",
+       "plugin": ["opencode-gemini-auth@latest", "./plugins/agentmemory-capture.ts"],
+       "autoupdate": false,
+       "mcp": {
+         "freecad": {
+            "type": "local",
+            "enabled": true,
+            "command": ["uvx", "freecad-mcp"],
+         },
           "brave-search": {
             "type": "local",
             "enabled": true,
@@ -387,17 +356,15 @@ in
           },
           "memory": {
             "type": "local",
-            "command": ["${pkgs.uv}/bin/uvx", "--from", "opencode-memory@latest", "memory-mcp", "--stdio"],
+            "command": ["${pkgs.nodejs_20}/bin/npx", "-y", "@agentmemory/mcp@${agentmemoryVersion}"],
             "enabled": true,
-            "environment": {
-              "MEMORY_USER_ID": "mickael",
-              "MEMORY_DATA_DIR": "{env:HOME}/.memory/",
-              "EMBEDDING_PROVIDER": "openai",
-              "EMBEDDING_API_KEY": "${secrets.opencode_memory_openai_token}"
+            "env": {
+              "AGENTMEMORY_URL": "http://localhost:3111"
             }
           },
         },
         "tools": {
+          "freecad_*": false,
           "n8n_*": false,
           "playwright_*": false,
           "github_*": false,
@@ -411,6 +378,11 @@ in
         "agent": {
           "agent-builder": {
             "hidden": true
+          },
+          "freecad": {
+            "permission": {
+              "freecad_*": "allow",
+            }
           },
           "build": {
             "permission": {
@@ -591,10 +563,75 @@ in
     xdg.configFile."opencode/agent/planificator.md".text =  builtins.readFile ./config-files/opencode/agent/planificator.md;
     xdg.configFile."opencode/agent/slop-remover.md".text =  builtins.readFile ./config-files/opencode/agent/slop-remover.md;
     xdg.configFile."opencode/agent/agent-builder.md".text =  builtins.readFile ./config-files/opencode/agent/agent-builder.md;
+    xdg.configFile."opencode/agent/freecad.md".text =  builtins.readFile ./config-files/opencode/agent/freecad.md;
     xdg.configFile."opencode/commands/archive.md".text =  builtins.readFile ./config-files/opencode/commands/archive.md;
-    xdg.configFile."opencode/commands/memory.md".text =  builtins.readFile ./config-files/opencode/commands/memory.md;
+    xdg.configFile."opencode/plugins/agentmemory-capture.ts".source = agentmemoryOpencodeFile "plugin/opencode/agentmemory-capture.ts" "sha256-VsnrsNxDLtkv5nlHIkOj/qw43VGYdwCyo9VOTDJiUxI=";
+    xdg.configFile."opencode/commands/recall.md".source = agentmemoryOpencodeFile "plugin/opencode/commands/recall.md" "sha256-OwVwHbreZeEZJyZZK5Ivqs4mvwtlnzHntUpqWEiA6Xs=";
+    xdg.configFile."opencode/commands/remember.md".source = agentmemoryOpencodeFile "plugin/opencode/commands/remember.md" "sha256-jifK8lui0vH9eUTwRUyQz5tLX/JAVKkcW66yQgJfpqk=";
+    #xdg.configFile."opencode/commands/memory.md".text =  builtins.readFile ./config-files/opencode/commands/memory.md;
     #xdg.configFile."opencode/plugins/anthropic-prompt.txt".text =  builtins.readFile ./config-files/opencode/plugins/anthropic-prompt.txt;
 
+    systemd.user.services.agentmemory = {
+      Unit = {
+        Description = "agentmemory server";
+        After = [ "network-online.target" ];
+      };
+      Service = {
+        Type = "simple";
+        ExecStart = "${pkgs.nodejs_20}/bin/npx -y @agentmemory/agentmemory@${agentmemoryVersion}";
+        Restart = "on-failure";
+        RestartSec = 5;
+        Environment = [
+          # Auth and endpoint
+          "AGENTMEMORY_URL=http://localhost:3111"
+          "AGENTMEMORY_VIEWER_URL=http://localhost:3113"
+          # MCP/runtime
+          #"AGENTMEMORY_TOOLS=all"
+          # Behaviour flags
+          "AGENTMEMORY_AUTO_COMPRESS=true"
+          #"AGENTMEMORY_INJECT_CONTEXT=true"
+          "CONSOLIDATION_ENABLED=true"
+          #"CONSOLIDATION_DECAY_DAYS=30"
+          "GRAPH_EXTRACTION_ENABLED=true"
+          #"GRAPH_EXTRACTION_BATCH_SIZE=8"
+          #"AGENTMEMORY_REFLECT=false"
+          #"AGENTMEMORY_DROP_STALE_INDEX=false"
+          #"AGENTMEMORY_IMAGE_EMBEDDINGS=false"
+          # Embeddings
+          "EMBEDDING_PROVIDER=local"
+          "OPENAI_API_KEY=${secrets.zai_api_key}"
+          "OPENAI_BASE_URL=https://api.z.ai/api/coding/paas/v4"
+          #"OPENAI_API_KEY_FOR_LLM=false"
+          #"OPENAI_EMBEDDING_MODEL=text-embedding-3-small"
+          #"OPENAI_EMBEDDING_DIMENSIONS=1536"
+          # LLM provider, optional
+          # "ANTHROPIC_API_KEY=${secrets.anthropic_api_key}"
+          # "ANTHROPIC_MODEL=claude-sonnet-4-20250514"
+          # "ANTHROPIC_BASE_URL=https://api.anthropic.com"
+          # "GEMINI_API_KEY=${secrets.gemini_api_key}"
+          # "GEMINI_MODEL=gemini-2.5-flash"
+          # "OPENROUTER_API_KEY=${secrets.openrouter_api_key}"
+          # "OPENROUTER_MODEL=anthropic/claude-sonnet-4-20250514"
+          # "MINIMAX_API_KEY=${secrets.minimax_api_key}"
+          # "MINIMAX_MODEL=MiniMax-M2.7"
+          "MAX_TOKENS=4096"
+          "AGENTMEMORY_LLM_TIMEOUT_MS=60000"
+          "AGENTMEMORY_ALLOW_AGENT_SDK=false"
+          # Snapshots/export
+          "SNAPSHOT_ENABLED=false"
+          "SNAPSHOT_DIR=/home/mickael/.agentmemory/snapshots"
+          "SNAPSHOT_INTERVAL=3600"
+          "USER_ID=mickael"
+          "OBSIDIAN_AUTO_EXPORT=true"
+          "AGENTMEMORY_EXPORT_ROOT=/data/Obsidian/mickael/Logger/agentmemory/"
+          # Debug
+          "AGENTMEMORY_DEBUG=0"
+        ];
+      };
+      Install = {
+        WantedBy = [ "default.target" ];
+      };
+    };
 
 
     dconf.settings = {
