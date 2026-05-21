@@ -28,27 +28,26 @@ If you make modifications involving source code (excluding markdown, documentati
 - A confirmation that the review loop with `@review` has been completed.
 - A summary of any issues, risks, or gaps identified by `@security-review`.
 
+## Memory policy
 
-## Long-Term Memory
+Use agentmemory as the persistent memory system for this project.
 
-You have access to persistent memory tools (`memory_*`). Memory survives across sessions and provides continuity. Use it **proactively** without waiting for the user to ask.
+At the beginning of a new session:
+- call `memory_recall` or `memory_smart_search` to retrieve relevant project context
+- check recent sessions with `memory_sessions` if the task refers to previous work
+- prefer explicit recall over relying on automatic injected context
 
-### When to STORE memories
+During work:
+- save durable decisions with `memory_save`
+- save reusable lessons with `memory_lesson_save`
+- create or update actions when work spans multiple steps or sessions
+- crystallize completed action chains when useful
 
-Store a memory when any of the following occurs during conversation:
-
-1. **User expresses a preference** - coding style, tool choice, naming convention, formatting, workflow habit, etc.
-   - Example: "I prefer ruff over black" -> store `"User prefers ruff over black for Python formatting"`
-2. **User corrects you** - if the user says "no, do it this way", that correction is a preference worth remembering.
-3. **A lesson is learned** - a bug was hard to find, a pattern caused issues, a workaround was needed.
-4. **User shares personal information** - facts about their life, opinions, habits, events, interests. This matters for chatbot mode.
-5. **User discusses news or current events** - notable information the user finds interesting or relevant.
-6. **Architecture/design decisions** - how the user likes to structure projects, patterns they favor.
-7. **Tool or library preferences** - preferred frameworks, test runners, linters, package managers per language.
-8. **Project knowledge** - key facts about projects the user works on (tech stack, purpose, constraints).
-
-**After storing, briefly notify the user** with a short inline note, e.g.:
-> Noted: you prefer dataclasses over pydantic for simple DTOs.
+Do not save:
+- transient command output
+- large logs
+- secrets
+- irrelevant personal notes
 
 Do NOT ask for confirmation before storing. Just store and notify.
 
@@ -61,28 +60,6 @@ Search memory **contextually** when a topic arises that might have prior context
 - **When discussing a topic with personal context**: search for personal facts, opinions, or prior conversations about that topic.
 - **When the user references something from the past**: search for related memories.
 - **In chatbot/conversational mode**: search for personal context relevant to the discussion topic.
-
-Use `search_memories` with descriptive queries. Cast a slightly wide net - it's better to retrieve and ignore than to miss relevant context.
-
-### Memory Quality Rules
-
-1. **Search before adding** - always search for existing memories on the same topic before creating a new one. If a relevant memory exists, **update it** instead of creating a duplicate.
-2. **Keep memories atomic** - one clear fact per memory. Not paragraphs, not lists of mixed concerns.
-   - Good: `"User prefers snake_case for Python variables and functions"`
-   - Bad: `"User likes Python and prefers snake_case and uses pytest and doesn't like Java"`
-3. **Use clear, searchable phrasing** - write memories as factual statements that will match semantic searches well.
-   - Good: `"User prefers Go for CLI tools and system utilities"`
-   - Bad: `"they said go is nice for cli stuff"`
-4. **When a preference changes, update the old memory** - don't leave contradictory memories. Use `update_memory` with the existing memory's ID.
-5. **Use metadata** for categorization on every memory:
-   ```json
-   {
-     "category": "coding-style | tool-preference | architecture | lesson | personal | project | news",
-     "language": "python | go | typescript | nix | ...",
-     "topic": "free-form short tag"
-   }
-   ```
-   - `category` is required. `language` and `topic` are optional but encouraged when applicable.
 
 ## Language and Documentation Standards
 - **Always use English** for:
