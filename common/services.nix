@@ -81,11 +81,6 @@ in
 ##    openFirewall = true;
 ##  };
 
-  users.groups.nextcloud = {
-    gid = 33;
-  };
- 
-  users.users.mickael.extraGroups = [ "nextcloud" ];
 
   networking.firewall.allowedTCPPorts = [
     443
@@ -95,64 +90,92 @@ in
 
   services.nginx.enable = true;
   services.nginx.virtualHosts = {
-      #"nextcloud" = {
-      #  locations."/".proxyPass = "http://127.0.0.1:80/";
-      #  sslCertificate = "/etc/certs/server.taila2494.ts.net.crt";
-      #  sslCertificateKey = "/etc/certs/server.taila2494.ts.net.key";
-      #  onlySSL = true;
-      #  #listen = [{
-      #  #  addr = "0.0.0.0";
-      #  #  port = 443;
-      #  #  ssl = true;
-      #  #}];
-      #};
-      "passbolt" = {
-        locations."/".proxyPass = "http://127.0.0.1:8081/";
-        sslCertificate = "/etc/certs/server.taila2494.ts.net.crt";
-        sslCertificateKey = "/etc/certs/server.taila2494.ts.net.key";
-        onlySSL = true;
-        listen = [{
-          addr = "0.0.0.0";
-          port = 8443;
-          ssl = true;
-        }];
+    "passbolt" = {
+      locations."/".proxyPass = "http://127.0.0.1:8081/";
+      sslCertificate = "/etc/certs/server.taila2494.ts.net.crt";
+      sslCertificateKey = "/etc/certs/server.taila2494.ts.net.key";
+      onlySSL = true;
+      listen = [{
+        addr = "0.0.0.0";
+        port = 8443;
+        ssl = true;
+      }];
+    };
+    "litellm" = {
+      locations."/".proxyPass = "http://127.0.0.1:4000/";
+      sslCertificate = "/etc/certs/server.taila2494.ts.net.crt";
+      sslCertificateKey = "/etc/certs/server.taila2494.ts.net.key";
+      onlySSL = true;
+      listen = [{
+        addr = "0.0.0.0";
+        port = 443;
+        ssl = true;
+      }];
+    };
+  };
+
+  services.litellm = {
+    enable = true;
+
+    host = "127.0.0.1";
+    port = 4000;
+    openFirewall = true;
+
+    settings = {
+      model_list = [
+        # Z.ai
+        {
+          model_name = "glm-5.1";
+          litellm_params = {
+            model = "openai/GLM-5.1";
+            api_base = "https://api.z.ai/api/coding/paas/v4";
+            api_key = "${secrets.zai_api_key}";
+          };
+        }
+      
+        {
+          model_name = "glm-4.5";
+          litellm_params = {
+            model = "openai/GLM-4.5";
+            api_base = "https://api.z.ai/api/coding/paas/v4";
+            api_key = "${secrets.zai_api_key}";
+          };
+        }
+
+        {
+          model_name = "glm-5";
+          litellm_params = {
+            model = "openai/GLM-5";
+            api_base = "https://api.z.ai/api/coding/paas/v4";
+            api_key = "${secrets.zai_api_key}";
+          };
+        }
+      
+        {
+          model_name = "glm-5-turbo";
+          litellm_params = {
+            model = "openai/GLM-5-Turbo";
+            api_base = "https://api.z.ai/api/coding/paas/v4";
+            api_key = "${secrets.zai_api_key}";
+          };
+        }
+      
+        # OpenAI embeddings
+        {
+          model_name = "text-embedding-3-small";
+          litellm_params = {
+            model = "openai/text-embedding-3-small";
+            api_key = "${secrets.openai_token}";
+          };
+        }
+      ];
+
+      general_settings = {
+        # Utilisateur/API key côté clients LiteLLM
+        master_key = "${secrets.litellm_token}";
       };
-      #"tom" = {
-      #  locations."/" = {
-      #    proxyPass = "http://127.0.0.1:8082/";
-      #    extraConfig = ''
-      #      proxy_connect_timeout 60s;
-      #      proxy_send_timeout 120s;
-      #      proxy_read_timeout 300s;
-      #      send_timeout 300s;
-      #    '';
-      #  };
-      #  sslCertificate = "/etc/certs/server.taila2494.ts.net.crt";
-      #  sslCertificateKey = "/etc/certs/server.taila2494.ts.net.key";
-      #  onlySSL = true;
-      #  listen = [{
-      #    addr = "0.0.0.0";
-      #    port = 8444;
-      #    ssl = true;
-      #  }];
-      #};
-   };
-
-#  services.nextcloud = {
-#    enable = true;
-#    hostName = "server.taila2494.ts.net";
-#    home = "/home/nextcloud";
-#    package = pkgs.nextcloud28;
-#    config = {
-#      dbtype = "sqlite";
-#      adminpassFile = "/tmp/toto";
-#    };
-#    extraApps = {
-#      inherit (pkgs.nextcloud28Packages.apps) contacts calendar tasks;
-#    };
-#    extraAppsEnable = true;
-#  };
-
+    };
+  };
 
   services.mysql = {
     enable = true;

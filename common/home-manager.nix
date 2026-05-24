@@ -312,15 +312,6 @@ in
               "MCP_WEBDAV_TASKS_PASSWORD": "${secrets.mail.password}",
             },
           },
-          "news": {
-            "type": "local",
-            "command": ["${mcp-freshrss}/bin/mcp-freshrss"],
-            "enabled": true,
-            "environment": {
-              "FRESHRSS_URL": "${secrets.freshrss.url}",
-              "FRESHRSS_API_KEY": "${secrets.freshrss.token}",
-            },
-          },
           "context7": {
             "type": "remote",
             "url": "https://mcp.context7.com/mcp",
@@ -364,12 +355,53 @@ in
           },
         },
         "tools": {
+          "memory_memory_recall": true,
+          "memory_memory_compress_file": true,
+          "memory_memory_save": true,
+          "memory_memory_patterns": false,
+          "memory_memory_smart_search": true,
+          "memory_memory_file_history": true,
+          "memory_memory_sessions": true,
+          "memory_memory_timeline": true,
+          "memory_memory_profile": true,
+          "memory_memory_export": false,
+          "memory_memory_relations": true,
+          
+          "memory_memory_patterns": false,
+          "memory_memory_timeline": true,
+          "memory_memory_relations": true,
+          "memory_memory_graph_query": true,
+          "memory_memory_consolidate": false,
+          "memory_memory_claude_bridge_sync": false,
+          "memory_memory_team_share": false,
+          "memory_memory_team_feed": false,
+          "memory_memory_audit": false,
+          "memory_memory_governance_delete": false,
+          "memory_memory_snapshot_create": false,
+          "memory_memory_action_create": true,
+          "memory_memory_action_update": true,
+          "memory_memory_frontier": false,
+          "memory_memory_next": true,
+          "memory_memory_lease": false,
+          "memory_memory_routine_run": false,
+          "memory_memory_signal_send": false,
+          "memory_memory_signal_read": false,
+          "memory_memory_checkpoint": false,
+          "memory_memory_mesh_sync": false,
+          "memory_memory_sentinel_create": false,
+          "memory_memory_sentinel_trigger": false,
+          "memory_memory_sketch_create": false,
+          "memory_memory_sketch_promote": false,
+          "memory_memory_crystallize": false,
+          "memory_memory_diagnose": false,
+          "memory_memory_heal": false,
+          "memory_memory_facet_tag": false,
+          "memory_memory_facet_query": false,
+          "memory_memory_verify": false,
           "freecad_*": false,
           "n8n_*": false,
           "playwright_*": false,
           "github_*": false,
-          "memory_*": true,
-          "news_*": false,
           "tasks_*": false,
           "brave-search_*": false,
           //Needs OPENCODE_ENABLE_EXA=1 env var
@@ -516,8 +548,22 @@ in
               "tasks_*": true,
               "websearch_*": false,
               "brave-search_*": true,
-              "memory_*": true,
-              "news_*": true,
+              "bash": false,
+              "grep": true,
+              "webfetch": true,
+              "write": true,
+              "edit": false
+            }
+          },
+          "memory": {
+            "permission": {
+              "task": {
+                "agent-*": "deny"
+              }
+            },
+            "tools": {
+              "memory_memory_*": true,
+              "websearch_*": true,
               "bash": false,
               "grep": true,
               "webfetch": true,
@@ -547,6 +593,10 @@ in
           },
           "yaml-ls": {
             "command": ["${pkgs.yaml-language-server}/bin/yaml-language-server", "--stdio"]
+          },
+          "openscad-lsp": {
+            "command": ["${pkgs.openscad-lsp}/bin/openscad-lsp", "--stdio"],
+            "extensions": [".scad"]
           }
         }
       }
@@ -564,6 +614,7 @@ in
     xdg.configFile."opencode/agent/slop-remover.md".text =  builtins.readFile ./config-files/opencode/agent/slop-remover.md;
     xdg.configFile."opencode/agent/agent-builder.md".text =  builtins.readFile ./config-files/opencode/agent/agent-builder.md;
     xdg.configFile."opencode/agent/freecad.md".text =  builtins.readFile ./config-files/opencode/agent/freecad.md;
+    xdg.configFile."opencode/agent/memory.md".text =  builtins.readFile ./config-files/opencode/agent/memory.md;
     xdg.configFile."opencode/commands/archive.md".text =  builtins.readFile ./config-files/opencode/commands/archive.md;
     xdg.configFile."opencode/plugins/agentmemory-capture.ts".source = agentmemoryOpencodeFile "plugin/opencode/agentmemory-capture.ts" "sha256-VsnrsNxDLtkv5nlHIkOj/qw43VGYdwCyo9VOTDJiUxI=";
     xdg.configFile."opencode/commands/recall.md".source = agentmemoryOpencodeFile "plugin/opencode/commands/recall.md" "sha256-OwVwHbreZeEZJyZZK5Ivqs4mvwtlnzHntUpqWEiA6Xs=";
@@ -586,7 +637,7 @@ in
           "AGENTMEMORY_URL=http://localhost:3111"
           "AGENTMEMORY_VIEWER_URL=http://localhost:3113"
           # MCP/runtime
-          #"AGENTMEMORY_TOOLS=all"
+          "AGENTMEMORY_TOOLS=all"
           # Behaviour flags
           "AGENTMEMORY_AUTO_COMPRESS=true"
           #"AGENTMEMORY_INJECT_CONTEXT=true"
@@ -598,11 +649,12 @@ in
           #"AGENTMEMORY_DROP_STALE_INDEX=false"
           #"AGENTMEMORY_IMAGE_EMBEDDINGS=false"
           # Embeddings
-          "EMBEDDING_PROVIDER=local"
-          "OPENAI_API_KEY=${secrets.zai_api_key}"
-          "OPENAI_BASE_URL=https://api.z.ai/api/coding/paas/v4"
-          #"OPENAI_API_KEY_FOR_LLM=false"
-          #"OPENAI_EMBEDDING_MODEL=text-embedding-3-small"
+          "EMBEDDING_PROVIDER=openai"
+          "OPENAI_API_KEY=${secrets.litellm_token}"
+          "OPENAI_BASE_URL=https://server.taila2494.ts.net/"
+          "OPENAI_MODEL=glm-4.5"
+          "OPENAI_API_KEY_FOR_LLM=true"
+          "OPENAI_EMBEDDING_MODEL=text-embedding-3-small"
           #"OPENAI_EMBEDDING_DIMENSIONS=1536"
           # LLM provider, optional
           # "ANTHROPIC_API_KEY=${secrets.anthropic_api_key}"

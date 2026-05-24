@@ -71,6 +71,9 @@ in {
 
     pkgs.thonny
 
+    pkgs.openscad
+    pkgs.openscad-lsp
+
     pkgs.stm32cubemx
     pkgs.openocd
     #pkgs.gcc-arm-embedded-13
