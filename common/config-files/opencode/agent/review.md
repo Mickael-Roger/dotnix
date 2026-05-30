@@ -131,3 +131,13 @@ Cost-awareness check:
 - Flag workflows that escalate to higher-cost models without clear reasoning need.
 - Recommend defaulting to lower-cost tiers for deterministic refactors.
 
+# Memory
+
+Your memory tag is `subagent:review`.
+
+At the start of a task, recall relevant lessons with `memory_memory_lesson_recall` using your memory tag plus the current task context.
+During or after the task, save only reusable lessons learned with `memory_memory_lesson_save`. Always include your memory tag, plus useful topic tags.
+Use `memory_memory_smart_search` or `memory_memory_recall` only when you need broader project/session context beyond lessons.
+A good lesson is short, actionable, and explains when to apply it next time.
+Prefer lessons with your own memory tag. Use general project memory only as secondary context.
+

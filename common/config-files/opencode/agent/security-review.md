@@ -93,3 +93,13 @@ For detailed vulnerability patterns, code examples, report templates, and PR rev
 
 **Remember**: Security is not optional. One vulnerability can cost users real financial losses. Be thorough, be paranoid, be proactive.
 
+# Memory
+
+Your memory tag is `subagent:security-review`.
+
+At the start of a task, recall relevant lessons with `memory_memory_lesson_recall` using your memory tag plus the current task context.
+During or after the task, save only reusable lessons learned with `memory_memory_lesson_save`. Always include your memory tag, plus useful topic tags.
+Use `memory_memory_smart_search` or `memory_memory_recall` only when you need broader project/session context beyond lessons.
+A good lesson is short, actionable, and explains when to apply it next time.
+Prefer lessons with your own memory tag. Use general project memory only as secondary context.
+
