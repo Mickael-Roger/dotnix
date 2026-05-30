@@ -285,6 +285,7 @@ in
     xdg.configFile."opencode/opencode.json".text = ''
       {
        "$schema": "https://opencode.ai/config.json",
+       "formatter": true,
        "theme": "opencode",
        "plugin": ["opencode-gemini-auth@latest", "./plugins/agentmemory-capture.ts"],
        "autoupdate": false,
@@ -349,7 +350,7 @@ in
             "type": "local",
             "command": ["${pkgs.nodejs_20}/bin/npx", "-y", "@agentmemory/mcp@${agentmemoryVersion}"],
             "enabled": true,
-            "env": {
+            "environment": {
               "AGENTMEMORY_URL": "http://localhost:3111"
             }
           },
@@ -616,6 +617,7 @@ in
     xdg.configFile."opencode/agent/freecad.md".text =  builtins.readFile ./config-files/opencode/agent/freecad.md;
     xdg.configFile."opencode/agent/memory.md".text =  builtins.readFile ./config-files/opencode/agent/memory.md;
     xdg.configFile."opencode/commands/archive.md".text =  builtins.readFile ./config-files/opencode/commands/archive.md;
+    xdg.configFile."opencode/commands/gitmerge.md".text =  builtins.readFile ./config-files/opencode/commands/gitmerge.md;
     xdg.configFile."opencode/plugins/agentmemory-capture.ts".source = agentmemoryOpencodeFile "plugin/opencode/agentmemory-capture.ts" "sha256-VsnrsNxDLtkv5nlHIkOj/qw43VGYdwCyo9VOTDJiUxI=";
     xdg.configFile."opencode/commands/recall.md".source = agentmemoryOpencodeFile "plugin/opencode/commands/recall.md" "sha256-OwVwHbreZeEZJyZZK5Ivqs4mvwtlnzHntUpqWEiA6Xs=";
     xdg.configFile."opencode/commands/remember.md".source = agentmemoryOpencodeFile "plugin/opencode/commands/remember.md" "sha256-jifK8lui0vH9eUTwRUyQz5tLX/JAVKkcW66yQgJfpqk=";
@@ -1022,6 +1024,8 @@ in
         export OPENCODE_ENABLE_EXA=1
         export OPENCODE_EXPERIMENTAL_LSP_TOOL=true
         export OPENCODE_ARCHIVER_DIRECTORY="/data/Obsidian/mickael/Logger/Opencode/"
+
+        export QT_QPA_PLATFORM=wayland
       ''; 
     
       shellAliases = {
