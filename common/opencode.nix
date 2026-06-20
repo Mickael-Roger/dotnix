@@ -134,12 +134,12 @@ in
        "mcp": {
          "freecad": {
             "type": "local",
-            "enabled": true,
+            "enabled": false,
             "command": ["uvx", "freecad-mcp"],
          },
           "brave-search": {
             "type": "local",
-            "enabled": true,
+            "enabled": false,
             "command": ["npx", "-y", "@brave/brave-search-mcp-server", "--transport", "stdio"],
             "environment": {
               "BRAVE_API_KEY": "${secrets.brave_api_key}"
@@ -148,7 +148,7 @@ in
           "tasks": {
             "type": "local",
             "command": ["${mcp-tasks}/bin/mcp-webdav-tasks"],
-            "enabled": true,
+            "enabled": false,
             "environment": {
               "MCP_WEBDAV_TASKS_SERVER": "https://zimbra1.mail.ovh.net/dav/${secrets.mail.username}/",
               "MCP_WEBDAV_TASKS_USERNAME": "${secrets.mail.username}",
@@ -174,7 +174,7 @@ in
           "playwright": {
             "type": "local",
             "command": ["${pkgs.playwright-mcp}/bin/mcp-server-playwright"],
-            "enabled": true
+            "enabled": false
           },
           "memory": {
             "type": "local",
@@ -229,23 +229,14 @@ in
           "memory_memory_facet_tag": false,
           "memory_memory_facet_query": false,
           "memory_memory_verify": false,
-          "freecad_*": false,
-          "n8n_*": false,
-          "playwright_*": false,
           "github_*": false,
           "tasks_*": false,
-          "brave-search_*": false,
           //Needs OPENCODE_ENABLE_EXA=1 env var
           "websearch": true
         },
         "agent": {
           "agent-builder": {
             "hidden": true
-          },
-          "freecad": {
-            "permission": {
-              "freecad_*": "allow",
-            }
           },
           "build": {
             "permission": {
@@ -343,20 +334,6 @@ in
               "edit": false
             }
           },
-          "n8n": {
-            "permission": {
-              "task": {
-                "agent-*": "deny"
-              }
-            },
-            "tools": {
-              "n8n_*": true,
-              "bash": true,
-              "webfetch": true,
-              "write": true,
-              "edit": true
-            }
-          },
           "webbrowser": {
             "permission": {
               "task": {
@@ -367,23 +344,6 @@ in
               "playwright_*": true,
               "bash": true,
               "webfetch": true,
-            }
-          },
-          "chat": {
-            "permission": {
-              "task": {
-                "agent-*": "deny"
-              }
-            },
-            "tools": {
-              "tasks_*": true,
-              "websearch_*": false,
-              "brave-search_*": true,
-              "bash": false,
-              "grep": true,
-              "webfetch": true,
-              "write": true,
-              "edit": false
             }
           },
           "memory": {
