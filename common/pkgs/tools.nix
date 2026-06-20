@@ -130,7 +130,6 @@ in {
   # For obsidian
   nixpkgs.config.permittedInsecurePackages = [
     "electron-25.9.0"
-    "googleearth-pro-7.3.6.9796"
   ];
   environment.systemPackages = with pkgs; [
     sshfs
@@ -202,8 +201,6 @@ in {
     pkgs.ffmpeg
     pkgs.openssl
     pkgs.inotify-tools
-    pkgs.
-    pkgs.googleearth-pro
 
     pkgs.yubikey-manager
 

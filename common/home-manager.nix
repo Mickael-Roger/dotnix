@@ -701,9 +701,6 @@ in
         switch-to-workspace-8 = ["F8"];
         switch-to-workspace-9 = ["F9"];
         switch-to-workspace-10 = ["F10"];
-      };
-
-      "org/gnome/desktop/wm/keybindings" = {
         move-to-workspace-1 = ["<Shift>F1"];
         move-to-workspace-2 = ["<Shift>F2"];
         move-to-workspace-3 = ["<Shift>F3"];
@@ -714,13 +711,6 @@ in
         move-to-workspace-8 = ["<Shift>F8"];
         move-to-workspace-9 = ["<Shift>F9"];
         move-to-workspace-10 = ["<Shift>F10"];
-      };
-
-      "org/gnome/desktop/wm/preferences" = {
-        num-workspaces = 10;
-      };
-
-      "org/gnome/desktop/wm/keybindings" = {
         close = ["<Super>q"];
       };
 
@@ -788,6 +778,7 @@ in
         clock-show-weekday = true;
       };
       "org/gnome/desktop/wm/preferences" = {
+        num-workspaces = 10;
         button-layout = "menu:minimize,maximize,spacer,close";
       };
       "org/gnome/shell" = {
@@ -852,12 +843,10 @@ in
       };
     };
 
-    xdg = {
-      enable = true;
-      configFile."weechat/irc.conf" = {
-        source = ./config-files/weechat/irc.conf;
-      };
-    }; 
+    xdg.enable = true;
+    xdg.configFile."weechat/irc.conf" = {
+      source = ./config-files/weechat/irc.conf;
+    };
 
     wayland.windowManager.sway = {
       enable = true;

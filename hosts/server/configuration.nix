@@ -8,6 +8,11 @@
   imports =
     [ 
       ../../common/base.nix
+      ../../common/desktop.nix
+      ../../common/virtualization.nix
+      ../../common/networking.nix
+      ../../common/calendar.nix
+      ../../common/hardware.nix
       ../../common/services.nix
       ../../common/pkgs/cybersec.nix
       ../../common/pkgs/nix.nix
