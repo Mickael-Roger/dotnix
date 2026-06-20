@@ -83,12 +83,6 @@ let
     exec npx -y https://github.com/google-gemini/gemini-cli "$@"
   '';
 
-  n8n-mcp = pkgs.writeScriptBin "n8n-mcp" ''
-    #!${pkgs.runtimeShell}
-    export PATH=${pkgs.nodejs_20}/bin:$PATH
-    exec npx -y n8n-mcp@latest "$@"
-  '';
-
   github-mcp = pkgs.buildGoModule (finalAttrs: {
     pname = "github-mcp-server";
     version = "0.31.0";
@@ -154,7 +148,6 @@ in {
     python313Packages.llm-openrouter
 
     ## MCP
-    n8n-mcp
     github-mcp
     yt-dlp
 

@@ -163,18 +163,6 @@ in
               "CONTEXT7_API_KEY": "${secrets.context7_api}"
             },
           },
-          "n8n": {
-            "type": "local",
-            "command": ["n8n-mcp"],
-            "enabled": true,
-            "environment": {
-              "MCP_MODE": "stdio",
-              "LOG_LEVEL": "error",
-              "DISABLE_CONSOLE_OUTPUT": "true",
-              "N8N_API_URL": "${secrets.n8n.url}",
-              "N8N_API_KEY": "${secrets.n8n.token}"
-            }
-          },
           "github": {
             "type": "local",
             "command": ["github-mcp-server", "stdio"],
