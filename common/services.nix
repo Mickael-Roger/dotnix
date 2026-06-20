@@ -114,69 +114,6 @@ in
     };
   };
 
-  services.litellm = {
-    enable = true;
-
-    host = "127.0.0.1";
-    port = 4000;
-    openFirewall = true;
-
-    settings = {
-      model_list = [
-        # Z.ai
-        {
-          model_name = "glm-5.1";
-          litellm_params = {
-            model = "openai/GLM-5.1";
-            api_base = "https://api.z.ai/api/coding/paas/v4";
-            api_key = "${secrets.zai_api_key}";
-          };
-        }
-      
-        {
-          model_name = "glm-4.5";
-          litellm_params = {
-            model = "openai/GLM-4.5";
-            api_base = "https://api.z.ai/api/coding/paas/v4";
-            api_key = "${secrets.zai_api_key}";
-          };
-        }
-
-        {
-          model_name = "glm-5";
-          litellm_params = {
-            model = "openai/GLM-5";
-            api_base = "https://api.z.ai/api/coding/paas/v4";
-            api_key = "${secrets.zai_api_key}";
-          };
-        }
-      
-        {
-          model_name = "glm-5-turbo";
-          litellm_params = {
-            model = "openai/GLM-5-Turbo";
-            api_base = "https://api.z.ai/api/coding/paas/v4";
-            api_key = "${secrets.zai_api_key}";
-          };
-        }
-      
-        # OpenAI embeddings
-        {
-          model_name = "text-embedding-3-small";
-          litellm_params = {
-            model = "openai/text-embedding-3-small";
-            api_key = "${secrets.openai_token}";
-          };
-        }
-      ];
-
-      general_settings = {
-        # Utilisateur/API key côté clients LiteLLM
-        master_key = "${secrets.litellm_token}";
-      };
-    };
-  };
-
   services.mysql = {
     enable = true;
     package = pkgs.mariadb;

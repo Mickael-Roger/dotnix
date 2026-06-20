@@ -13,6 +13,7 @@
       ../../common/networking.nix
       ../../common/calendar.nix
       ../../common/hardware.nix
+      ../../common/opencode.nix
       ../../common/pkgs/nix.nix
       ../../common/pkgs/cybersec.nix
       ../../common/pkgs/kube.nix

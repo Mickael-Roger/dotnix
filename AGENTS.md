@@ -5,6 +5,8 @@
 - This repository contains flake-based NixOS configurations for `server` and `xps-laptop`.
 - Shared system modules live under `common/`.
 - Role-focused shared modules include `common/desktop.nix`, `common/networking.nix`, `common/virtualization.nix`, `common/calendar.nix`, and `common/hardware.nix`.
+- Opencode, agentmemory, and LiteLLM configuration lives in `common/opencode.nix`, imported by both hosts.
+- Files under `common/config-files/opencode/` are deployed recursively by `common/opencode.nix`; adding a local agent or command file there should not require editing the Nix module.
 - Host-specific configuration lives under `hosts/<host>/`.
 - Home Manager configuration is centralized in `common/home-manager.nix`.
 - Package category modules live under `common/pkgs/`.
