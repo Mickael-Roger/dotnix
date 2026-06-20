@@ -129,7 +129,7 @@ in
        "$schema": "https://opencode.ai/config.json",
        "formatter": true,
        "theme": "opencode",
-       "plugin": ["opencode-gemini-auth@latest", "./plugins/agentmemory-capture.ts"],
+       "plugin": ["./plugins/agentmemory-capture.ts"],
        "autoupdate": false,
        "mcp": {
          "freecad": {

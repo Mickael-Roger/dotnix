@@ -3,8 +3,6 @@
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
-    #oldnixpkgs.url = "github:NixOS/nixpkgs/nixos-24.11";
-
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
     
     home-manager.url = "github:nix-community/home-manager/release-25.11";
@@ -31,68 +29,42 @@
 
   };
 
-  outputs = { self, nixpkgs, home-manager, nur-repo, ctfmgntSrc, secretSrc, nixpkgs-unstable, yt-x, ... }: 
+  outputs = { nixpkgs, home-manager, nur-repo, ctfmgntSrc, secretSrc, nixpkgs-unstable, yt-x, ... }:
   let
+    system = "x86_64-linux";
 
-    secrets = if builtins.pathExists ./secrets.nix
-                then import ./secrets.nix
-                else {};   
-
-    unstable = import nixpkgs-unstable { system = "x86_64-linux"; config.allowUnfree = true; };
-    oldnixpkgs = import nixpkgs-unstable { system = "x86_64-linux"; config.allowUnfree = true; };
+    unstable = import nixpkgs-unstable { inherit system; config.allowUnfree = true; };
 
     nur = import nur-repo { inherit pkgs; }; 
 
     pkgs = import nixpkgs {
-      system = "x86_64-linux";
+      inherit system;
       config.allowUnfree = true;
     };
 
+    mkHost = host: nixpkgs.lib.nixosSystem {
+      inherit system;
+      modules = [
+        (./hosts + "/${host}/configuration.nix")
+        (./hosts + "/${host}/hardware-configuration.nix")
+        home-manager.nixosModules.home-manager
+        {
+          home-manager.useGlobalPkgs = true;
+          home-manager.useUserPackages = true;
+
+          home-manager.users = import ./common/home-manager.nix { inherit pkgs nur secretSrc; };
+          home-manager.extraSpecialArgs = { inherit nur pkgs secretSrc; };
+        }
+      ];
+
+      specialArgs = { inherit ctfmgntSrc secretSrc unstable nixpkgs yt-x; };
+    };
 
   in {
 
     nixosConfigurations = {
-      
-      # Home server configuration
-      server = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./hosts/server/configuration.nix
-          ./hosts/server/hardware-configuration.nix
-          home-manager.nixosModules.home-manager {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-
-            home-manager.users = import ./common/home-manager.nix { inherit pkgs nur secretSrc;};
-
-            home-manager.extraSpecialArgs = { inherit nur pkgs secretSrc; };  # Pass NUR to the Home Manager configuration
-          } 
-        ];
-
-        specialArgs = { inherit ctfmgntSrc secretSrc unstable nixpkgs yt-x; };
-
-      };
-
-      # Dell XPS
-      xps-laptop = nixpkgs.lib.nixosSystem {
-        system = "x86_64-linux";
-        modules = [
-          ./hosts/xps-laptop/configuration.nix
-          ./hosts/xps-laptop/hardware-configuration.nix
-          home-manager.nixosModules.home-manager {
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-
-            home-manager.users = import ./common/home-manager.nix { inherit pkgs nur secretSrc;};
-
-            home-manager.extraSpecialArgs = { inherit nur pkgs secretSrc; };  # Pass NUR to the Home Manager configuration
-          } 
-        ];
-
-        specialArgs = { inherit ctfmgntSrc secretSrc unstable yt-x; };
-
-      };
-
+      server = mkHost "server";
+      xps-laptop = mkHost "xps-laptop";
     };
 
   };

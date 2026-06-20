@@ -127,10 +127,6 @@ let
 
 
 in {
-  # For obsidian
-  nixpkgs.config.permittedInsecurePackages = [
-    "electron-25.9.0"
-  ];
   environment.systemPackages = with pkgs; [
     sshfs
     # shortcut
@@ -153,9 +149,9 @@ in {
     unstable.claude-code
     opencode
     gemini
-    pkgs.llm
-    pkgs.python313Packages.llm-mistral
-    pkgs.python313Packages.llm-openrouter
+    llm
+    python313Packages.llm-mistral
+    python313Packages.llm-openrouter
 
     ## MCP
     n8n-mcp
@@ -163,59 +159,59 @@ in {
     yt-dlp
 
 
-    pkgs.xfce.thunar
+    xfce.thunar
 
 
-    pkgs.fzf
+    fzf
 
-    pkgs.podman
-    pkgs.podman-compose
+    podman
+    podman-compose
 
 
-    pkgs.dig
-    pkgs.git
-    pkgs.jq
-    pkgs.file
-    pkgs.keepass
-    pkgs.tldr
-    pkgs.encfs
-    pkgs.bcc
-    pkgs.bpftrace
-    pkgs.copyq
-    pkgs.ripgrep
-    pkgs.unzip
-    pkgs.usbutils
-    pkgs.socat
-    pkgs.lsof
+    dig
+    git
+    jq
+    file
+    keepass
+    tldr
+    encfs
+    bcc
+    bpftrace
+    copyq
+    ripgrep
+    unzip
+    usbutils
+    socat
+    lsof
     #pkgs.nerdfonts
-    pkgs.gedit
-    pkgs.tmux
-    pkgs.tmux-mem-cpu-load
-    pkgs.tig
-    pkgs.iotas
-    pkgs.thunderbird
-    pkgs.unrar
-    pkgs.zip
-    pkgs.p7zip
-    pkgs.jdk21
-    pkgs.ffmpeg
-    pkgs.openssl
-    pkgs.inotify-tools
+    gedit
+    tmux
+    tmux-mem-cpu-load
+    tig
+    iotas
+    thunderbird
+    unrar
+    zip
+    p7zip
+    jdk21
+    ffmpeg
+    openssl
+    inotify-tools
 
-    pkgs.yubikey-manager
+    yubikey-manager
 
-    pkgs.sqlite-interactive
+    sqlite-interactive
 
-    pkgs.wl-clipboard
+    wl-clipboard
 
-    pkgs.ugrep
+    ugrep
 
     # Productivity
-    pkgs.anki-bin
-    pkgs.obsidian
-    pkgs.basalt
-    pkgs.khal
-    pkgs.todoman
+    anki-bin
+    obsidian
+    basalt
+    khal
+    todoman
     #pkgs.synology-drive-client
     #pkgs.nextcloud-client
   ];

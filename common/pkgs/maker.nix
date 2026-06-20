@@ -57,29 +57,28 @@ let
 
   
 in {
-  environment.systemPackages = [
+  environment.systemPackages = with pkgs; [
     creality-print
-    #oldnixpkgs.cura
-    pkgs.freecad
+    freecad
     #pkgs.freecad-wayland
-    pkgs.arduino
-    pkgs.sweethome3d.application
-    pkgs.sweethome3d.textures-editor
-    pkgs.sweethome3d.furniture-editor 
-    pkgs.esptool
-    pkgs.kicad
+    arduino
+    sweethome3d.application
+    sweethome3d.textures-editor
+    sweethome3d.furniture-editor
+    esptool
+    kicad
 
-    pkgs.thonny
+    thonny
 
-    pkgs.openscad
-    pkgs.openscad-lsp
+    openscad
+    openscad-lsp
 
-    pkgs.stm32cubemx
-    pkgs.openocd
+    stm32cubemx
+    openocd
     #pkgs.gcc-arm-embedded-13
-    pkgs.gcc-arm-embedded
+    gcc-arm-embedded
 
-    pkgs.rpi-imager
+    rpi-imager
 
     esp32-idf-full
     esp32-idf
@@ -91,12 +90,12 @@ in {
     esp8266-rtos-idf
 
 
-    pkgs.gst_all_1.gstreamer
-    pkgs.gst_all_1.gst-rtsp-server
-    pkgs.gst_all_1.gst-plugins-base
-    pkgs.gst_all_1.gst-plugins-good
-    pkgs.gst_all_1.gst-plugins-bad
-    pkgs.gst_all_1.gst-plugins-ugly
-    pkgs.gst_all_1.gst-libav
+    gst_all_1.gstreamer
+    gst_all_1.gst-rtsp-server
+    gst_all_1.gst-plugins-base
+    gst_all_1.gst-plugins-good
+    gst_all_1.gst-plugins-bad
+    gst_all_1.gst-plugins-ugly
+    gst_all_1.gst-libav
   ];
 }
