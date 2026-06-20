@@ -158,11 +158,11 @@
     "secretSrc": {
       "flake": false,
       "locked": {
-        "lastModified": 1779554451,
-        "narHash": "sha256-OJ0sc6tPH4Wi9iiwO8PzZR574a+W74HOX7HTrlTgauw=",
+        "lastModified": 1781966021,
+        "narHash": "sha256-Tw8hfuIBMY06Lu18bSViqlqK+b0s307kPMD2NJ6QIeY=",
         "ref": "refs/heads/master",
-        "rev": "8696ab1b2a40b02011f8e09b5b87bad220158a6b",
-        "revCount": 23,
+        "rev": "8744bdfb3ae27e912c20061aa04a0f9f9418d7f9",
+        "revCount": 24,
         "type": "git",
         "url": "ssh://git@github.com/Mickael-Roger/secrets"
       },
