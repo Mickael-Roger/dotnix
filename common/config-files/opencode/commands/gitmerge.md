@@ -24,3 +24,8 @@ Constraints:
 - Do not lose or overwrite user work.
 - Do not force push unless explicitly requested.
 - If blocked by auth, permissions, checks, or branch protection, explain the blocker and the next required action.
+
+Important:
+After completing this command, the agent must exit and return control to the user.
+The agent must not continue any prior task, roadmap, suggestion, TODO, or autonomous workflow.
+Wait for explicit user instructions before performing any further action.
