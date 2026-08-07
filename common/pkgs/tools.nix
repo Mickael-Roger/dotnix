@@ -77,6 +77,12 @@ let
     exec npx -y opencode-ai@latest "$@"
   '';
 
+  ocm = pkgs.writeScriptBin "ocm" ''
+    #!${pkgs.runtimeShell}
+    export PATH=${pkgs.nodejs_20}/bin:$PATH
+    exec npx -y @mickaelroger78/opencode-manager@latest
+  '';
+
   gemini = pkgs.writeScriptBin "gemini" ''
     #!${pkgs.runtimeShell}
     export PATH=${pkgs.nodejs_20}/bin:$PATH
@@ -142,6 +148,7 @@ in {
     #unstable.gemini-cli
     unstable.claude-code
     opencode
+    ocm
     gemini
     llm
     python313Packages.llm-mistral

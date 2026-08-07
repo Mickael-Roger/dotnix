@@ -51,6 +51,8 @@ in {
     #rtk
     oc-monitor
 
+    github-cli
+
     nodejs_22
     clang-tools
     docker
