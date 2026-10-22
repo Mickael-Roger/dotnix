@@ -1,4 +1,4 @@
-{ pkgs, secretSrc, ... }:
+{ pkgs, secretSrc, unstable, ... }:
 let
   secrets = import "${secretSrc}/secrets.nix";
 
@@ -52,58 +52,73 @@ in
 {
   services.litellm = {
     enable = true;
+    package = unstable.litellm;
 
     host = "127.0.0.1";
     port = 4000;
     openFirewall = true;
 
+    environment = {
+      CHATGPT_TOKEN_DIR = "/var/lib/litellm/chatgpt";
+    };
+
     settings = {
       model_list = [
         # Z.ai
         {
-          model_name = "glm-5.2";
-          litellm_params = {
-            model = "openai/GLM-5.2";
-            api_base = "https://api.z.ai/api/coding/paas/v4";
-            api_key = "${secrets.zai_api_key}";
-          };
-        }
-      
-        {
-          model_name = "glm-5.1";
-          litellm_params = {
-            model = "openai/GLM-5.1";
-            api_base = "https://api.z.ai/api/coding/paas/v4";
-            api_key = "${secrets.zai_api_key}";
-          };
-        }
-      
-        {
-          model_name = "glm-4.5";
-          litellm_params = {
-            model = "openai/GLM-4.5";
-            api_base = "https://api.z.ai/api/coding/paas/v4";
-            api_key = "${secrets.zai_api_key}";
-          };
-        }
+          model_name = "zai/*";
 
-        {
-          model_name = "glm-5";
           litellm_params = {
-            model = "openai/GLM-5";
+            model = "zai/*";
             api_base = "https://api.z.ai/api/coding/paas/v4";
             api_key = "${secrets.zai_api_key}";
+            drop_params = true;
           };
         }
+        #{
+        #  model_name = "glm-5.2";
+        #  litellm_params = {
+        #    model = "openai/GLM-5.2";
+        #    api_base = "https://api.z.ai/api/coding/paas/v4";
+        #    api_key = "${secrets.zai_api_key}";
+        #  };
+        #}
       
-        {
-          model_name = "glm-5-turbo";
-          litellm_params = {
-            model = "openai/GLM-5-Turbo";
-            api_base = "https://api.z.ai/api/coding/paas/v4";
-            api_key = "${secrets.zai_api_key}";
-          };
-        }
+        #{
+        #  model_name = "glm-5.1";
+        #  litellm_params = {
+        #    model = "openai/GLM-5.1";
+        #    api_base = "https://api.z.ai/api/coding/paas/v4";
+        #    api_key = "${secrets.zai_api_key}";
+        #  };
+        #}
+      
+        #{
+        #  model_name = "glm-4.5";
+        #  litellm_params = {
+        #    model = "openai/GLM-4.5";
+        #    api_base = "https://api.z.ai/api/coding/paas/v4";
+        #    api_key = "${secrets.zai_api_key}";
+        #  };
+        #}
+
+        #{
+        #  model_name = "glm-5";
+        #  litellm_params = {
+        #    model = "openai/GLM-5";
+        #    api_base = "https://api.z.ai/api/coding/paas/v4";
+        #    api_key = "${secrets.zai_api_key}";
+        #  };
+        #}
+      
+        #{
+        #  model_name = "glm-5-turbo";
+        #  litellm_params = {
+        #    model = "openai/GLM-5-Turbo";
+        #    api_base = "https://api.z.ai/api/coding/paas/v4";
+        #    api_key = "${secrets.zai_api_key}";
+        #  };
+        #}
       
         # OpenAI embeddings
         {
@@ -113,6 +128,37 @@ in
             api_key = "${secrets.openai_token}";
           };
         }
+
+
+        # OpenAI ChatGPT Codex
+        {
+          model_name = "chatgpt/*";
+          litellm_params = {
+            model = "chatgpt/*";
+          };
+        }
+
+        {
+          model_name = "chatgpt/gpt-5.6-sol";
+          litellm_params = {
+            model = "chatgpt/gpt-5.6-sol";
+          };
+        }
+
+        {
+          model_name = "chatgpt/gpt-5.6-terra";
+          litellm_params = {
+            model = "chatgpt/gpt-5.6-terra";
+          };
+        }
+
+        {
+          model_name = "chatgpt/gpt-5.6-luna";
+          litellm_params = {
+            model = "chatgpt/gpt-5.6-luna";
+          };
+        }
+
       ];
 
       general_settings = {
@@ -178,7 +224,7 @@ in
           },
           "memory": {
             "type": "local",
-            "command": ["${pkgs.nodejs_20}/bin/npx", "-y", "@agentmemory/mcp@${agentmemoryVersion}"],
+             "command": ["${pkgs.nodejs_22}/bin/npx", "-y", "@agentmemory/mcp@${agentmemoryVersion}"],
             "enabled": true,
             "environment": {
               "AGENTMEMORY_URL": "http://localhost:3111"
@@ -405,7 +451,7 @@ in
       };
       Service = {
         Type = "simple";
-        ExecStart = "${pkgs.nodejs_20}/bin/npx -y @agentmemory/agentmemory@${agentmemoryVersion}";
+        ExecStart = "${pkgs.nodejs_22}/bin/npx -y @agentmemory/agentmemory@${agentmemoryVersion}";
         Restart = "on-failure";
         RestartSec = 5;
         Environment = [

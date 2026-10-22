@@ -29,101 +29,18 @@ let
     vendorHash = "sha256-kswhENk3y0Dew0cpCy8ff3hNbglBYxLYSxW0fIT6img=";
   };
 
-  firefox-tui = pkgs.buildGoModule {
-    pname = "firefox-tui";
-    version = "v1.0";
-    src = pkgs.fetchFromGitHub {
-      owner = "Mickael-Roger";
-      repo = "ff-tui";
-      rev = "v1.1";
-      sha256 = "sha256-GInY2ffIrx53lqcRxwMXjcQYbEm7YGMIN3IZNqSR+tE=";
-    };
-    outputs = [ "out" ];
-    installPhase = ''
-      install -Dm755 $GOPATH/bin/firefox-tui $out/bin/firefox-tui
-    '';
-    vendorHash = "sha256-lKSr05aeK+HBxJKIbBPSesYpokf6D2Yol8p4OHHjNQ8=";
-  };
-
- 
-  news-cli = pkgs.buildGoModule {
-    pname = "news-cli";
-    version = "v1.2";
-    src = pkgs.fetchFromGitHub {
-      owner = "Mickael-Roger";
-      repo = "news-cli";
-      rev = "v1.2";
-      sha256 = "sha256-4BsidibEgzGMcUffZdo+QX2Tv2pdDl0yZ0qJvBHqZh8=";
-    };
-    outputs = [ "out" ];
-    installPhase = ''
-      install -Dm755 $GOPATH/bin/news-cli $out/bin/news-cli
-      mkdir -p $out/share/bash-completion/completions
-      install -m644 news-cli-completion.bash $out/share/bash-completion/completions/news-cli
-    '';
-    vendorHash = "sha256-odNmstOQ5IaAaWjnr7ibx3npK+xIh5XF5mUjOkJb2/U=";
-  };
-
- 
-
-  ffgo = pkgs.writeShellScriptBin "ff" ''
-    ${firefox-tui}/bin/firefox-tui --command list | ${pkgs.fzf}/bin/fzf --delimiter=' ' --with-nth=2.. | ${pkgs.gawk}/bin/awk '{print $1}' | ${pkgs.findutils}/bin/xargs -I{} ${firefox-tui}/bin/firefox-tui --command go {}
-  '';
-
 
   opencode = pkgs.writeScriptBin "opencode" ''
     #!${pkgs.runtimeShell}
-    export PATH=${pkgs.nodejs_20}/bin:$PATH
+    export PATH=${pkgs.nodejs_22}/bin:$PATH
     exec npx -y opencode-ai@latest "$@"
   '';
 
   ocm = pkgs.writeScriptBin "ocm" ''
     #!${pkgs.runtimeShell}
-    export PATH=${pkgs.nodejs_20}/bin:$PATH
-    exec npx -y @mickaelroger78/opencode-manager@latest
+    export PATH=${pkgs.nodejs_22}/bin:$PATH
+    exec npx -y @mickaelroger78/opencode-manager@latest "$@"
   '';
-
-  gemini = pkgs.writeScriptBin "gemini" ''
-    #!${pkgs.runtimeShell}
-    export PATH=${pkgs.nodejs_20}/bin:$PATH
-    exec npx -y https://github.com/google-gemini/gemini-cli "$@"
-  '';
-
-  github-mcp = pkgs.buildGoModule (finalAttrs: {
-    pname = "github-mcp-server";
-    version = "0.31.0";
-  
-    src = pkgs.fetchFromGitHub {
-      owner = "github";
-      repo = "github-mcp-server";
-      tag = "v${finalAttrs.version}";
-      hash = "sha256-7vcDkN0q/bNr2dHQgM4YzmQjDjMyLLtkbdBjhmUM1/4=";
-    };
-  
-    vendorHash = "sha256-zxisK5o2zqeAkQEPKd1w8rFXoJsDB4VNEdD27uos250=";
-  
-    ldflags = [
-      "-s"
-      "-w"
-      "-X=main.version=${finalAttrs.version}"
-      "-X=main.commit=${finalAttrs.src.rev}"
-      "-X=main.date=1970-01-01T00:00:00Z"
-    ];
-  
-    __darwinAllowLocalNetworking = true;
-  
-    doInstallCheck = true;
-    versionCheckProgramArg = "--version";
-  
-    meta = {
-      changelog = "https://github.com/github/github-mcp-server/releases/tag/v${finalAttrs.version}";
-      description = "GitHub's official MCP Server";
-      homepage = "https://github.com/github/github-mcp-server";
-      license = pkgs.lib.licenses.mit;
-      mainProgram = "github-mcp-server";
-      maintainers = with pkgs.lib.maintainers; [ logger ];
-    };
-  });
 
 
 in {
@@ -136,30 +53,25 @@ in {
 
     tom
     # Needed to manage windows into virtual desktop
-    ffgo
-    firefox-tui
     wmctrl 
 
     # Tooling
-    news-cli
     xclip
    
     # AI
     #unstable.gemini-cli
-    unstable.claude-code
+    #unstable.claude-code
     opencode
     ocm
-    gemini
+    #gemini
     llm
     python313Packages.llm-mistral
     python313Packages.llm-openrouter
 
     ## MCP
-    github-mcp
     yt-dlp
 
-
-    xfce.thunar
+    thunar
 
 
     fzf

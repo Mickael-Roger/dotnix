@@ -46,7 +46,6 @@ in {
     hydra-cli
     ghidra
     binwalk
-    python311Packages.pwntools
     pwntools
     gef
 

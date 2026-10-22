@@ -57,7 +57,7 @@ nix flake update
 Update only secrets:
 
 ```sh
-nix flake lock --update-input secretSrc
+nix flake update secretSrc
 ```
 
 Then rebuild the target host.

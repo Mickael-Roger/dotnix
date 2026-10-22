@@ -1,6 +1,108 @@
-{ pkgs, nur, secretSrc, ... }:
+{ pkgs, nur, secretSrc, himalayaPackage, neverestPackage, carillonPackage, mailtuiPackage, codexPackage, ... }:
 let
   secrets = import "${secretSrc}/secrets.nix";
+  mailAccounts = {
+    ionos = { name = "Mickael Roger"; imap = "imap.ionos.fr"; smtp = "smtp.ionos.fr"; };
+    ovh = { name = "Mickael Roger"; imap = "imap.mail.ovh.net"; smtp = "smtp.mail.ovh.net"; };
+    tom = { name = "Tom AI"; imap = "imap.mail.ovh.net"; smtp = "smtp.mail.ovh.net"; };
+    creabot = { name = "Creabot"; imap = "imap.mail.ovh.net"; smtp = "smtp.mail.ovh.net"; };
+  };
+  mailStore = account: "/home/mickael/.local/state/neverest/${account}";
+  neverestSyncCommand = account: [ "${neverestPackage}/bin/neverest" "sync" "-a" account ];
+  neverestConfig = (pkgs.formats.toml { }).generate "neverest-config.toml" {
+    accounts = builtins.mapAttrs (account: settings: {
+      default = account == "ionos";
+      store.root = mailStore account;
+      imap = {
+        server = "imaps://${settings.imap}:993";
+        sasl.plain = {
+          username = secrets.mail.${account}.email;
+          password.raw = secrets.mail.${account}.password;
+        };
+      };
+      smtp = {
+        server = "smtps://${settings.smtp}:465";
+        sasl.plain = {
+          username = secrets.mail.${account}.email;
+          password.raw = secrets.mail.${account}.password;
+        };
+      };
+    }) mailAccounts;
+  };
+  carillonConfig = (pkgs.formats.toml { }).generate "carillon-config.toml" {
+    accounts = builtins.mapAttrs (account: settings: {
+      default = account == "ionos";
+      imap = {
+        mailbox = "INBOX";
+        server = "imaps://${settings.imap}:993";
+        sasl.plain = {
+          username = secrets.mail.${account}.email;
+          password.raw = secrets.mail.${account}.password;
+        };
+        hook = {
+          on-message-added.cmd = neverestSyncCommand account;
+          on-message-removed.cmd = neverestSyncCommand account;
+          on-flag-added.cmd = neverestSyncCommand account;
+          on-flag-removed.cmd = neverestSyncCommand account;
+        };
+      };
+    }) mailAccounts;
+  };
+  mailtuiConfig = (pkgs.formats.toml { }).generate "mailtui-config.toml" {
+    ui.theme = "k9s-dark";
+    viewer = {
+      mode = "auto";
+      session_ttl_seconds = 600;
+      browser_command = [ "xdg-open" "{url}" ];
+    };
+    accounts = [
+      {
+        id = "creabot";
+        label = "Creabot";
+        email = secrets.mail.creabot.email;
+        store = mailStore "creabot";
+      }
+      {
+        id = "Mickael IONOS";
+        label = "Mickael IONOS";
+        email = secrets.mail.ionos.email;
+        store = mailStore "ionos";
+      }
+      {
+        id = "Mickael OVH";
+        label = "Mickael famille roger";
+        email = secrets.mail.ovh.email;
+        store = mailStore "ovh";
+      }
+      {
+        id = "Tom";
+        label = "Tom";
+        email = secrets.mail.tom.email;
+        store = mailStore "tom";
+      }
+    ];
+    llm = {
+      enabled = true;
+      provider = "codex";
+      model = "gpt-6-luna";
+      codex_command = [ "${codexPackage}/bin/codex" ];
+      auth.method = "codex_oauth";
+    };
+  };
+  himalayaConfig = (pkgs.formats.toml { }).generate "himalaya-config.toml" {
+    accounts = builtins.mapAttrs (account: settings: {
+      default = account == "ionos";
+      email = secrets.mail.${account}.email;
+      display-name = settings.name;
+      pimdir = { root = mailStore account; account = account; };
+      mailbox.alias = {
+        inbox = "imap/INBOX";
+        sent = "imap/Sent";
+        drafts = "imap/Drafts";
+        trash = "imap/Trash";
+      };
+    }) mailAccounts;
+  };
   ssh-connect = pkgs.writeShellScriptBin "ssh-connect" ''
     #!/bin/bash
 
@@ -27,15 +129,11 @@ let
     ${pkgs.wmctrl}/bin/wmctrl -l | ${pkgs.gawk}/bin/awk '{printf $1" "; for(i=4;i<=NF;i++) printf $i" "; print ""}' | ${pkgs.fzf}/bin/fzf  --delimiter=' ' --with-nth=2.. | ${pkgs.gawk}/bin/awk '{print $1}' | ${pkgs.findutils}/bin/xargs -I{} ${pkgs.wmctrl}/bin/wmctrl -i -a {}
   '';
 
-  goto-ff = pkgs.writeShellScriptBin "goto-ff" ''
-    ${pkgs.wmctrl}/bin/wmctrl -l | ${pkgs.gnugrep}/bin/grep "Mozilla Firefox$" | ${pkgs.gawk}/bin/awk  {' print $1 '} | ${pkgs.findutils}/bin/xargs -I{} ${pkgs.wmctrl}/bin/wmctrl -i -a {}
-  '';
-
   g-help = pkgs.writeShellScriptBin "g-help" ''
     echo "Fx    -> Switch to WS x
     SHIFT Fx    -> Move to WS Fx
     SUPER Q     -> Close window
-    SUPER T     -> Launch Terminator
+    SUPER T     -> Launch WezTerm
     SUPER F     -> Launch Firefox
     SUPER B     -> Launch Nautilus
     SUPER R     -> Launcher
@@ -107,22 +205,6 @@ let
   '';
 
 
-
-  my-news = pkgs.writeShellScriptBin "my-news" ''
-
-    if [ -z "$1" ] || [ "$1" = "list" ]; then
-        news-cli -list-unread -json | jq -r '.[] | "\(.feedName)\t\(.id)\t\(if (.title | length) > 80 then (.title[:77] + "...") else .title end)"' | fzf --delimiter='\t' --with-nth=1,3 --no-select-1 | cut -f2
-    elif [ "$1" = "read" ]; then
-        news_id=`news-cli -list-unread -json | jq -r '.[] | "\(.feedName)\t\(.id)\t\(if (.title | length) > 80 then (.title[:77] + "...") else .title end)"' | fzf --delimiter='\t' --with-nth=1,3 | cut -f2`
-        news_url=`news-cli -get-url $news_id`
-        firefox --new-window "$news_url"        
-    elif [ "$1" = "readandmark" ]; then
-        news_id=`news-cli -list-unread -json | jq -r '.[] | "\(.feedName)\t\(.id)\t\(if (.title | length) > 80 then (.title[:77] + "...") else .title end)"' | fzf --delimiter='\t' --with-nth=1,3 | cut -f2`
-        news_url=`news-cli -get-url $news_id`
-        firefox --new-window "$news_url"        
-        news-cli -mark-read $news_id
-    fi
-  '';
 
   my-shortcut = pkgs.writeShellScriptBin "my-shortcut" ''
     command=`cat ~/.config/shortcut | ${pkgs.fzf}/bin/fzf --delimiter='|' --with-nth=2.. --prompt='Shortcut > ' | ${pkgs.gawk}/bin/awk -F'|' '{print $1}'`
@@ -242,9 +324,6 @@ in
     '';
 
     xdg.configFile."shortcut".text = ''
-      ${my-news}/bin/my-news list | News: List news
-      ${my-news}/bin/my-news read | News: Open
-      ${my-news}/bin/my-news readandmark | News: Open and mark it read
       ${ssh-connect}/bin/ssh-connect | SSH: Connect [Ctrl-b h]
       ${obsidian-term}/bin/obsidian-term | Obsidian: Open a note [Ctrl-b o]
       ${create-note}/bin/create-note | Obsidian: Create a note [Ctrl-b *]
@@ -252,9 +331,9 @@ in
       ${alarm}/bin/alarm list; read -n 1 -s | Alarm: list
       ${goto-window}/bin/goto-window | Windows: Goto an application window [Ctrl-b g]
       ${cal-term}/bin/cal-term | Calendar: Print calendar [Ctrl-b Ctrl-c]
-      /var/run/current-system/sw/bin/ff | Firefox: Goto a tab [Ctrl-b f]
       ${copyq-buff}/bin/copyq-buff | Copyq: Select in buffer [Ctrl-b b]
       ${todo-term}/bin/todo-term | Todo: List Todo [Ctrl-b t]
+      ${pkgs.tmux}/bin/tmux new-window -n "yazi" yazi | Yazi: File manager [Ctrl-b f]
     '';
 
     dconf.settings = {
@@ -285,7 +364,7 @@ in
 
       "org/gnome/settings-daemon/plugins/media-keys" = {
         custom-keybindings = [
-          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/terminator/"
+          "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/wezterm/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/firefox/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/nautilus/"
           "/org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/run/"
@@ -300,9 +379,9 @@ in
         binding = "<Super>h";
       };
 
-      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/terminator" = {
-        name = "Terminator";
-        command = "${pkgs.terminator}/bin/terminator";
+      "org/gnome/settings-daemon/plugins/media-keys/custom-keybindings/wezterm" = {
+        name = "WezTerm";
+        command = "${pkgs.wezterm}/bin/wezterm";
         binding = "<Super>t";
       };
 
@@ -416,6 +495,11 @@ in
     xdg.configFile."weechat/irc.conf" = {
       source = ./config-files/weechat/irc.conf;
     };
+    xdg.configFile."wezterm/wezterm.lua".source = ./config-files/wezterm/wezterm.lua;
+    xdg.configFile."concord/config.toml".text = ''
+      [display]
+      image_protocol = "iterm2"
+    '';
 
     wayland.windowManager.sway = {
       enable = true;
@@ -453,7 +537,7 @@ in
   
         (modifiers: [ Super, ], key: "h", description: Some("Help"), ): Spawn("${g-help}/bin/g-help"),
 
-        (modifiers: [ Super, ], key: "t", description: Some("Terminator"), ): Spawn("${pkgs.terminator}/bin/terminator"),
+        (modifiers: [ Super, ], key: "t", description: Some("WezTerm"), ): Spawn("${pkgs.wezterm}/bin/wezterm"),
 
         (modifiers: [ Super, ], key: "f", description: Some("Firefox"), ): Spawn("${pkgs.firefox}/bin/firefox"),
 
@@ -467,7 +551,43 @@ in
     programs.rofi.enable = true;
     programs.rofi.package = pkgs.rofi;
 
+    programs.yazi = {
+      enable = true;
+      shellWrapperName = "y";
+      extraPackages = with pkgs; [ bat fzf ripgrep ];
+      plugins.yafg = {
+        package = pkgs.fetchFromGitHub {
+          owner = "XYenon";
+          repo = "yafg.yazi";
+          rev = "1202b2ca9ebb7bf537927ba07df1aa96ff532502";
+          hash = "sha256-CsJuHn4L6rhsrTKFzIuQWtDp0uj+kUsCri1UogMA2n0=";
+        };
+        setup = true;
+        settings = {
+          editor = "nvim";
+          file_arg_format = "+{row} {file}";
+        };
+      };
+      keymap.mgr.prepend_keymap = [
+        { on = [ "F" "G" ]; run = "plugin yafg"; }
+      ];
+    };
 
+    home.packages = [ himalayaPackage neverestPackage carillonPackage mailtuiPackage codexPackage ];
+    xdg.configFile."neverest/config.toml".source = neverestConfig;
+    xdg.configFile."carillon/config.toml".source = carillonConfig;
+    xdg.configFile."mailtui/config.toml".source = mailtuiConfig;
+    xdg.configFile."himalaya/config.toml".source = himalayaConfig;
+
+    systemd.user.services.carillon-watch = {
+      Unit.Description = "Surveiller les boîtes IMAP avec Carillon";
+      Service = {
+        ExecStart = "${carillonPackage}/bin/carillon watch";
+        Restart = "on-failure";
+        RestartSec = "5s";
+      };
+      Install.WantedBy = [ "default.target" ];
+    };
 
     programs.git = {
       enable = true;
@@ -524,6 +644,7 @@ in
 
     programs.firefox = {
       enable = true;
+      configPath = ".mozilla/firefox";
       policies = {
         DisableTelemetry = true;
         DisableFirefoxStudies = true;
@@ -554,7 +675,7 @@ in
         mickael = {
           isDefault = true;
          
-          extensions = with nur.repos.rycee.firefox-addons; [
+          extensions.packages = with nur.repos.rycee.firefox-addons; [
                 adblocker-ultimate
                 privacy-badger
                 clearurls
@@ -581,7 +702,12 @@ in
         
         export OPENCODE_ENABLE_EXA=1
         export OPENCODE_EXPERIMENTAL_LSP_TOOL=true
-        export OPENCODE_ARCHIVER_DIRECTORY="/data/Obsidian/mickael/Logger/Opencode/"
+         export OPENCODE_ARCHIVER_DIRECTORY="/data/Obsidian/mickael/Logger/Opencode/"
+
+         source <(ocm bash-autocomplete)
+
+         export CONTEXT7_API_KEY="${secrets.context7_api}"
+        export LITELLM_API_KEY="${secrets.litellm_token}"
 
         export QT_QPA_PLATFORM=wayland
       ''; 
@@ -632,9 +758,11 @@ in
 set -g @plugin 'tmux-plugins/tmux-yank'
 set -g @yank_with_mouse on
 set -g @yank_selection 'primary'
+set -as terminal-overrides ',xterm-256color:RG'
+set -g allow-passthrough on
 setw -g mode-keys vi
 bind-key -T copy-mode-vi MouseDragEnd1Pane send -X copy-pipe-and-cancel "${clipboard-copy}/bin/clipboard-copy"
-set -g status-style fg=white,bg=black
+set -g status-style fg=white,bg=default
 set -g status-right '#[fg=green] #(${next-meeting}/bin/next-meeting)  #[fg=white] #(${alarm}/bin/alarm get --tmux)   #[fg=orange] %d.%m.%Y #[fg=pink]%H:%M:%S'
 set -g status-interval 2
 set -g status-left "#(tmux-mem-cpu-load -a 0 --interval 1) #[fg=blue] 󱂬 #(tmux display-message -p '#{window_name}')"
@@ -654,7 +782,7 @@ bind s run-shell "tmux display-popup -E -h 70% -w 70% -T 'Shortcut' '${my-shortc
 bind b run-shell "tmux display-popup -E -h 70% -w 70% -T 'Copyq' '${copyq-buff}/bin/copyq-buff'" 
 bind w run-shell "tmux display-popup -E -h 70% -w 70% -T 'Windows' '${tmux-windows}/bin/tmux-windows'"
 bind t run-shell "tmux display-popup -E -h 70% -w 70% -T 'Todo' '${todo-term}/bin/todo-term'" 
-bind f new-window -n "tmp-ff" '${goto-ff}/bin/goto-ff' C-m
+bind f new-window -n "yazi" 'yazi'
 bind -n S-PageUp copy-mode \; send-keys PageUp
 bind -n S-PageDown send-keys PageDown
 bind-key -T copy-mode-vi v send -X begin-selection
@@ -684,11 +812,6 @@ bind-key 6 new-window \; split-window -h -l '67%' \; split-window -h -l '50%' \;
     programs.chromium = {
       enable = true;
       package = pkgs.google-chrome;
-      extensions = [
-           { id = "cjpalhdlnbpafiamejdnhcphjbkeiagm"; } # ublock origin
-           { id = "baahncfnjojaofhdmdfkpeadigoemkif"; } # Voicewave chatgpt
-           { id = "ameajnciachbdcneinbgnehihjolepkd"; } # Voicewave bard
-        ];
     };       
 
 
@@ -700,17 +823,18 @@ bind-key 6 new-window \; split-window -h -l '67%' \; split-window -h -l '50%' \;
     programs.neovim = {
   
       enable = true;
+      withRuby = true;
+      withPython3 = true;
  
 #      coc.enable = true;
 
       plugins = with pkgs.vimPlugins; [
-        lazy-nvim 
+        lazy-nvim
         clangd_extensions-nvim
-        nvim-lspconfig 
-	nvchad
+        nvim-lspconfig
       ];
 
-      extraLuaConfig = builtins.readFile ./config-files/nvim/init.lua;
+      initLua = builtins.readFile ./config-files/nvim/init.lua;
   
     };
 

@@ -1,4 +1,4 @@
-{ config, pkgs, inputs, yt-x, ... }:
+{ config, pkgs, inputs, yt-x, unstable, ... }:
 
 {
   environment.systemPackages = with pkgs; [
@@ -9,6 +9,7 @@
     kdePackages.okular
     weechat
     discord
+    unstable.concord-tui
     tuba
     slack
     imagemagick
@@ -16,7 +17,6 @@
     exiftool
     newsflash
     freetube
-    vdhcoapp
-    yt-x.packages."${system}".default
+    yt-x.packages."${pkgs.stdenv.hostPlatform.system}".default
   ];
 }

@@ -89,6 +89,6 @@ in {
     #wasmer
     wabt
     cloc
-    android-studio
+    #android-studio
   ];
 }

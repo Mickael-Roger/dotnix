@@ -57,11 +57,11 @@
     waybar
     xwayland
     terminator
+    wezterm
     adwaita-icon-theme
     gnomeExtensions.appindicator
     gnomeExtensions.printers
     gnome-settings-daemon
-    gnomeExtensions.dashbar
     mutter
     gnomeExtensions.dash-to-panel
     dconf-editor
