@@ -1,4 +1,4 @@
-{ pkgs, nur, secretSrc, himalayaPackage, neverestPackage, carillonPackage, mailtuiPackage, codexPackage, ... }:
+{ pkgs, nur, secretSrc, himalayaPackage, neverestPackage, carillonPackage, mailtuiPackage, secondBrainPackage, codexPackage, ... }:
 let
   secrets = import "${secretSrc}/secrets.nix";
   mailAccounts = {
@@ -48,9 +48,31 @@ let
       };
     }) mailAccounts;
   };
-  mailtuiConfig = (pkgs.formats.toml { }).generate "mailtui-config.toml" {
-    ui.theme = "k9s-dark";
-    viewer = {
+    mailtuiConfig = (pkgs.formats.toml { }).generate "mailtui-config.toml" {
+      ui.theme = "k9s-dark";
+      calendars = {
+        enabled = true;
+        path = "/data/calendars/";
+        sync_command = [ "${pkgs.vdirsyncer}/bin/vdirsyncer" "sync" "calendars" ];
+        sync_timeout_seconds = 120;
+      };
+      tasks = {
+        enabled = true;
+        path = "/data/tasks/";
+        sync_command = [ "${pkgs.vdirsyncer}/bin/vdirsyncer" "sync" "tasks" ];
+        sync_timeout_seconds = 120;
+      };
+      contacts = {
+        enabled = true;
+        path = "/data/contacts/";
+        sync_command = [ "${pkgs.vdirsyncer}/bin/vdirsyncer" "sync" "contacts" ];
+        sync_timeout_seconds = 120;
+      };
+      mail = {
+        sync_command = neverestSyncCommand "{account}";
+        sync_timeout_seconds = 120;
+      };
+      viewer = {
       mode = "auto";
       session_ttl_seconds = 600;
       browser_command = [ "xdg-open" "{url}" ];
@@ -63,19 +85,19 @@ let
         store = mailStore "creabot";
       }
       {
-        id = "Mickael IONOS";
+        id = "ionos";
         label = "Mickael IONOS";
         email = secrets.mail.ionos.email;
         store = mailStore "ionos";
       }
       {
-        id = "Mickael OVH";
+        id = "ovh";
         label = "Mickael famille roger";
         email = secrets.mail.ovh.email;
         store = mailStore "ovh";
       }
       {
-        id = "Tom";
+        id = "tom";
         label = "Tom";
         email = secrets.mail.tom.email;
         store = mailStore "tom";
@@ -103,6 +125,10 @@ let
       };
     }) mailAccounts;
   };
+  vdirsyncerConfig = pkgs.writeText "vdirsyncer-config" (
+    builtins.replaceStrings [ "@OVH_EMAIL@" ] [ secrets.mail.ovh.email ]
+      (builtins.readFile ./config-files/vdirsyncer/config)
+  );
   ssh-connect = pkgs.writeShellScriptBin "ssh-connect" ''
     #!/bin/bash
 
@@ -294,13 +320,9 @@ in
     xdg.configFile."khal/config".text = ''
       [calendars]
 
-      [[famille]]
-      path = /home/mickael/.local/share/vdirsyncer/calendars/Famille
-      type = calendar
-      
-      [[perso]]
-      path = /home/mickael/.local/share/vdirsyncer/calendars/Calendar
-      type = calendar
+       [[all]]
+       path = /data/calendars/*
+       type = discover
       
       [locale]
       timeformat = %H:%M
@@ -315,7 +337,7 @@ in
     '';
 
     xdg.configFile."todoman/config.py".text = ''
-      path = "~/.local/share/vdirsyncer/tasks/*"
+       path = "/data/tasks/*"
       time_format = "%H:%M"
       date_format = "%Y-%m-%d"
       default_list = "Todo"
@@ -573,7 +595,8 @@ in
       ];
     };
 
-    home.packages = [ himalayaPackage neverestPackage carillonPackage mailtuiPackage codexPackage ];
+    home.packages = [ himalayaPackage neverestPackage carillonPackage mailtuiPackage secondBrainPackage codexPackage pkgs.vdirsyncer ];
+    xdg.configFile."vdirsyncer/config".source = vdirsyncerConfig;
     xdg.configFile."neverest/config.toml".source = neverestConfig;
     xdg.configFile."carillon/config.toml".source = carillonConfig;
     xdg.configFile."mailtui/config.toml".source = mailtuiConfig;

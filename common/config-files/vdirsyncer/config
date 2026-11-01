@@ -1,0 +1,57 @@
+[general]
+status_path = "~/.local/share/vdirsyncer/status"
+
+[storage ovh_calendars]
+type = "caldav"
+url = "https://zimbra1.mail.ovh.net/dav/@OVH_EMAIL@/"
+username = "@OVH_EMAIL@"
+password.fetch = ["shell", "cat ~/.config/vdirsync.passwd"]
+item_types = ["VEVENT"]
+
+[storage ovh_tasks]
+type = "caldav"
+url = "https://zimbra1.mail.ovh.net/dav/@OVH_EMAIL@/"
+username = "@OVH_EMAIL@"
+password.fetch = ["shell", "cat ~/.config/vdirsync.passwd"]
+item_types = ["VTODO"]
+
+[storage ovh_contacts]
+type = "carddav"
+url = "https://zimbra1.mail.ovh.net/dav/@OVH_EMAIL@/"
+username = "@OVH_EMAIL@"
+password.fetch = ["shell", "cat ~/.config/vdirsync.passwd"]
+
+[storage local_cal]
+type = "filesystem"
+path = "/data/calendars"
+fileext = ".ics"
+
+[storage local_tasks]
+type = "filesystem"
+path = "/data/tasks"
+fileext = ".ics"
+
+[storage local_contacts]
+type = "filesystem"
+path = "/data/contacts"
+fileext = ".vcf"
+
+[pair calendars]
+a = "local_cal"
+b = "ovh_calendars"
+collections = ["from b"]
+conflict_resolution = "b wins"
+metadata = ["color", "displayname"]
+
+[pair contacts]
+a = "local_contacts"
+b = "ovh_contacts"
+collections = ["from b"]
+conflict_resolution = "b wins"
+
+[pair tasks]
+a = "local_tasks"
+b = "ovh_tasks"
+collections = ["from b"]
+conflict_resolution = "b wins"
+metadata = ["color", "displayname"]

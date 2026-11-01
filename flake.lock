@@ -68,16 +68,16 @@
         ]
       },
       "locked": {
-        "lastModified": 1792602141,
-        "narHash": "sha256-ryekPVcqHsJe7yj8XVcRCe7l6Z5+bKc3G47tkqh/VuQ=",
+        "lastModified": 1793527141,
+        "narHash": "sha256-WhBFEPfM8AXgCiB2GnMABnK4+ZGCYv99Fwt5yNl51Fw=",
         "owner": "Mickael-Roger",
         "repo": "email-tui",
-        "rev": "f96067d9bd6675d0ae70e685bee76d54b3513b59",
+        "rev": "d8fdbbf1ef14ba254c0606955ce5514c66bac9e4",
         "type": "github"
       },
       "original": {
         "owner": "Mickael-Roger",
-        "ref": "v0.2.0",
+        "ref": "v0.4.2",
         "repo": "email-tui",
         "type": "github"
       }
@@ -217,11 +217,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1790996401,
-        "narHash": "sha256-f+kOxEmOUnQazVAmGg0i8hzwgd1kX/geY+k/Dpheye8=",
+        "lastModified": 1792818383,
+        "narHash": "sha256-199i7ubVSXTMl+0AAlL7cVCXSjcI+jWByMcimYjeMX0=",
         "owner": "nix-community",
         "repo": "home-manager",
-        "rev": "db7d5e2332710f5abb088f6b5de927d7f9511b35",
+        "rev": "24f2190587513b9c2f73db112a17844ae912d965",
         "type": "github"
       },
       "original": {
@@ -272,11 +272,11 @@
     },
     "nixpkgs-unstable": {
       "locked": {
-        "lastModified": 1788614874,
-        "narHash": "sha256-7QYjT2vHLuX9Z1pdxHXDKCbh1CR3D/2rywB9Tx0MPRg=",
+        "lastModified": 1792773339,
+        "narHash": "sha256-rZLrzrC6i+jnTAlvPZHogKDulY7WWDEv9hJeHieO7Zw=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "c043004d1c6985732bcc1cbc5a9c9aecbbb4e0f0",
+        "rev": "3ec636362e1816bc2f0888fa0fa2c69f1bc9e504",
         "type": "github"
       },
       "original": {
@@ -288,11 +288,11 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1791662279,
-        "narHash": "sha256-xI8L+UwJLIg75yVJwLPsY+AUEP1teCT3FyuvodyJu2Y=",
+        "lastModified": 1792898606,
+        "narHash": "sha256-Mg3rRjsbMqhSMxop5PYMXos8SwAjejrxSgVThTvP9eg=",
         "owner": "NixOS",
         "repo": "nixpkgs",
-        "rev": "6fcc160353f63555b560f25588925133c8f61f2a",
+        "rev": "1f607aa79b6356ed45d3cd3c8079c196e79efa2c",
         "type": "github"
       },
       "original": {
@@ -304,11 +304,11 @@
     },
     "nixpkgs_3": {
       "locked": {
-        "lastModified": 1777268161,
-        "narHash": "sha256-bxrdOn8SCOv8tN4JbTF/TXq7kjo9ag4M+C8yzzIRYbE=",
+        "lastModified": 1792773339,
+        "narHash": "sha256-rZLrzrC6i+jnTAlvPZHogKDulY7WWDEv9hJeHieO7Zw=",
         "owner": "nixos",
         "repo": "nixpkgs",
-        "rev": "1c3fe55ad329cbcb28471bb30f05c9827f724c76",
+        "rev": "3ec636362e1816bc2f0888fa0fa2c69f1bc9e504",
         "type": "github"
       },
       "original": {
@@ -324,11 +324,11 @@
         "nixpkgs": "nixpkgs_3"
       },
       "locked": {
-        "lastModified": 1777459473,
-        "narHash": "sha256-kllypzBdWnJ7mCNKAWo4ux+5mDiytTHX1f2dkij8VJo=",
+        "lastModified": 1793040876,
+        "narHash": "sha256-lYmpfkSv10YW9lTwf04iFaBvKZGs2OoQQmPPQOY8PjQ=",
         "owner": "nix-community",
         "repo": "NUR",
-        "rev": "578c249273448d3d604a60d82b861b5fe9ac1bb9",
+        "rev": "8b37cf6b6d2d8c5b96dcd7b1b11497a912d5627a",
         "type": "github"
       },
       "original": {
@@ -397,6 +397,7 @@
         "nixpkgs": "nixpkgs_2",
         "nixpkgs-unstable": "nixpkgs-unstable",
         "nur-repo": "nur-repo",
+        "second-brain": "second-brain",
         "secretSrc": "secretSrc",
         "yt-x": "yt-x"
       }
@@ -473,6 +474,27 @@
         "type": "github"
       }
     },
+    "second-brain": {
+      "inputs": {
+        "nixpkgs": [
+          "nixpkgs-unstable"
+        ]
+      },
+      "locked": {
+        "lastModified": 1793461618,
+        "narHash": "sha256-O7DpKGIOfjK5zlWXLDXthenp+ZY91BHs7oob/fzR0XQ=",
+        "owner": "Mickael-Roger",
+        "repo": "second-brain",
+        "rev": "3b13d75aea64df83143631a00e1190d0a6d87b8b",
+        "type": "github"
+      },
+      "original": {
+        "owner": "Mickael-Roger",
+        "ref": "v0.1.0",
+        "repo": "second-brain",
+        "type": "github"
+      }
+    },
     "secretSrc": {
       "flake": false,
       "locked": {
@@ -512,11 +534,11 @@
         ]
       },
       "locked": {
-        "lastModified": 1774258562,
-        "narHash": "sha256-HDtPiUwAQ8Ras5KTwU/1oiENQ/t93op4fFNqNg6biRM=",
+        "lastModified": 1792818688,
+        "narHash": "sha256-qbfXi2a18/O9t+pxmza3UvIR1kzeYuOEtVZGHXIwdIY=",
         "owner": "Benexl",
         "repo": "yt-x",
-        "rev": "4880033ecb57cccfcf865cc915cc9f9f6c887741",
+        "rev": "265969b2dbe9d1a1b7609e048be3a8640b4455f4",
         "type": "github"
       },
       "original": {

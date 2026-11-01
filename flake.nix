@@ -25,8 +25,11 @@
     carillon.url = "github:pimalaya/carillon";
     carillon.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
-    email-tui.url = "github:Mickael-Roger/email-tui/v0.2.0";
+    email-tui.url = "github:Mickael-Roger/email-tui/v0.4.2";
     email-tui.inputs.nixpkgs.follows = "nixpkgs-unstable";
+
+    second-brain.url = "github:Mickael-Roger/second-brain/v0.1.0";
+    second-brain.inputs.nixpkgs.follows = "nixpkgs-unstable";
 
     codex.url = "github:openai/codex/rust-v0.163.0";
     codex.inputs.nixpkgs.follows = "nixpkgs-unstable";
@@ -44,7 +47,7 @@
 
   };
 
-  outputs = { nixpkgs, home-manager, nur-repo, ctfmgntSrc, secretSrc, nixpkgs-unstable, yt-x, himalaya, neverest, carillon, email-tui, codex, ... }:
+  outputs = { nixpkgs, home-manager, nur-repo, ctfmgntSrc, secretSrc, nixpkgs-unstable, yt-x, himalaya, neverest, carillon, email-tui, second-brain, codex, ... }:
   let
     system = "x86_64-linux";
 
@@ -98,6 +101,7 @@
              neverestPackage = neverest.packages.${system}.default;
              carillonPackage = carillon.packages.${system}.default;
              mailtuiPackage = email-tui.packages.${system}.default;
+             secondBrainPackage = second-brain.packages.${system}.tui;
              inherit codexPackage;
            };
           home-manager.extraSpecialArgs = { inherit nur pkgs secretSrc; };

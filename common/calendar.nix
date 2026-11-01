@@ -1,4 +1,12 @@
-{ pkgs, ... }:
+{ pkgs, secretSrc, ... }:
+
+let
+  secrets = import "${secretSrc}/secrets.nix";
+  vdirsyncerConfig = pkgs.writeText "vdirsyncer-ovh.ini" (
+    builtins.replaceStrings [ "@OVH_EMAIL@" ] [ secrets.mail.ovh.email ]
+      (builtins.readFile ./config-files/vdirsyncer/config)
+  );
+in
 
 {
   services.vdirsyncer = {
@@ -6,6 +14,7 @@
 
     jobs.ovh = {
       enable = true;
+      forceDiscover = true;
       user = "mickael";
       group = "users";
 
@@ -14,41 +23,19 @@
         OnUnitActiveSec = "5m";
       };
 
-      configFile = pkgs.writeText "vdirsyncer-ovh.ini" ''
-        [general]
-        status_path = "~/.local/share/vdirsyncer/status"
-
-        [storage ovh]
-        type = "caldav"
-        url = "https://zimbra1.mail.ovh.net/dav/mickael@famille-roger.com/"
-        username = "mickael@famille-roger.com"
-        password.fetch = ["shell", " cat ~/.config/vdirsync.passwd"]
-        item_types = ["VEVENT", "VTODO"]
-
-        [storage local_cal]
-        type = "filesystem"
-        path = "~/.local/share/vdirsyncer/calendars"
-        fileext = ".ics"
-
-        [storage local_tasks]
-        type = "filesystem"
-        path = "~/.local/share/vdirsyncer/tasks"
-        fileext = ".ics"
-
-        [pair calendars]
-        a = "local_cal"
-        b = "ovh"
-        collections = ["Calendar", "Famille"]
-        conflict_resolution = "b wins"
-        metadata = ["color", "displayname"]
-
-        [pair tasks]
-        a = "local_tasks"
-        b = "ovh"
-        collections = ["Todo"]
-        conflict_resolution = "b wins"
-        metadata = ["color", "displayname"]
-      '';
+      configFile = vdirsyncerConfig;
     };
   };
+
+  systemd.tmpfiles.rules = [
+    "d /data/calendars 0750 mickael users -"
+    "d /data/tasks 0750 mickael users -"
+    "d /data/contacts 0750 mickael users -"
+  ];
+
+  systemd.services."vdirsyncer@ovh".serviceConfig.ReadWritePaths = [
+    "/data/calendars"
+    "/data/tasks"
+    "/data/contacts"
+  ];
 }
